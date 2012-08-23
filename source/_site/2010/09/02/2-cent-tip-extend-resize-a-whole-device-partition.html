@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>2 Cent Tip - Extend (resize) a whole device partition. - </title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="2 Cent Tip - Extend (resize) a whole device partition.
+
+2010 Sep 2
+
+Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN...">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="" rel="alternate" title="" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/"></a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <h1 id='2_cent_tip__extend_resize_a_whole_device_partition'>2 Cent Tip - Extend (resize) a whole device partition.</h1>
+
+<p>2010 Sep 2</p>
+
+<p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage. Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes. A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
+
+<p>For the most part, I usually fire up <a href='http://partedmagic.com'>PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage. Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting. In other words on Fiber-Channel, it doesn&#8217;t matter if you&#8217;re using PartedMagic, or <a href='http://www.knopper.net'>Knoppix</a>, the server just knows where the storage is and whether it is in an attached state. The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
+
+<p>iSCSI is a bit different. Because, iSCSI relies on commodity Network Interface Cards, this technology is largely implemented in software. One perceived advantage is iSCSI may seem less complicated to use than Fiber-Channel storage. Unfortunately, in this case, PartedMagic did not have open-iscsi software, and I could install open-iscsi in the Knoppix Live ramdisk. However, because Knoppix came with an outdated iSCSI kernel module, it was not new enough to inter-operate with the open-iscsi software.</p>
+
+<p>Furthermore, the version of <a href='http://www.gnu.org/software/parted/index.shtml'>parted</a> that shipped with RHEL 5 threw an incompatible filesystem error, refusing to modify the filesystem. So, in the end, I twiddled some bits on the partition table with fdisk, and used resize2fs to extend the partition.</p>
+
+<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume. If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending. If you screw up the cylinder boundaries on a device with multiple partitions, you&#8217;ll definitely lose data. A single partition, in this example, is a much simpler scenario.</p>
+
+<p>The device name in this example is <code>/dev/mapper/u02</code>, the first partition is <code>/dev/mapper/u02p1</code>:</p>
+
+<p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk -l /dev/mapper/u02
+    Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
+
+    255 heads, 63 sectors/track, 13171 cylinders
+    Units = cylinders of 16065 * 512 = 8225280 bytes
+
+              Device Boot      Start         End      Blocks   Id  System
+    /dev/mapper/u02p1               1       13171   26450329   83  Linux</code></pre>
+</div>
+<p>Reboot the server after extending the volume or LUN on your SAN. You want to do this before extending the partition in your Operating System. The Operating System needs to re-read sector 0 on the extended SAN volume, before continuing. Note, that fdisk will report <strong>26109</strong> cylinders instead of <strong>13171</strong>, after rebooting the server.</p>
+
+<p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk /dev/mapper/u02
+    WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+             switch off the mode (command 'c') and change display units to
+             sectors (command 'u').
+
+    Command (m for help): d
+    Selected partition 1
+
+    Command (m for help): n
+    Command action
+       e   extended
+       p   primary partition (1-4)
+    p
+    Partition number (1-4): 1
+    First cylinder (1-26109, default 1):
+    Using default value 1
+    Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
+    Using default value 26109
+
+    Command (m for help): w
+    The partition table has been altered!
+
+    Calling ioctl() to re-read partition table.
+    Syncing disks.</code></pre>
+</div>
+<p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted. It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
+<div>
+  <pre><code class='bash'>root@localhost:~# resize2fs /dev/mapper/u02p1
+    resize2fs 1.39 (29-May-2006)
+    Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
+    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
+    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.</code></pre>
+</div>
+<p>Refer to the <code>resize2fs</code> for more information on the command, and its proper usage.</p>
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

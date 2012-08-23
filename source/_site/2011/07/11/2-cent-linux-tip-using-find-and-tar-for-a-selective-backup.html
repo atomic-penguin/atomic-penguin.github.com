@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>2 cent Linux tip using find and tar for a selective backup - </title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="2 cent Linux tip using find and tar for a selective backup
+
+2011 Jul 11
+
+So I&#39;m blowing away, and re-installing, my Steam Bottle on Codeweaver&...">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="" rel="alternate" title="" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/"></a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <h1 id='2_cent_linux_tip_using_find_and_tar_for_a_selective_backup'>2 cent Linux tip using find and tar for a selective backup</h1>
+
+<p>2011 Jul 11</p>
+
+<p>So I&#39;m blowing away, and re-installing, my Steam Bottle on <a href='http://codeweavers.com'>Codeweaver&#39;s</a> Crossover games. I was hoping to get some in-game overlay support for the Community/Friends features of Steam. I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+
+<p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
+
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&#8217;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I&#39;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+<div>
+  <pre><code class='bash'>find ~/.cxgames -name &quot;*.cfg&quot;</code></pre>
+</div>
+<p>When I run the following command, however, I&#8217;ll get an error due to spaces in the directory/filename structure. Note the backslash in &#8220;Program Files&#8221; is an escaped space for the shell to properly interpret this.</p>
+<div>
+  <pre><code class='bash'>find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar</code></pre>
+</div>
+<p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag. The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames. Therefore the following command will get the files I need:</p>
+<div>
+  <pre><code class='bash'>find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name &quot;*.cfg&quot; -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar</code></pre>
+</div>
+<p>Restoring is as simple as running the following command from within my home directory.</p>
+<div>
+  <pre><code class='bash'>tar xvf ~/etc/steam-settings.tar</code></pre>
+</div>
+<p>Perhaps some day we&#8217;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
