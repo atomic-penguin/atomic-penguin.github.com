@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: post
 title: 2 cent Linux tip using find and tar for a selective backup 
 date: 2011-07-11
 comments: true
@@ -12,6 +12,8 @@ categories:
 So I\'m blowing away, and re-installing, my Steam Bottle on [Codeweaver\'s](http://codeweavers.com) Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.
 
 Using the `find` command we can solve this problem fairly easy.
+
+<!-- more -->
 
 So the basic requirements in this scenario boil down to finding all the config files under the `~/.cxgames` tree. I have an `~/etc` directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the `~/etc` directory so I can find it easily later. However, I don't want every `*.cfg` file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\'ll discover those games have a common top-level directory, *~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps*.
 
