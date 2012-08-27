@@ -15,6 +15,8 @@ I use rsync to migrate Oracle databases between servers at least a few times per
 
 I hope you enjoy this in-depth article.  Please feel free to comment: if you need clarification, find it useful, or something I wrote is just plain wrong.
 
+<!-- more -->
+
 ## The Tools
 
 Three things you'll need for this exercise:

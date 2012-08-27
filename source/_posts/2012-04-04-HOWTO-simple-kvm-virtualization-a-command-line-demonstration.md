@@ -3,6 +3,11 @@ layout: page
 title: HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration 
 date: 2012-04-04
 comments: true
+categories:
+- youtube
+- video
+- kvm
+- virtualization
 ---
 
 A simple demonstration using KVM (Kernel-based Virtual Machine) from the command line interface.

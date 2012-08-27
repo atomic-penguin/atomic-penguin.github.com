@@ -4,6 +4,7 @@ title: 2 Cent Tip - Extend (resize) a whole device partition.
 date: 2010-09-02
 comments: true
 categories:
+- 2 cent tip
 - storage
 - Enterprise Linux
 ---
@@ -11,6 +12,8 @@ categories:
 Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size. 
 
 For the most part, I usually fire up [PartedMagic](http://partedmagic.com) and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn't matter if you're using PartedMagic, or [Knoppix](http://www.knopper.net), the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.
+
+<!-- more -->
 
 iSCSI is a bit different.  Because, iSCSI relies on commodity Network Interface Cards, this technology is largely implemented in software.  One perceived advantage is iSCSI may seem less complicated to use than Fiber-Channel storage.  Unfortunately, in this case, PartedMagic did not have open-iscsi software, and I could install open-iscsi in the Knoppix Live ramdisk. However, because Knoppix came with an outdated iSCSI kernel module, it was not new enough to inter-operate with the open-iscsi software.
 

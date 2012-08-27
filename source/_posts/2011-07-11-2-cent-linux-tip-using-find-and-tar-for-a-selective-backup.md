@@ -7,6 +7,9 @@ categories:
 - 2 cent tip
 - wine 
 - backup
+- bash
+- find
+- tar
 ---
 
 So I\'m blowing away, and re-installing, my Steam Bottle on [Codeweaver\'s](http://codeweavers.com) Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.

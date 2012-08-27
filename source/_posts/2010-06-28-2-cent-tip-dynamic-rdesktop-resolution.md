@@ -6,11 +6,14 @@ comments: true
 categories:
 - 2 cent tip 
 - Desktop Linux
+- bash
 ---
 
 So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I'm looking at you VMware).  Not that I have any problem with Microsoft or Windows, I'm really just more comfortable in a Unix-like environment.  I do use the Open Source `rdesktop` utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).
 
 It's a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop's X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in `rdesktop -g 1280x1024` is much more tedious than typing in `rdesktop` on the command line interface.
+
+<!-- more -->
 
 So the simple solution is to put an alias in the `.bashrc` file, like so...
 
