@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tar | atomic-penguin's personal webpage.]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/tar/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-08-27T16:08:56-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[2 cent Linux tip using find and tar for a selective backup]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
+    <updated>2011-07-11T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
+    <content type="html"><![CDATA[<p>So I\'m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\'s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+
+<p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
+
+<!-- more -->
+
+
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don't want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\'ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+
+<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+</code></pre>
+</div>
+</p>
+
+<p>When I run the following command, however, I'll get an error due to spaces in the directory/filename structure.  Note the backslash in "Program Files" is an escaped space for the shell to properly interpret this.</p>
+
+<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+</code></pre>
+</div>
+</p>
+
+<p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
+
+<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+</code></pre>
+</div>
+</p>
+
+<p>Restoring is as simple as running the following command from within my home directory.</p>
+
+<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;tar xvf ~/etc/steam-settings.tar
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+</code></pre>
+</div>
+</p>
+
+<p>Perhaps some day we'll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+]]></content>
+  </entry>
+  
+</feed>

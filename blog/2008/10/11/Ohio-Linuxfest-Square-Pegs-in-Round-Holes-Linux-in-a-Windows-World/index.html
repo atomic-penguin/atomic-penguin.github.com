@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World - atomic-penguin's personal webpage.</title>
+  <meta name="author" content="Eric G. Wolfe">
+
+  
+  <meta name="description" content="Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World Oct 11th, 2008 These are my presentation slides for the 2008 Ohio &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="atomic-penguin's personal webpage." type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">atomic-penguin's personal webpage.</a></h1>
+  <img src="/images/profile.png">
+  
+    <h2>Musings on Linux, Opscode Chef, and online gaming.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:atomic-penguin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-10-11T00:00:00-04:00" pubdate data-updated="true">Oct 11<span>th</span>, 2008</time></p>
+  </header>
+  
+  <p>These are my presentation slides for the 2008 Ohio Linuxfest.  I gave a well recieved talk on the topic of Windows, and Active Directory, Linux integration using Samba.  My <a href="https://atomic-penguin.github.com/cookbook-krb5">krb5</a> handles the krb5.conf and pam configurations outlined in the examples below.</p>
+
+<!-- more -->
+
+
+<ul>
+<li><a href="/papers/Square_Pegs_in_Round_Holes_Linux_in_a_Windows.ppt">Slides</a></li>
+<li><a href="https://github.com/atomic-penguin/dnsnarf">DNSnarf</a>.  This code is deprecated now in favor of the bind::ldap2zone recipe, included in the Opscode Chef cookbook, <a href="https://atomic-penguin.github.com/cookbook-bind">bind</a></li>
+</ul>
+
+
+<p>Example config files</p>
+
+<h2>/etc/krb5.conf</h2>
+
+<p>Example Kerberos 5.0 configuration for Active Directory domain CONTOSO.COM.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Example Kerberos configuration for CONTOSO.COM kerberos realm</span>
+</span><span class='line'><span class="c"># kdc01.contoso.com and kdc03.contoso.com are Windows domain controllers</span>
+</span><span class='line'><span class="c"># for this environment.</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>logging<span class="o">]</span>
+</span><span class='line'> <span class="nv">default</span> <span class="o">=</span> FILE:/var/log/krb5libs.log
+</span><span class='line'> <span class="nv">kdc</span> <span class="o">=</span> FILE:/var/log/krb5kdc.log
+</span><span class='line'> <span class="nv">admin_server</span> <span class="o">=</span> FILE:/var/log/kadmind.log
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>libdefaults<span class="o">]</span>
+</span><span class='line'> <span class="nv">default_realm</span> <span class="o">=</span> CONTOSO.COM
+</span><span class='line'> <span class="nv">dns_lookup_realm</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'><span class="nb"> </span><span class="nv">dns_lookup_kdc</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'><span class="nb"> </span><span class="nv">ticket_lifetime</span> <span class="o">=</span> 24h
+</span><span class='line'> <span class="nv">forwardable</span> <span class="o">=</span> yes
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>realms<span class="o">]</span>
+</span><span class='line'> CONTOSO.COM <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nv">kdc</span> <span class="o">=</span> kdc01.contoso.com
+</span><span class='line'>  <span class="nv">kdc</span> <span class="o">=</span> kdc03.contoso.com
+</span><span class='line'>  <span class="nv">admin_server</span> <span class="o">=</span> kdc01.contoso.com
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>domain_realm<span class="o">]</span>
+</span><span class='line'> contoso.com <span class="o">=</span> CONTOSO.COM
+</span><span class='line'> .contoso.com <span class="o">=</span> CONTOSO.COM
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>appdefaults<span class="o">]</span>
+</span><span class='line'> <span class="nv">pam</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>   <span class="nv">debug</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'><span class="nb">   </span><span class="nv">ticket_lifetime</span> <span class="o">=</span> 36000
+</span><span class='line'>   <span class="nv">renew_lifetime</span> <span class="o">=</span> 36000
+</span><span class='line'>   <span class="nv">forwardable</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'><span class="nb">   </span><span class="nv">krb4_convert</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>/etc/samba/smb.conf</h2>
+
+<p>Example Samba 3 configuration for Active Directory/Winbind integration</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This is an example of how to setup Samba as a domain member </span>
+</span><span class='line'><span class="c"># of CONTOSO.COM to provide file services.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># The winbind method used in this example works much like a Windows</span>
+</span><span class='line'><span class="c"># Domain Member file server in resolving usernames and groups over RPC.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># idmap provides predictable UID and GID</span>
+</span><span class='line'><span class="c"># generation based on the user&#39;s domain SID number</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>global<span class="o">]</span>
+</span><span class='line'>unix <span class="nv">charset</span> <span class="o">=</span> LOCALE
+</span><span class='line'><span class="nv">workgroup</span> <span class="o">=</span> CONTOSO
+</span><span class='line'><span class="nv">realm</span> <span class="o">=</span> CONTOSO.COM
+</span><span class='line'>server <span class="nv">string</span> <span class="o">=</span> Contoso File Server
+</span><span class='line'><span class="nv">security</span> <span class="o">=</span> ADS
+</span><span class='line'>allow trusted <span class="nv">domains</span> <span class="o">=</span> no
+</span><span class='line'>log <span class="nv">level</span> <span class="o">=</span> 1
+</span><span class='line'>log <span class="nv">file</span> <span class="o">=</span> /var/log/samba/%m.log
+</span><span class='line'>max log <span class="nv">size</span> <span class="o">=</span> 50
+</span><span class='line'>idmap <span class="nv">backend</span> <span class="o">=</span> rid:CONTOSO<span class="o">=</span>1000-1000000
+</span><span class='line'>idmap <span class="nv">uid</span> <span class="o">=</span> 1000-1000000
+</span><span class='line'>idmap <span class="nv">gid</span> <span class="o">=</span> 1000-1000000
+</span><span class='line'>winbind cache <span class="nb">time</span> <span class="o">=</span> 3600
+</span><span class='line'>winbind enum <span class="nv">groups</span> <span class="o">=</span> yes
+</span><span class='line'>winbind use default <span class="nv">domain</span> <span class="o">=</span> yes
+</span><span class='line'>winbind normalize <span class="nv">names</span> <span class="o">=</span> yes
+</span><span class='line'>admin <span class="nv">users</span> <span class="o">=</span> @CONTOSO<span class="se">\d</span>omain_admins
+</span><span class='line'>map acl <span class="nv">inherit</span> <span class="o">=</span> yes
+</span><span class='line'>disable <span class="nv">netbios</span> <span class="o">=</span> no
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>/etc/httpd/conf.d/auth_kerb.conf</h2>
+
+<p>Example mod_auth_kerb configuration file for Apache2 authentication against Active Directory.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This is an example of how to setup Kerberos</span>
+</span><span class='line'><span class="c"># authentication in Apache against CONTOSO.COM and</span>
+</span><span class='line'><span class="c"># SUBDOMAIN.CONTOSO.COM.  The end result works much</span>
+</span><span class='line'><span class="c"># like Windows Integrated Authentication.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Load the module into Apache</span>
+</span><span class='line'>LoadModule auth_kerb_module modules/mod_auth_kerb.so
+</span><span class='line'>
+</span><span class='line'><span class="c"># Directory to protect with Kerberos authentication</span>
+</span><span class='line'>&lt;Location /path/to/directory&gt;
+</span><span class='line'>  AuthType Kerberos
+</span><span class='line'>  AuthName <span class="s2">&quot;Contoso Login&quot;</span>
+</span><span class='line'>  KrbMethodNegotiate Off
+</span><span class='line'>  KrbMethodK5Passwd On
+</span><span class='line'>  KrbSaveCredentials On
+</span><span class='line'>  KrbVerifyKDC Off
+</span><span class='line'>  KrbAuthRealms CONTOSO.COM SUBDOMAIN.CONTOSO.COM
+</span><span class='line'>  Krb5KeyTab /etc/httpd/conf.d/auth_kerb.keytab
+</span><span class='line'>  Require valid-user
+</span><span class='line'>&lt;/Location&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>/etc/httpd/conf.d/auth_kerb.keytab</h2>
+
+<p>Example mod_auth_kerb keytabl for Apache2 authentication against Active Directory.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This is an example of how to setup Kerberos</span>
+</span><span class='line'><span class="c"># authentication in Apache against CONTOSO.COM and</span>
+</span><span class='line'><span class="c"># SUBDOMAIN.CONTOSO.COM.  The end result works much</span>
+</span><span class='line'><span class="c"># like Windows Integrated Authentication.</span>
+</span><span class='line'>
+</span><span class='line'>HTTP/webserv1.contoso.com@CONTOSO.COM
+</span><span class='line'>HTTP/webserv1.contoso.com@SUBDOMAIN.CONTOSO.COM
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>/etc/pam.d/system-auth</h2>
+
+<p>Example PAM configuration file for Kerberos 5 authentication against Active Directory Domain.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This file contains the primary system-authentication rules allowing</span>
+</span><span class='line'><span class="c"># Kerberos authentication with PAM integrated services such as SSH.</span>
+</span><span class='line'><span class="c"># Also configured in this example:</span>
+</span><span class='line'><span class="c"># * md5 passwords</span>
+</span><span class='line'><span class="c"># * shadow password file</span>
+</span><span class='line'><span class="c"># * local authentication, in addition to Kerberos</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#%PAM-1.0</span>
+</span><span class='line'><span class="c"># This file is auto-generated.</span>
+</span><span class='line'><span class="c"># User changes will be destroyed the next time authconfig is run.</span>
+</span><span class='line'>auth        required      pam_env.so
+</span><span class='line'>auth        sufficient    pam_unix.so nullok try_first_pass
+</span><span class='line'>auth        requisite     pam_succeed_if.so uid &gt;<span class="o">=</span> 500 quiet
+</span><span class='line'>auth        sufficient    pam_krb5.so use_first_pass
+</span><span class='line'>auth        required      pam_deny.so
+</span><span class='line'>
+</span><span class='line'>account     required      pam_unix.so broken_shadow
+</span><span class='line'>account     sufficient    pam_localuser.so
+</span><span class='line'>account     sufficient    pam_succeed_if.so uid &lt; 500 quiet
+</span><span class='line'>account     <span class="o">[</span><span class="nv">default</span><span class="o">=</span>bad <span class="nv">success</span><span class="o">=</span>ok <span class="nv">user_unknown</span><span class="o">=</span>ignore<span class="o">]</span> pam_krb5.so
+</span><span class='line'>account     required      pam_permit.so
+</span><span class='line'>
+</span><span class='line'>password    requisite     pam_cracklib.so try_first_pass <span class="nv">retry</span><span class="o">=</span>3
+</span><span class='line'>password    sufficient    pam_unix.so md5 shadow nullok try_first_pass use_authtok
+</span><span class='line'>password    sufficient    pam_krb5.so use_authtok
+</span><span class='line'>password    required      pam_deny.so
+</span><span class='line'>
+</span><span class='line'>session     optional      pam_keyinit.so revoke
+</span><span class='line'>session     required      pam_limits.so
+</span><span class='line'>session     <span class="o">[</span><span class="nv">success</span><span class="o">=</span>1 <span class="nv">default</span><span class="o">=</span>ignore<span class="o">]</span> pam_succeed_if.so service in crond quiet use_uid
+</span><span class='line'>session     required      pam_unix.so
+</span><span class='line'>session     optional      pam_krb5.so
+</span></code></pre></td></tr></table></div></figure>
+
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-10-11T00:00:00-04:00" pubdate data-updated="true">Oct 11<span>th</span>, 2008</time>
+        
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/active-directory/'>Active Directory</a>, <a class='category' href='/blog/categories/samba/'>Samba</a>, <a class='category' href='/blog/categories/windows/'>Windows</a>, <a class='category' href='/blog/categories/conference-talk/'>conference talk</a>, <a class='category' href='/blog/categories/ohiolinux/'>ohiolinux</a>
+  
+</span>
+
+
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/">Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/">HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/Foodfight-1-Chef-in-2012/">Foodfight podcast - Episode 1, Chef in 2012</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/06/MU-case-study/">Marshall University case study</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/">2 cent Linux tip using find and tar for a selective backup</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'atomic-penguin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("atomic_penguin", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112791157300091682319?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section class="linkedin">
+<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+<script type="IN/MemberProfile" data-id="http://www.linkedin.com/in/ericgwolfe" data-format="click" data-text="Eric G. Wolfe" data-related="false"></script>
+<a href="http://resume.linkedinlabs.com/o1x0n1fiy">Résumé</a>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
+  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Eric G. Wolfe -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'atomicpenguin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/';
+        var disqus_url = 'http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

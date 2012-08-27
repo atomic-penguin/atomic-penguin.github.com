@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>2 cent Linux tip using find and tar for a selective backup - atomic-penguin's personal webpage.</title>
+  <meta name="author" content="Eric G. Wolfe">
+
+  
+  <meta name="description" content="So I&#39;m blowing away, and re-installing, my Steam Bottle on Codeweaver&#39;s Crossover games. I was hoping to get some in-game overlay support for &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="atomic-penguin's personal webpage." type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">atomic-penguin's personal webpage.</a></h1>
+  <img src="/images/profile.png">
+  
+    <h2>Musings on Linux, Opscode Chef, and online gaming.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:atomic-penguin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">2 Cent Linux Tip Using Find and Tar for a Selective Backup</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-11T00:00:00-04:00" pubdate data-updated="true">Jul 11<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>So I&#39;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver&#39;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+
+<p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
+
+<!-- more -->
+
+
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&#8217;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I&#39;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+
+<div class="highlight"><pre><code class="bash">    find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
+</code></pre>
+</div>
+
+
+<p>When I run the following command, however, I&#8217;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &#8220;Program Files&#8221; is an escaped space for the shell to properly interpret this.</p>
+
+<div class="highlight"><pre><code class="bash">    find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
+</code></pre>
+</div>
+
+
+<p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
+
+<div class="highlight"><pre><code class="bash">    find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
+</code></pre>
+</div>
+
+
+<p>Restoring is as simple as running the following command from within my home directory.</p>
+
+<div class="highlight"><pre><code class="bash">    tar xvf ~/etc/steam-settings.tar
+</code></pre>
+</div>
+
+
+<p>Perhaps some day we&#8217;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Eric G. Wolfe</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-11T00:00:00-04:00" pubdate data-updated="true">Jul 11<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/2-cent-tip/'>2 cent tip</a>, <a class='category' href='/blog/categories/backup/'>backup</a>, <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/find/'>find</a>, <a class='category' href='/blog/categories/tar/'>tar</a>, <a class='category' href='/blog/categories/wine/'>wine</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/" title="Previous Post: HOWTO Using rsync to move a mountain of data">&laquo; HOWTO Using rsync to move a mountain of data</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/09/06/MU-case-study/" title="Next Post: Marshall University case study">Marshall University case study &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/">Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/">HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/Foodfight-1-Chef-in-2012/">Foodfight podcast - Episode 1, Chef in 2012</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/06/MU-case-study/">Marshall University case study</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/">2 cent Linux tip using find and tar for a selective backup</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'atomic-penguin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("atomic_penguin", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112791157300091682319?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section class="linkedin">
+<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+<script type="IN/MemberProfile" data-id="http://www.linkedin.com/in/ericgwolfe" data-format="click" data-text="Eric G. Wolfe" data-related="false"></script>
+<a href="http://resume.linkedinlabs.com/o1x0n1fiy">Résumé</a>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
+  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Eric G. Wolfe -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'atomicpenguin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/';
+        var disqus_url = 'http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Active Directory | atomic-penguin's personal webpage.]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/active-directory/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-08-27T16:08:56-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/"/>
+    <updated>2008-10-11T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World</id>
+    <content type="html"><![CDATA[<p>These are my presentation slides for the 2008 Ohio Linuxfest.  I gave a well recieved talk on the topic of Windows, and Active Directory, Linux integration using Samba.  My <a href="https://atomic-penguin.github.com/cookbook-krb5">krb5</a> handles the krb5.conf and pam configurations outlined in the examples below.</p>
+
+<!-- more -->
+
+
+<ul>
+<li><a href="/papers/Square_Pegs_in_Round_Holes_Linux_in_a_Windows.ppt">Slides</a></li>
+<li><a href="https://github.com/atomic-penguin/dnsnarf">DNSnarf</a>.  This code is deprecated now in favor of the bind::ldap2zone recipe, included in the Opscode Chef cookbook, <a href="https://atomic-penguin.github.com/cookbook-bind">bind</a></li>
+</ul>
+
+
+<p>Example config files</p>
+
+<h2>/etc/krb5.conf</h2>
+
+<p>Example Kerberos 5.0 configuration for Active Directory domain CONTOSO.COM.
+```bash
+#</p>
+
+<h1>Example Kerberos configuration for CONTOSO.COM kerberos realm</h1>
+
+<h1>kdc01.contoso.com and kdc03.contoso.com are Windows domain controllers</h1>
+
+<h1>for this environment.</h1>
+
+<p>[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log</p>
+
+<p>[libdefaults]
+ default_realm = CONTOSO.COM
+ dns_lookup_realm = false
+ dns_lookup_kdc = true
+ ticket_lifetime = 24h
+ forwardable = yes</p>
+
+<p>[realms]
+ CONTOSO.COM = {
+  kdc = kdc01.contoso.com
+  kdc = kdc03.contoso.com
+  admin_server = kdc01.contoso.com
+ }</p>
+
+<p>[domain_realm]
+ contoso.com = CONTOSO.COM
+ .contoso.com = CONTOSO.COM</p>
+
+<p>[appdefaults]
+ pam = {
+   debug = false
+   ticket_lifetime = 36000
+   renew_lifetime = 36000
+   forwardable = true
+   krb4_convert = false
+ }
+```</p>
+
+<h2>/etc/samba/smb.conf</h2>
+
+<p>Example Samba 3 configuration for Active Directory/Winbind integration
+```bash
+#</p>
+
+<h1>This is an example of how to setup Samba as a domain member</h1>
+
+<h1>of CONTOSO.COM to provide file services.</h1>
+
+<p>#</p>
+
+<h1>The winbind method used in this example works much like a Windows</h1>
+
+<h1>Domain Member file server in resolving usernames and groups over RPC.</h1>
+
+<p>#</p>
+
+<h1>idmap provides predictable UID and GID</h1>
+
+<h1>generation based on the user's domain SID number</h1>
+
+<p>[global]
+unix charset = LOCALE
+workgroup = CONTOSO
+realm = CONTOSO.COM
+server string = Contoso File Server
+security = ADS
+allow trusted domains = no
+log level = 1
+log file = /var/log/samba/%m.log
+max log size = 50
+idmap backend = rid:CONTOSO=1000-1000000
+idmap uid = 1000-1000000
+idmap gid = 1000-1000000
+winbind cache time = 3600
+winbind enum groups = yes
+winbind use default domain = yes
+winbind normalize names = yes
+admin users = @CONTOSO\domain_admins
+map acl inherit = yes
+disable netbios = no
+```</p>
+
+<h2>/etc/httpd/conf.d/auth_kerb.conf</h2>
+
+<p>Example mod_auth_kerb configuration file for Apache2 authentication against Active Directory.
+```bash
+#</p>
+
+<h1>This is an example of how to setup Kerberos</h1>
+
+<h1>authentication in Apache against CONTOSO.COM and</h1>
+
+<h1>SUBDOMAIN.CONTOSO.COM.  The end result works much</h1>
+
+<h1>like Windows Integrated Authentication.</h1>
+
+<h1>Load the module into Apache</h1>
+
+<p>LoadModule auth_kerb_module modules/mod_auth_kerb.so</p>
+
+<h1>Directory to protect with Kerberos authentication</h1>
+
+<p><Location /path/to/directory>
+  AuthType Kerberos
+  AuthName "Contoso Login"
+  KrbMethodNegotiate Off
+  KrbMethodK5Passwd On
+  KrbSaveCredentials On
+  KrbVerifyKDC Off
+  KrbAuthRealms CONTOSO.COM SUBDOMAIN.CONTOSO.COM
+  Krb5KeyTab /etc/httpd/conf.d/auth_kerb.keytab
+  Require valid-user
+</Location>
+```</p>
+
+<h2>/etc/httpd/conf.d/auth_kerb.keytab</h2>
+
+<p>Example mod_auth_kerb keytabl for Apache2 authentication against Active Directory.
+```bash
+#</p>
+
+<h1>This is an example of how to setup Kerberos</h1>
+
+<h1>authentication in Apache against CONTOSO.COM and</h1>
+
+<h1>SUBDOMAIN.CONTOSO.COM.  The end result works much</h1>
+
+<h1>like Windows Integrated Authentication.</h1>
+
+<p>HTTP/webserv1.contoso.com@CONTOSO.COM
+HTTP/webserv1.contoso.com@SUBDOMAIN.CONTOSO.COM
+```</p>
+
+<h2>/etc/pam.d/system-auth</h2>
+
+<p>Example PAM configuration file for Kerberos 5 authentication against Active Directory Domain.
+```bash
+#</p>
+
+<h1>This file contains the primary system-authentication rules allowing</h1>
+
+<h1>Kerberos authentication with PAM integrated services such as SSH.</h1>
+
+<h1>Also configured in this example:</h1>
+
+<h1>* md5 passwords</h1>
+
+<h1>* shadow password file</h1>
+
+<h1>* local authentication, in addition to Kerberos</h1>
+
+<h1>%PAM-1.0</h1>
+
+<h1>This file is auto-generated.</h1>
+
+<h1>User changes will be destroyed the next time authconfig is run.</h1>
+
+<p>auth        required      pam_env.so
+auth        sufficient    pam_unix.so nullok try_first_pass
+auth        requisite     pam_succeed_if.so uid >= 500 quiet
+auth        sufficient    pam_krb5.so use_first_pass
+auth        required      pam_deny.so</p>
+
+<p>account     required      pam_unix.so broken_shadow
+account     sufficient    pam_localuser.so
+account     sufficient    pam_succeed_if.so uid &lt; 500 quiet
+account     [default=bad success=ok user_unknown=ignore] pam_krb5.so
+account     required      pam_permit.so</p>
+
+<p>password    requisite     pam_cracklib.so try_first_pass retry=3
+password    sufficient    pam_unix.so md5 shadow nullok try_first_pass use_authtok
+password    sufficient    pam_krb5.so use_authtok
+password    required      pam_deny.so</p>
+
+<p>session     optional      pam_keyinit.so revoke
+session     required      pam_limits.so
+session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
+session     required      pam_unix.so
+session     optional      pam_krb5.so
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

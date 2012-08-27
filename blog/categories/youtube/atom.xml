@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: youtube | atomic-penguin's personal webpage.]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/youtube/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-08-27T16:08:56-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/"/>
+    <updated>2012-04-04T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration</id>
+    <content type="html"><![CDATA[<p>A simple demonstration using KVM (Kernel-based Virtual Machine) from the command line interface.</p>
+
+<p>Sorry for the slight graphics artefacts, I was testing out some screencast software for the first time.</p>
+
+<p>Watch it on youtube, <a href="http://www.youtube.com/watch?v=aN8lb2O-wHs">here</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

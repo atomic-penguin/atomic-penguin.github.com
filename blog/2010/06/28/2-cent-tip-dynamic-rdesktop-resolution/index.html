@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>2 Cent Tip - Dynamic rdesktop resolution. - atomic-penguin's personal webpage.</title>
+  <meta name="author" content="Eric G. Wolfe">
+
+  
+  <meta name="description" content="2 Cent Tip - Dynamic Rdesktop Resolution. Jun 28th, 2010 So occasionally I do have to touch a Windows system, or use a Windows-only management tool &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="atomic-penguin's personal webpage." type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">atomic-penguin's personal webpage.</a></h1>
+  <img src="/images/profile.png">
+  
+    <h2>Musings on Linux, Opscode Chef, and online gaming.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:atomic-penguin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">2 Cent Tip - Dynamic Rdesktop Resolution.</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-06-28T00:00:00-04:00" pubdate data-updated="true">Jun 28<span>th</span>, 2010</time></p>
+  </header>
+  
+  <p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&#8217;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&#8217;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
+
+<p>It&#8217;s a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop&#8217;s X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in <code>rdesktop -g 1280x1024</code> is much more tedious than typing in <code>rdesktop</code> on the command line interface.</p>
+
+<!-- more -->
+
+
+<p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&#8230;</p>
+
+<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
+    <span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g 1280x1024&#39;</span>
+</code></pre>
+</div>
+
+
+<p>However, on my laptop, the max resolution without an external monitor is 1600x900.  So I still have to override the setting with <code>rdesktop -g 1280x1024</code> on the command line, any time I am running without an external monitor.</p>
+
+<p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
+
+<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
+    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+
+    <span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
+</code></pre>
+</div>
+
+
+<p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&#8217;ll skip.  I&#8217;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&#8217;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
+
+<p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
+
+<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
+    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$RDESKTOP_SIZE</span> <span class="o">==</span> <span class="s2">&quot;3840x1200&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">        </span><span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="s2">&quot;1820x1100&quot;</span>
+    <span class="k">fi</span>
+
+<span class="k">    </span><span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
+</code></pre>
+</div>
+
+
+<p>In other words, if I have two monitors at 1920x1200 each, their combined resolution is reported by <code>xrandr</code> as 3840x1200.  I want to override the detected resolution to 100 pixels less than the resolution on one screen.  Therefore I set the <code>$RDESKTOP_SIZE</code> variable to 1820x1100, before setting my <code>rdesktop</code> alias in <code>.bashrc</code>.</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-06-28T00:00:00-04:00" pubdate data-updated="true">Jun 28<span>th</span>, 2010</time>
+        
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/2-cent-tip/'>2 cent tip</a>, <a class='category' href='/blog/categories/desktop-linux/'>Desktop Linux</a>, <a class='category' href='/blog/categories/bash/'>bash</a>
+  
+</span>
+
+
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/">Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/">HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/Foodfight-1-Chef-in-2012/">Foodfight podcast - Episode 1, Chef in 2012</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/06/MU-case-study/">Marshall University case study</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/">2 cent Linux tip using find and tar for a selective backup</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'atomic-penguin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("atomic_penguin", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112791157300091682319?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section class="linkedin">
+<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+<script type="IN/MemberProfile" data-id="http://www.linkedin.com/in/ericgwolfe" data-format="click" data-text="Eric G. Wolfe" data-related="false"></script>
+<a href="http://resume.linkedinlabs.com/o1x0n1fiy">Résumé</a>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
+  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Eric G. Wolfe -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'atomicpenguin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/';
+        var disqus_url = 'http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,920 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: device-mapper-multipath | atomic-penguin's personal webpage.]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/device-mapper-multipath/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-08-27T16:08:56-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Red Hat Enterprise Linux 5.x iSCSI and Device Mapper Multipath HOWTO]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/"/>
+    <updated>2010-11-29T00:00:00-05:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p><img src="/images/muwam.png" alt="Marshall University Systems Infrastructure Team" /></p>
+
+<p>This document outlines in a detailed step-by-step fashion,
+how to properly configure iSCSI initiator, and multi-path I/O
+software on Red Hat Enterprise Linux version 5.</p>
+
+<pre><code>Copyright © 2010, Marshall University Systems Infrastructure Team
+Author: Eric G. Wolfe 
+Contributor: Jaymz Mynes 
+Editor: Tim Calvert 
+
+Marshall University 
+400 Hal Greer Blvd. 
+Huntington, WV 25755 
+
+This work is licensed under the Creative Commons Attribution-Noncommercial-Share 
+Alike 3.0 United States License. To view a copy of this license, 
+visit http://creativecommons.org/licenses/by-nc-sa/3.0/us/ 
+or send a letter to Creative Commons, 171 Second Street, Suite 
+300, San Francisco, California, 94105, USA. 
+
+The block M logo is a trademark of Marshall University. All other 
+trademarks are owned by their respective owners. 
+</code></pre>
+
+<!-- more -->
+
+
+<h2>I. Introduction</h2>
+
+<p>The following configuration was documented and tested on a Dell
+Poweredge R710, with RedHat Enterprise Linux 5.0 x64. The R710
+server has 4 Broadcom NeteXtreme II BCM5709 Gigabit Network
+Interface Cards (NIC), and is connected by Ethernet to an EqualLogic
+PS6000 storage array.</p>
+
+<p>This step-by-step guide is directly applicable to these software
+and hardware components. However, much of the software configuration
+would remain the same for any Linux distribution
+on either X86 or AMD64
+based hardware. The most dynamic variable in any case will be
+specific storage solutions. Consider any factors that your
+storage vendor may support, or recommend, before proceeding.</p>
+
+<h3>II. Hardware Preparation</h3>
+
+<p>Appropriate hardware preparation is beyond the scope of this
+document. See vendor documentation for connecting Ethernet
+cables to the storage array, and appropriate configuration
+of the storage array. According to Dell EqualLogic (2008) some
+recommended guidelines are as follows:</p>
+
+<ul>
+<li><p>Do...</p></li>
+<li><p>Do NOT...</p></li>
+</ul>
+
+
+<p>See <em>PS Series Array Network Performance Guidelines</em>, or relevant
+storage vendor's documentation for more information.</p>
+
+<p>III. Manual Installation</p>
+
+<p>The following section outlines manual installation and configuration
+of Device Mapper Multipath and Open-iSCSI initiator on Red Hat
+Enterprise Linux version 5.x. If this is your first time installing
+and configuring Device Mapper Multipath, or Open-iSCSI software,
+then this is the recommended method of installation and configuration.
+It is possible to automate a portion of this installation and
+configuration with Red Hat's Kickstart, or configuration management
+engines such as Puppet. However, that is beyond the scope of this
+document.</p>
+
+<p>The methods outlined in this guide apply directly to Red Hat Enterprise
+Linux, {text:change} {text:change-start} though {text:change-end}
+a major portion of the configuration items are generic and could
+be applied to other Linux distributions. The author of this HOWTO
+assumes these steps will, for the most part, remain constant
+for subsequent versions of Red Hat Enterprise Linux.</p>
+
+<h2>1. Package Installation</h2>
+
+<p>After performing a base install of Red Hat Enterprise v5, make
+sure to upgrade the system to the latest patch-level.</p>
+
+<blockquote><p>Change this line in <em>/etc/yum.conf</em> as illustrated below.</p></blockquote>
+
+<p>exclude=kernel*</p>
+
+<blockquote><p>Comment out the exclude options, so the kernel may be upgraded.</p></blockquote>
+
+<p>exclude=#kernel*</p>
+
+<blockquote><p>Run the following to upgrade to the latest patch-level.</p></blockquote>
+
+<p>yum -y upgrade</p>
+
+<blockquote><p>Run the following to install needed software.</p></blockquote>
+
+<p>{text:change-start} yum -y install iscsi-initiator-utils
+device-mapper-multipath {text:change-end}</p>
+
+<p>Dell Equallogic (2009) recommends using RHEL 5.4 (version 5
+update 4) or newer for best performance and interoperability
+with PS Series storage arrays. Ensure the following requirements
+are met before proceeding.</p>
+
+<blockquote><p>Run the following to check for minimum package versions.</p></blockquote>
+
+<p>rpm -qa iscsi-initiator-utils device-mapper-multipath</p>
+
+<p>device-mapper-multipath-<version>-<patch-level>.el5</p>
+
+<p>iscsi-initiator-utils-<version>-<patch-level>.el5</p>
+
+<blockquote></blockquote>
+
+<ul>
+<li><p>Minimum package version for PS Series arrays</p></li>
+<li><p>Minimum package version for GbE NICs</p></li>
+<li><p>With SELinux enabled, you may not be able to login to iSCSI targets.
+You may have to create a policy for iSCSI traffic, or disable
+{text:change} {text:change-start} SELinux {text:change-end}
+.</p></li>
+</ul>
+
+
+<p>After updating the kernel, you will need to reboot the system,
+before proceeding. This would be a good time to pick an appropriate
+I/O scheduler. Available I/O schedulers, and the kernel option
+to select them, are as follows.</p>
+
+<ul>
+<li><p>Completely Fair Queueing – elevator=cfq</p></li>
+<li><p>Deadline – {text:change-start} <strong>elevator=deadline</strong>
+{text:change-end}</p></li>
+<li><p>NOOP – {text:change-start} <strong>elevator=noop</strong> {text:change-end}</p></li>
+<li><p>Anticipatory – elevator=as</p></li>
+</ul>
+
+
+<p>According to a citation in Dell Equallogic (2009), the Open-iSCSI
+group reports that sometimes the NOOP scheduler works best for
+iSCSI server environments. However, if this server will be used
+as an Oracle database or application server, it is standard best
+practice to use the Deadline scheduler for optimal performance.</p>
+
+<blockquote><p>Run the following command to enable the NOOP scheduler, before
+rebooting.</p></blockquote>
+
+<p>sed -e 's!/vmlinuz.*!&amp; elevator=noop!g' -i /boot/grub/menu.lst</p>
+
+<blockquote><p>If you are provisioning an Oracle server, then run the following
+to select Deadline.</p></blockquote>
+
+<p>sed -e 's!/vmlinuz.*!&amp; elevator=deadline!g' -i /boot/grub/menu.lst</p>
+
+<p>Finally, reboot the server after upgrading the system and kernel.
+Do this before proceeding with the configuration steps that
+follow {text:change} {text:change} so the proper I/O scheduler
+will be active and the newer kernel will be available. You may
+also want to go back and uncomment the <em>exclude=#kernel*</em> line
+in <em>/etc/yum.conf</em>, at your own discretion.</p>
+
+<p>IV. Configuring Open-iSCSI</p>
+
+<h3>1. Configuring the NIC cards for iSCSI use</h3>
+
+<p>In the following example, it is assumed you will be using the third
+(eth2) and fourth (eth3) Network Interface Cards in the system
+for iSCSI traffic. If this is not the case, then adjust the configuration
+for different NICs as necessary.</p>
+
+<p>Add the following bold lines to each of the <em>ifcfg-ethX</em> scripts
+for each iSCSI NIC. Ensure that <em>IPADDR</em>, and <em>NETMASK</em> are correctly
+set for your iSCSI subnet. Make sure <em>ONBOOT</em> is set to <em>yes</em>.
+This is set so that each interface will be automatically initialized
+when the system is booted. The <em>MTU</em> variable should be set to
+<em>9000</em>, for each iSCSI NIC, this MTU setting will enable jumbo
+frames.</p>
+
+<p><em>/etc/sysconfig/</em> {text:change} {text:change-start} <em>network-scripts</em>
+{text:change-end} <em>/ifcfg-eth2</em></p>
+
+<h1>Broadcom Corporation NetXtreme II BCM5709 Gigabit Ethernet</h1>
+
+<p>DEVICE=eth2</p>
+
+<p>HWADDR=00:11:22:33:44:aa</p>
+
+<p>ONBOOT=yes</p>
+
+<p>BOOTPROTO=none</p>
+
+<p>NETMASK=255.255.255.0</p>
+
+<p>IPADDR=10.1.2.3</p>
+
+<p>TYPE=Ethernet</p>
+
+<p>MTU=9000</p>
+
+<p><em>/etc/sysconfig/network</em> {text:change} {text:change-start}
+<em>-scripts</em> {text:change-end} <em>/ifcfg-eth3</em></p>
+
+<h1>Broadcom Corporation NetXtreme II BCM5709 Gigabit Ethernet</h1>
+
+<p>DEVICE=eth3</p>
+
+<p>HWADDR=00:11:22:33:44:bb</p>
+
+<p>ONBOOT=yes</p>
+
+<p>BOOTPROTO=none</p>
+
+<p>NETMASK=255.255.255.0</p>
+
+<p>IPADDR=10.1.2.4</p>
+
+<p>TYPE=Ethernet</p>
+
+<p>MTU=9000</p>
+
+<p>Dell EqualLogic (2009) recommends enabling Flow Control, and
+disabling Auto Negotiation on each iSCSI NIC. For these settings
+to be automatically applied upon each boot, add the following
+code, in boldface, to the <em>/etc/rc.local</em> file.</p>
+
+<p>/etc/rc.local</p>
+
+<h1>iSCSI Interface Settings for Equallogic</h1>
+
+<p>ISCSI_IF="eth2 eth3"</p>
+
+<p>ETHTOOL_OPTS="autoneg off rx on tx on"</p>
+
+<p>ETHTOOL=<code>which ethtool</code></p>
+
+<p>for i in $ISCSI_IF;</p>
+
+<p>do</p>
+
+<p>echo "$ETHTOOL -A $i $ETHTOOL_OPTS"</p>
+
+<p>$ETHTOOL -A $ISCSI_IF $ETHTOOL_OPTS</p>
+
+<p>done</p>
+
+<p>1.1. Configuring Open-iSCSI initiator utilities</p>
+
+<p>You need to tune a few lines in the <em>/etc/iscsi/iscid.conf</em> file,
+per vendor recommendations. You can grep out blank and comment
+lines in this file for quick inspection. The lines we are most
+concerned {text:change-start} about {text:change-end} will
+appear in bold. Values set per specific vendor recommendations
+are highlighted in red.</p>
+
+<h4>1.1.1. Notes about iscsid.conf configuration</h4>
+
+<p>As I understand it, the configuration item, <em>node.session.timeo.replacement_timeout</em>
+is for specifying the length of time, in seconds, {text:change-start}
+after {text:change-end} which the iSCSI layer will fail back
+to the Device Mapper Multipath application layer. By default,
+this is 120 seconds, or 2 minutes. According to Red Hat (2008),
+it is preferable to pass the path failure quickly from the SCSI
+layer to your Multipath software, which would be necessary for
+quick fail-over. With the default configuration, two minutes
+of I/O would be queued before failing the path. If you are familiar
+with Fiber Channel path fail-over, it tends to be instantaneous.
+Most people configuring iSCSI fail-over certainly don't want
+a failed path to be retried for two whole minutes. Using the default
+configuration with a production database server could lead
+to massive amounts of I/O being queued {text:change} {text:change-start}
+i {text:change-end} nstead of the expected behavior of failing
+over to another working path quickly. Changing this value to
+15 {text:change} {text:change} will {text:change-start}
+allow the path to failover {text:change-end} {text:change}
+much {text:change} {text:change-start} more quickly {text:change-end}
+.</p>
+
+<p>According to Dell (2010), if the Broadcom bnx2i interface fails
+to login to an Equallogic iSCSI storage volume, the <em>node.session.initial_login_retry_max</em>
+should be changed from the default value of <em>8</em> to <em>12</em> {text:change-end}
+{text:change} {text:change-start} .</p>
+
+<p>According to Dell Equallogic (2009) the options <em>node.session.cmds_max</em>,
+and <em>node.session.queue_depth</em> should be changed for Equallogic
+arrays. The recommendation for <em>node.session.cmds_max</em> is
+to change the value from <em>128</em> {text:change-end} {text:change}
+{text:change-start} _ to <strong>1024</strong>. <em>The recommendation for
+</em>node.session.queue_depth<em> is to change the value from </em>32<em>
+{text:change-end} {text:change} {text:change} {text:change-start}
+to </em>128_.</p>
+
+<p>Finally, according to the in-line comments in the default iscsid.conf,
+and Dell (2010) Equallogic arrays should have <em>node.session.isci.FastAbort</em>
+set to <em>No</em>. If using software such as iSCSI Enterprise Target
+(IET), instead of an Equallogic Array, leave the <em>FastAbort</em>
+value set to the default, which is <em>Yes</em>. {text:change-end}</p>
+
+<p>1.1.2. iscsid.conf {text:change}</p>
+
+<p>egrep -v “<sup>(#|$)”</sup> /etc/iscsi/iscid.conf</p>
+
+<p>node.startup = automatic</p>
+
+<p><strong>node.session.timeo.replacement_timeout = </strong><strong>15</strong>**</p>
+
+<h1>default 120; RedHat recommended**</h1>
+
+<p>node.conn[0].timeo.login_timeout = 15</p>
+
+<p>node.conn[0].timeo.logout_timeout = 15</p>
+
+<p>node.conn[0].timeo.noop_out_interval = 5</p>
+
+<p>node.conn[0].timeo.noop_out_timeout = 5</p>
+
+<p>node.session.err_timeo.abort_timeout = 15</p>
+
+<p>node.session.err_timeo.lu_reset_timeout = 20</p>
+
+<p><strong>node.session.initial_login_retry_max = </strong><strong>12</strong><strong> # default
+8; Dell recommended</strong></p>
+
+<p><strong>node.session.cmds_max = </strong><strong>1024</strong><strong> # default 128; Equallogic
+recommended</strong></p>
+
+<p><strong>node.session.queue_depth = </strong><strong>128</strong><strong> # default 32; Equallogic
+recommended</strong></p>
+
+<p>node.session.iscsi.InitialR2T = No</p>
+
+<p>node.session.iscsi.ImmediateData = Yes</p>
+
+<p>node.session.iscsi.FirstBurstLength = 262144</p>
+
+<p>node.session.iscsi.MaxBurstLength = 16776192</p>
+
+<p>node.conn[0].iscsi.MaxRecvDataSegmentLength = 262144</p>
+
+<p>discovery.sendtargets.iscsi.MaxRecvDataSegmentLength
+= 32768</p>
+
+<p>node.conn[0].iscsi.HeaderDigest = None</p>
+
+<p><strong>node.session.iscsi.FastAbort = </strong><strong>No</strong><strong> # default Yes;
+Dell / Open-iSCSI recommended</strong></p>
+
+<h1>IV. Targeting and Logging in with iscsiadm</h1>
+
+<h2>1. Create iSCSI interfaces</h2>
+
+<p>The iSCSI interfaces are separate pseudo-devices used by Open-iSCSI.
+From Open-iSCSI's point-of-view, these are not the same as physical
+Ethernet devices. What you'll need to do is bind {text:change-start}
+each of {text:change-end} your ethX devices to an iSCSI interface.
+Technically speaking, you could call your iSCSI interfaces
+{text:change} {text:change} eth2 and eth3, and bind them to
+the corresponding physical devices in the /dev folder. To avoid
+any confusion about physical NICs and iSCSI interfaces, it {text:change-start}
+’ {text:change-end} s {text:change} recommended to give the
+interfaces different names like iface0 and iface1.</p>
+
+<p>{text:change} {text:change-start} You can {text:change-end}
+create your iSCSI interfaces with the following commands.</p>
+
+<p>iscsiadm -m iface -I iface0 -o new</p>
+
+<p>iscsiadm -m iface -I iface1 -o new</p>
+
+<p>Second, let {text:change-start} ’ {text:change-end} s {text:change}
+take a look at the iSCSI interface properties for one of our new
+interfaces. This will come in handy to view the currently active
+configuration {text:change} {text:change} in cases where
+you need to troubleshoot {text:change} .</p>
+
+<p>{text:change-start} {text:change-end} {text:change-start}
+This is how you can look at the iSCSI interface properties for
+one of the new interfaces. {text:change-end} {text:change-start}
+Being able to view the currently active configuration can come
+in handy in cases where you need to troubleshoot. {text:change-end}
+{text:change-start} {text:change-end}</p>
+
+<p>iscsiadm -m iface -I iface0</p>
+
+<p>{text:soft-page-break} # BEGIN RECORD 2.0-871</p>
+
+<p>iface.iscsi_ifacename = iface0</p>
+
+<p>iface.net_ifacename = <empty></p>
+
+<p>iface.ipaddress = <empty></p>
+
+<p>iface.hwaddress = <empty></p>
+
+<p>iface.transport_name = tcp</p>
+
+<p>iface.initiatorname = <empty></p>
+
+<h1>END RECORD</h1>
+
+<h2>2. Bind iSCSI interfaces</h2>
+
+<p>Now that we have iSCSI interfaces, we need to bind them to a physical
+Ethernet device. You can use either a device name {text:change}
+{text:change} or MAC address. Open-iSCSI won't even let you
+bind the interfaces with both {text:change} a device name {text:change}
+{text:change} and MAC address.</p>
+
+<p>Binding by physical device name</p>
+
+<p>iscsiadm -m iface {text:change-start} -o update {text:change-end}
+-I iface0 -n iface.net_ifacename -v eth2</p>
+
+<p>iscsiadm -m iface {text:change-start} -o update {text:change-end}
+-I iface1 -n iface.net_ifacename -v eth3</p>
+
+<p>Binding by MAC address</p>
+
+<p>iscsiadm -m iface {text:change-start} -o update {text:change-end}
+-I iface0 -n iface.hwaddress -v 00:aa:bb:cc:dd:ee</p>
+
+<p>iscsiadm -m iface {text:change-start} -o update {text:change-end}
+-I iface1 -n iface.hwaddress -v 00:aa:bb:cc:dd:ff</p>
+
+<p>An important note about alternate transport drivers for iSCSI
+offload: By default, your new iSCSI interfaces will use TCP as
+the iSCSI transport. There are other offload transport drivers
+available to use, such as <strong>bnx2i</strong>, <strong>iser</strong>, and <strong>cxgb3i</strong>.
+According to the iscsiadm manual page and personal conversation
+with a Dell storage engineer, these are experimental drivers
+which are not supported or considered stable.</p>
+
+<h3>2.1. Updating iSCSI interfaces</h3>
+
+<p>If you bind an interface by MAC address, and have a hardware replacement
+which changes the MAC address. Then the iSCSI interface bindings
+will need {text:change-start} to be {text:change-end} updated
+{text:change} {text:change} to reflect such system changes.
+You can do this with {text:change} {text:change-start} an {text:change-end}
+update command {text:change} {text:change} {text:change-start}
+: {text:change-end}</p>
+
+<p>iscsiadm -m iface -o update -I iface0 -n iface.hwaddress -v 00:aa:bb:cc:dd:11</p>
+
+<p>iscsiadm -m iface -o update -I iface1 -n iface.hwaddress -v 00:aa:bb:cc:dd:33</p>
+
+<h2>3. Connecting to the iSCSI array</h2>
+
+<p>The file <em>/etc/iscsi/initiatorname.iscsi</em> should contain
+an initiator name for your iSCSI client host. You need to include
+this initiator name on your iSCSI array's configuration for
+this specific iSCSI client host.</p>
+
+<p>If you haven't yet started the iSCSI daemon, run the following
+command before we commence with discovering targets.</p>
+
+<p>{text:soft-page-break}</p>
+
+<p>service iscsid start</p>
+
+<h3>3.1 Discovering targets</h3>
+
+<p>Once the iscsid service is running {text:change} {text:change}
+and the client's initiator name is configured on the iSCSI array
+{text:change} {text:change} {text:change-start} , {text:change-end}
+then you may proceed with the following command to discover available
+targets. Assuming our iSCSI array had an IP address of 10.1.2.10,
+the following command would return the available targets.</p>
+
+<p>iscsiadm -m discovery -t st -p 10.1.2.10:3260</p>
+
+<p>10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0</p>
+
+<p>10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0</p>
+
+<h3>3.2. Login to target</h3>
+
+<p>We're finally ready to login to our target {text:change} {text:change}
+{text:change-start} . {text:change-end} {text:change} {text:change-start}
+T {text:change-end} o log in to all targets, use the following
+command. This should return successful {text:change} {text:change}
+if everything is working correctly.</p>
+
+<p>iscsiadm -m node -l</p>
+
+<p>Individual targets can be logged into {text:change} {text:change}
+by specifying a whole target name.</p>
+
+<p><strong>iscsiadm -m node -T </strong><strong><em>iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
+-l -p 10.1.2.10:3260</em></strong></p>
+
+<h3>3.3. Logoff a target</h3>
+
+<p>Logging off is basically the same as logging into a target, except
+you use <em>-u</em> {text:change} {text:change} instead of <em>-l.</em></p>
+
+<p>iscsiadm -m node -u</p>
+
+<h3></h3>
+
+<p>3.4. Session status</p>
+
+<p>The session command can be used to print the basic status {text:change}
+{text:change} or more verbose output for debugging and troubleshooting.</p>
+
+<p>Basic command {text:change} {text:change-start} : {text:change-end}</p>
+
+<p>iscsiadm -m session</p>
+
+<p>tcp: [10] 10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0</p>
+
+<p>tcp: [9] 10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0</p>
+
+<p>Troubleshooting information with -P (print) flag {text:change}
+{text:change} and verbosity level 0-3 {text:change} {text:change-start}
+: {text:change-end}</p>
+
+<p>iscsiadm -m session -P3</p>
+
+<p>iSCSI Transport Class version 2.0-871</p>
+
+<p>version 2.0-871</p>
+
+<p>Target: iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0</p>
+
+<p>Current Portal: 10.1.2.25:3260,1</p>
+
+<p>Persistent Portal: 10.1.2.10:3260,1</p>
+
+<hr />
+
+<p>Interface:</p>
+
+<hr />
+
+<p>Iface Name: iface0</p>
+
+<p>Iface Transport: tcp</p>
+
+<p>Iface Initiatorname: iqn.1994-05.com.redhat:13c39f80866f</p>
+
+<p>Iface IPaddress: 10.1.2.3</p>
+
+<p>Iface HWaddress: <empty></p>
+
+<p>Iface Netdev: eth2</p>
+
+<p>SID: 10</p>
+
+<p>iSCSI Connection State: LOGGED IN</p>
+
+<p>iSCSI Session State: LOGGED_IN</p>
+
+<p>Internal iscsid Session State: NO CHANGE</p>
+
+<hr />
+
+<p>Negotiated iSCSI params:</p>
+
+<hr />
+
+<p>HeaderDigest: None</p>
+
+<p>DataDigest: None</p>
+
+<p>MaxRecvDataSegmentLength: 262144</p>
+
+<p>MaxXmitDataSegmentLength: 65536</p>
+
+<p>FirstBurstLength: 65536</p>
+
+<p>MaxBurstLength: 262144</p>
+
+<p>ImmediateData: Yes</p>
+
+<p>InitialR2T: No</p>
+
+<p>MaxOutstandingR2T: 1</p>
+
+<hr />
+
+<p>Attached SCSI devices:</p>
+
+<hr />
+
+<p>Host Number: 27 State: running</p>
+
+<p>scsi27 Channel 00 Id 0 Lun: 0</p>
+
+<p>Attached scsi disk sdc State: running</p>
+
+<p>V. Configuring Device Mapper Multipath</p>
+
+<h2>1. Notes about the Device Mapper Multipath example</h2>
+
+<p>The final major step is to configure Device Mapper Multipath
+{text:change} {text:change} using the configuration file
+<em>/etc/multipath.conf</em>. By default there will be a <em>devnode
+“*”</em> line in the <em>blacklist</em> section, thereby disabling Multipath
+for all devices in the system. If you want to assign persistently
+bound names to iSCSI devices, {text:change} be sure to set <em>user_friendly_names</em>
+to yes, as seen in the example on the following page. If you do not
+use friendly names with Device Mapper, you'll end up with device
+names such as <em>/dev/mapper/__36090afffffffffffffffffffffffffff</em>.
+When using friendly names, you'll need to specify an <em>alias</em>
+line in the <em>multipaths</em> section after Open-iSCSI is configured
+and working correctly with your iSCSI target {text:change}
+{text:change} or array.</p>
+
+<p>You will want to blacklist any local devices that do not have multiple
+paths to be managed {text:change} {text:change} in the <em>blacklist</em>
+section. It is recommended to blacklist the local SCSI disks
+by World Wide Identifier (WWID). The WWID is a unique identifier
+for any block device {text:change} {text:change} and may be
+retrieved with the command <em>scsi_id -g -u -s /block/sdX</em>, where
+X is the letter identifier of the local SCSI disk. It cannot hurt
+to also blacklist local devices by physical device name with
+a <em>devnode</em> line and a Perl-compatible regular expression string.
+The reason for blacklisting a second time with a regular expression
+is in case the <em>scsi_id</em> program fails to read the WWID from sector
+zero of a local device. See the blacklist section in the configuration
+example. The WWID line {text:change} {text:change} and _devnode
+“<sup>sd[a]$”_</sup> line both serve as a blacklist for device sda.</p>
+
+<p>Once you have discovered targets {text:change} {text:change}
+and logged in to the iSCSI array, you can use the '<em>iscsiadm -m
+session -P3'</em> command to find the physical device names of your
+iSCSI volumes. Then you can use {text:change} {text:change}
+the '<em>scsi_id -g -u -s /block/sdX'</em> command to find the WWID of
+your iSCSI volumes. Once you have the WWIDs of your iSCSI volumes,
+you can configure friendly name aliases in the <em>multipaths</em>
+section, as seen {text:change-start} in the example {text:change-end}
+on the next page {text:change} .</p>
+
+<p>The device section in the configuration example is pertinent
+to an Equallogic PS Series array. The lines in boldface type are
+of particular importance, and are the recommended defaults
+for Equallogic devices. You can override the parameters on a
+per-volume basis in the <em>multipaths</em> section.</p>
+
+<p>{text:change-start} For best performance, {text:change-end}
+{text:change} {text:change-start} t {text:change-end} he
+value for <em>rr_min_io</em> should {text:change} {text:change-start}
+be {text:change-end} in the range of {text:change-start} <em>10-20</em>
+{text:change-end} for database environments. {text:change-start}
+For {text:change-end} {text:change} {text:change-start}
+m {text:change-end} ore sequential loads {text:change-start}
+, {text:change-end} which may be seen on file servers, {text:change}
+{text:change-start} performance might be better if {text:change-end}
+<em>rr_min_io</em> {text:change} is set in the range {text:change-start}
+<em>100-512</em> {text:change-end} . Any <em>rr_min_io</em> value over {text:change-start}
+<em>200</em> {text:change-end} will require max commands and queue
+depths parameters in <em>iscsid.conf</em> to be increased.</p>
+
+<p>1.1. multipath.conf</p>
+
+<p>defaults {</p>
+
+<p>user_friendly_names yes</p>
+
+<p>}</p>
+
+<p>blacklist {</p>
+
+<p>wwid 360924fffffffffffffffffffffffffff</p>
+
+<p>devnode "<sup>sd[a]$"</sup></p>
+
+<p>devnode "<sup>(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]*"</sup></p>
+
+<p>devnode "<sup>hd[a-z][[0-9]*]"</sup></p>
+
+<p>devnode "<sup>cciss!c[0-9]d[0-9]<em>[p[0-9]</em>]"</sup></p>
+
+<p>}</p>
+
+<p>devices {</p>
+
+<p>device {</p>
+
+<p><strong>vendor "EQLOGIC"</strong></p>
+
+<p><strong>product "100E-00"</strong></p>
+
+<p>path_grouping_policy multibus</p>
+
+<p>getuid_callout "/sbin/scsi_id -g -u -s /block/%n" {text:change}</p>
+
+<p>{text:change-start} <strong>no_path_retry </strong> {text:change-end}
+{text:change} {text:change} {text:change-start} {text:change-start}
+<strong>queue</strong> {text:change-end} {text:change-end}</p>
+
+<p>path_checker readsector0</p>
+
+<p>failback immediate</p>
+
+<p>path_selector "round-robin 0"</p>
+
+<p><strong>rr_min_io 10</strong></p>
+
+<p>rr_weight priorities</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>multipaths {</p>
+
+<p>multipath {</p>
+
+<p>wwid 36090afffffffffffffffffffffffffff</p>
+
+<p>alias u02</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<h2>1.2. Start and test Device Mapper Multipath</h2>
+
+<p>Device Mapper Multipath can be started with the following command
+{text:change} {text:change} once it has been configured.</p>
+
+<p>service multipathd start</p>
+
+<p>You can list the Multipath topology with the following command
+to verify everything is working correctly.</p>
+
+<p>multipath -ll -v2</p>
+
+<p>u02 (36090a04850ec0870d0ba04020000d023) dm-0 EQLOGIC,100E-00</p>
+
+<p>[size=100G][features=0][hwhandler=0][rw]</p>
+
+<p>_ round-robin 0 [prio=2][active]</p>
+
+<p>_ 10:0:0:0 sdb 8:16 [active][ready]</p>
+
+<p>_ 11:0:0:0 sdc 8:32 [active][ready]</p>
+
+<h2>{text:soft-page-break} 1.3. Reload udev to test friendly alias names</h2>
+
+<p>Once Multipath has been verified to be working correctly, {text:change}
+you may need to run the following <em>udev</em> command to create {text:change-start}
+devices with {text:change-end} friendly name {text:change-start}
+s {text:change-end} {text:change} . This only applies if you
+have chosen to use persistent Multipath binding by defining
+<em>alias</em> lines in the <em>multipaths</em> section of <em>multipath.conf</em>.
+Reloading udev {text:change} {text:change} will automagically
+{text:change} create your aliased devices in the <em>/dev/mapper</em>
+folder.</p>
+
+<p>Reload udev command {text:change} {text:change} {text:change-start}
+: {text:change-end}</p>
+
+<p>udevcontrol reload_rules</p>
+
+<p>You may proceed to <em>fdisk</em> {text:change} {text:change} and
+format the aliased device, just as you would any other SCSI disk
+device appearing in the /dev directory.</p>
+
+<h1>VI. Final steps</h1>
+
+<h2>1. Set services to start automatically.</h2>
+
+<p>Once you have everything up and running, with regards to Open-iSCSI
+and Device Mapper Multipath, {text:change} run the following
+commands to ensure services get started automatically during
+server boot {text:change-start} {text:change-end} up {text:change}
+.</p>
+
+<p>Set the iscsid daemon to start automatically {text:change}
+{text:change} {text:change-start} : {text:change-end}</p>
+
+<p>chkconfig iscsid on</p>
+
+<p>Set the iscsi service to log in to targets automatically {text:change}
+{text:change} {text:change-start} : {text:change-end}</p>
+
+<p>chkconfig iscsi on</p>
+
+<p>Set the multipathd daemon to start automatically {text:change}
+{text:change} {text:change-start} : {text:change-end}</p>
+
+<p>chkconfig multipathd on</p>
+
+<p>Edit <em>/etc/fstab</em>, and add a line with the <strong>netdev_ keyword
+for all your volumes to be mounted. Using the </strong>netdev_ keyword
+ensures this device will not be mounted before the networking
+subsystem has started. {text:change-start}</p>
+
+<p>We've observe {text:change-end} {text:change-start} d Open-iSCSI
+failing both paths temporarily while updating firmware on the
+group node. {text:change-end} {text:change-start} This could
+result in a machine remounting a filesystem in read-only mode
+upon error unless an '<em>errors=continue</em>' option is added to
+/etc/fstab. {text:change-end}</p>
+
+<p>LABEL=/ {text:change} / {text:change} ext3 defaults 1 1</p>
+
+<p>LABEL=/u01 {text:change} /u01 {text:change} ext3 defaults
+1 2</p>
+
+<p>/dev/mapper/u02p1 {text:change} /u02 {text:change} {text:change}
+ext3 _netdev,defaults {text:change-start} ,errors=continue
+{text:change-end} 0 0</p>
+
+<p>tmpfs {text:change} /dev/shm {text:change} tmpfs defaults
+0 0</p>
+
+<p>devpts {text:change} /dev/pts {text:change} devpts gid=5,mode=620
+0 0</p>
+
+<p>sysfs {text:change} /sys {text:change} sysfs defaults 0 0</p>
+
+<p>proc {text:change} /proc {text:change} {text:change} proc
+defaults 0 0</p>
+
+<p>LABEL=SWAP-sda5 {text:change} swap {text:change} swap defaults
+0 0</p>
+
+<h2>2. Final testing</h2>
+
+<h3>2.1. Reboot</h3>
+
+<p>Reboot your server, and make sure everything comes up. The iscsi
+initialization script should log the server in to the iSCSI targets.
+Multipath should be started, and {text:change-start} it should
+{text:change-end} see both of its paths to the iSCSI array. If
+everything is working correctly, the <em>fstab</em> entry should automatically
+mount any iSCSI volumes.</p>
+
+<h3>2.2. Test your Multipath software</h3>
+
+<p>The easiest way to test your Multipath software is to take down
+one of the Ethernet devices manually. {text:change-start}
+To do this, {text:change-end} {text:change} {text:change-start}
+r {text:change-end} un the following command.</p>
+
+<p>ifdown eth3</p>
+
+<p>After about 15 seconds you should see something like this in the
+messages log.</p>
+
+<p>kernel: device-mapper: multipath: Failing path X:XX</p>
+
+<p>multipathd: <alias>: remaining active paths: 1</p>
+
+<p>Then, bring the device back up manually {text:change} {text:change}
+{text:change-start} : {text:change-end}</p>
+
+<p>ifup eth3</p>
+
+<p>Again, after about 15 seconds you should see something like this
+in the messages log.</p>
+
+<p>multipathd: X:XX: reinstated</p>
+
+<p>multipathd: <alias>: remaining active paths: 2</p>
+
+<p>Repeat this test for every other NIC being used for iSCSI {text:change}
+{text:change} and make sure every iSCSI Network Interface fails-over
+from faulty paths, and reinstate {text:change} all active iSCSI
+paths {text:change} {text:change} gracefully.</p>
+
+<p>References and recommended reading</p>
+
+<p>Aizman, Alex, and Dmitry Yusupov. 2007. Open-iSCSI – RFC3720
+architecture and implementation. <em>Open-iSCSI project</em>. <a href="http://www.open-iscsi.org/index.html#docs">http://www.open-iscsi.org/index.html#docs</a>.</p>
+
+<blockquote><p>Anon. Device-mapper Resource Page. <em>Device-Mapper-Multipath
+Project</em>. <a href="http://sources.redhat.com/dm/">http://sources.redhat.com/dm/</a>.</p>
+
+<p>Dell EqualLogic, Inc. 2008. <em>PS Series Array Network Performance
+Guidelines</em>. 3rd ed. Nashua, NH: Dell, Inc, June. <a href="http://www.equallogic.com/uploadedfiles/Resources/Tech_Reports/tr-network-guidelines-TR1017.pdf">http://www.equallogic.com/uploadedfiles/Resources/Tech_Reports/tr-network-guidelines-TR1017.pdf</a>.</p>
+
+<p>———. 2009. <em>Red Hat Linux v5.x Software iSCSI Initiator Configuration,
+MPIO and tuning Guide</em>. Nashua, NH: Dell, Inc, December. <a href="http://www.equallogic.com/resourcecenter/assetview.aspx?id=8727">http://www.equallogic.com/resourcecenter/assetview.aspx?id=8727</a>.</p>
+
+<p>Red Hat, Inc. 2007. How do I configure the iscsi-initiator in
+Red Hat Enterprise Linux 5? <em>Red Hat Knowledgebase</em>. June 25.
+<a href="http://access.redhat.com/kb/docs/DOC-6388">https://access.redhat.com/kb/docs/DOC-6388</a>.</p>
+
+<p>———. 2008. How can I improve the failover time of a faulty path
+when using device-mapper-multipath over iSCSI? <em>Red Hat Knowledgebase</em>.
+October 1. <a href="https://access.redhat.com/kb/docs/DOC-2877">https://access.redhat.com/kb/docs/DOC-2877</a>.</p>
+
+<p>———. 2010a. <em>DM Multipath</em>. <a href="http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/DM_Multipath/index.html">http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/DM_Multipath/index.html</a>.</p>
+
+<p>———. 2010b. Kickstart Installations. In <em>Installing Red Hat
+Enterprise Linux 5 for all architectures</em>, Chap. 31. Research
+Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/Installation_Guide/index.html">http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/Installation_Guide/index.html</a>.</p></blockquote>
+]]></content>
+  </entry>
+  
+</feed>

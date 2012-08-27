@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: PXE | atomic-penguin's personal webpage.]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/pxe/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-08-27T16:08:56-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I learned to stop worrying, and love PXE booting]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting/"/>
+    <updated>2009-09-26T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting</id>
+    <content type="html"><![CDATA[<p>These are my presentation slides for the 2009 Ohio Linuxfest.  I gave a talk on the topic of network and multi-booting with Syslinux and configuring systems with Kickstart.</p>
+
+<ul>
+<li><a href="http://syslinux.zytor.com">Syslinux</a> website.</li>
+<li>How I learned to stop worrying, and love PXE booting <a href="/papers/olf-2009-pxe-booting">slides</a>.</li>
+<li>Presentation <a href="http://ia700404.us.archive.org/15/items/OhioLinuxfest2009/43-Eric_Wolfe-How_I_Learned_to_Stop_Worrying_and_Love_PXE_Booting_vbr.mp3">audio</a> on Archive.org</li>
+<li>Linux server installed with Oracle pre-requisites, in 15 minutes or less, on <a href="http://www.youtube.com/watch?v=h_oHe-WDE9U">Youtube</a>.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
