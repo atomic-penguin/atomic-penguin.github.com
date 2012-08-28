@@ -45,7 +45,7 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [asides/recent_posts.html, asides/github.html, asides/twitter.html, asides/googleplus.html, custom/asides/linkedin.html, custom/asides/about.html]
+default_asides: [asides/recent_posts.html, asides/github.html, asides/twitter.html, asides/googleplus.html, custom/asides/linkedin.html, custom/asides/steam.html, custom/asides/about.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -84,6 +84,9 @@ googleplus_hidden: false
 linkedin_user: ericgwolfe
 linkedin_display_name: Eric G. Wolfe
 linkedin_resume_url: http://resume.linkedinlabs.com/o1x0n1fiy
+
+# Steam user information
+steam_user: atomic-penguin
 
 # Pinboard
 pinboard_user:
