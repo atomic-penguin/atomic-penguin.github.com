@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: PXE | atomic-penguin's personal webpage.]]></title>
+  <title><![CDATA[Category: PXE | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/pxe/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2012-09-09T02:20:14-04:00</updated>
+  <updated>2012-09-09T02:35:49-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
