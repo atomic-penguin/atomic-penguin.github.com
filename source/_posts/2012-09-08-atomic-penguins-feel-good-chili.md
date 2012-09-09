@@ -9,7 +9,7 @@ categories:
 - Chili
 ---
 
-When I am not writing Opschef cookbooks, I do enjoy cooking in my spare time.  I have been down and out with a bit of a cold for the last week, or so.  With it getting colder outside and with me feeling a bit better today, I decided to make a big pot of chili.
+When I am not writing Opschef cookbooks, I do enjoy real cooking in my spare time.  I have been down and out with a bit of a cold for the last week.  With it getting colder outside and with me feeling a bit better today, I decided to make a big pot of chili.
 
 There is just something about having a big pot stewing and making your house smell homey, like a big pot of soup, which can make you feel better.  Capsaicin, the magical stuff which make peppers hot, is thought to break up congestion, to help clear up your sinuses, and helps with the management of pain.  So some spicy Chili certainly can't hurt, especially given the cold I have suffered through this week.
 
