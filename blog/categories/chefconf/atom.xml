@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: chefconf | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/chefconf/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-09-09T02:35:49-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
+    <updated>2012-06-12T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
+    <content type="html"><![CDATA[<p>I had such a blast at the inaugural Chefconf in San Francisco, CA.  This was my first time visiting the area, I had a chance to visit the <a href="https://plus.google.com/112791157300091682319/posts/2Dr6BMnBqHH">Alcatraz</a> prison.  I also drank a lot of <a href="http://www.anchorbrewing.com/beer/anchor_steam">Anchor Steam</a>, while pair programming with <a href="http://twitter.com/#!fnichol">Fletcher Nichol</a> to make the NTP cookbook a reference cookbook for testing Chef recipes.</p>
+
+<p>During my second appearance on the Food Fight show, we covered what we hacked on throughout Chefconf with regard to Travis CI automated testing.  We also talked a bit about what we are doing internally with Jenkins to test our cookbook code.  Here is the link to the podcast <a href="http://traffic.libsyn.com/foodfight/FoodFightShowEpisode17.mp3">audio</a> and also the show <a href="http://foodfightshow.org/2012/06/episode-17-testing-with-eric-g-wolfe.html">notes</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

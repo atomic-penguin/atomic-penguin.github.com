@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: case study | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/case-study/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-09-09T02:35:49-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Marshall University case study]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study/"/>
+    <updated>2011-09-06T00:00:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study</id>
+    <content type="html"><![CDATA[<p>Our System Administration team colloborated with <a href="http://www.ospcode.com/">Opscode</a> to put together a Case Study detailing our use of their System automation framework, Opscode Chef.</p>
+
+<p>Case Study: Opscode + Marshall University <a href="http://www.opscode.com/customers/marshall/">web</a> <a href="http://www.opscode.com/case-studies/opscode-case-study-marshall.pdf">pdf</a></p>
+]]></content>
+  </entry>
+  
+</feed>
