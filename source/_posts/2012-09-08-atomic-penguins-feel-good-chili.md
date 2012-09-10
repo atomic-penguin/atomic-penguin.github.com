@@ -102,7 +102,7 @@ Time to throw in that magical spice mix to turn this stew into Chili proper.  Th
 
 ![Add spices](/images/20120908/12addthespices.jpg "Add spices and stir")
 
-Finally, pour in two bottles or cans of Guinness (or other dark Stout beer).  If desired, add kidney beans, but avoid if in **Texas**.  Turn up to medium heat, stir, and cover.  Turn heat down to low, and let simmer once all that liquid is heated through.  Stir occassionally and let it simmer for an hour, or two.
+Finally, pour in two bottles or cans of Guinness (or other dark Stout beer).  If desired, add kidney beans, but avoid if in *Texas*.  Turn up to medium heat, add the tomato paste to thicken the chili, stir to mix the paste, and cover the pot to let it heat through.  Turn heat down to low, and let simmer once all that liquid is heated through.  Stir occassionally and let it simmer for an hour, or two.
 
 ![Add Guinness](/images/20120908/13addtheguinness.jpg "Add Guinness")
 
