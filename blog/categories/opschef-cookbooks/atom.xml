@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: opschef cookbooks | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/opschef-cookbooks/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2012-10-18T16:49:28-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Opscode Chef COOK project in 2012]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2012/10/18/opscode-chef-cook-project-in-2012/"/>
+    <updated>2012-10-18T15:54:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2012/10/18/opscode-chef-cook-project-in-2012</id>
+    <content type="html"><![CDATA[<p>Since the 2011 Chef developer summit there has been amazing community growth.  There has especially been strong community growth in the COOK, or cookbook, project.</p>
+
+<p>It has certainly been said before, the COOK project is one of the most approachable Opscode Chef projects.  Nobody knows your business and application requirements better than you.  The great thing about tools like Puppet and Chef is providing a framework to easily automate and document those requirements in code.</p>
+
+<p>Read on, for a look back at what has changed since the last community summit, and also some nifty visualizations I have put together.  I will share the technical details of extracting these statistics and visualizaions from git, in my next post.</p>
+
+<!-- more -->
+
+
+<p>In November 2011, the first Opscode Chef developer summit was held in Seattle. <img src="/images/20121018/opschef-cook-20111201.png" title="opschef COOK project 2011" alt="opschef COOK project 2011" />
+Andrew Crump's foodcritic cookbook linting tool was released. Bryan Berry started the Food Fight community podcast (16:40). The Opscode Chef COOK project was filter-branched (split) into over a hundred mini-projects (17:04). Finally, the inaugural Chefconf took place with over 400 attendees this last May (18:45).</p>
+
+<p>I have stitched the cookbook mini-projects back together, to render a gource visualization of the COOK project as a whole. The gource visualization includes the 134 officially supported Opscode cookbooks. The number of Opscode Chef cookbooks which are maintained by the community exceeds 600 when this was rendered.</p>
+
+<p>Index:</p>
+
+<ul>
+<li>2009: 0:00
+
+<ul>
+<li>Chef public release (Jan 15)</li>
+</ul>
+</li>
+<li>2010: 5:00</li>
+<li>2011: 10:37
+
+<ul>
+<li>Chef Developer Summit (Nov. 29-30): 15:54</li>
+<li>Foodcritic cookbook linting tool released (Nov. 30)</li>
+</ul>
+</li>
+<li>2012: 16:31
+
+<ul>
+<li>First Foodfight community podcast (Jan. 15): 16:40</li>
+<li>COOK Project split (Feb. 8): 17:04</li>
+<li>Chefconf (May 15-17): 18:45</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Community cookbook site: http://community.opscode.com
+Opscode cookbooks: http://github.com/opscode-cookbooks/</p>
+
+<p>Opscode logo, and Rule the Cloud, marks are registered trademarks of Opscode, Inc.</p>
+
+<p>Disclaimer: I am not affiliated with Opscode, and do not intend to misrepresent myself as such. The video was produced to highlight one of many Open Source community projects sponsored by Opscode.</p>
+]]></content>
+  </entry>
+  
+</feed>
