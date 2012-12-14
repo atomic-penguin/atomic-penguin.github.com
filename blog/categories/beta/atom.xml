@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: debian, | atomic-penguin's blog]]></title>
-  <link href="http://atomic-penguin.github.com/blog/categories/debian-/atom.xml" rel="self"/>
+  <title><![CDATA[Category: beta | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/beta/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
   <updated>2012-12-14T15:06:57-05:00</updated>
   <id>http://atomic-penguin.github.com/</id>
