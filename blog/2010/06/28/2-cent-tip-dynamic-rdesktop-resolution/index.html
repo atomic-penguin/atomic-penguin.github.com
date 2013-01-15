@@ -91,39 +91,13 @@
 
 <p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&#8230;</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g 1280x1024&#39;</span>
-</code></pre>
-</div>
-
-
 <p>However, on my laptop, the max resolution without an external monitor is 1600x900.  So I still have to override the setting with <code>rdesktop -g 1280x1024</code> on the command line, any time I am running without an external monitor.</p>
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
-
-    <span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
-</div>
-
-
 <p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&#8217;ll skip.  I&#8217;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&#8217;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
-
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
-
-    <span class="k">if</span> <span class="o">[</span> <span class="nv">$RDESKTOP_SIZE</span> <span class="o">==</span> <span class="s2">&quot;3840x1200&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-<span class="k">        </span><span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="s2">&quot;1820x1100&quot;</span>
-    <span class="k">fi</span>
-
-<span class="k">    </span><span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
-</div>
-
 
 <p>In other words, if I have two monitors at 1920x1200 each, their combined resolution is reported by <code>xrandr</code> as 3840x1200.  I want to override the detected resolution to 100 pixels less than the resolution on one screen.  Therefore I set the <code>$RDESKTOP_SIZE</code> variable to 1820x1100, before setting my <code>rdesktop</code> alias in <code>.bashrc</code>.</p>
 
@@ -187,6 +161,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/">Disabling VerticalSync in KDE for Steam4Linux Beta</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/">Mini-HOWTO: Building a deb package for Beta NVidia drivers</a>
       </li>
     
@@ -200,10 +178,6 @@
     
       <li class="post">
         <a href="/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/">HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/15/Foodfight-1-Chef-in-2012/">Foodfight podcast - Episode 1, Chef in 2012</a>
       </li>
     
   </ul>
@@ -293,7 +267,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Eric G. Wolfe -
+  Copyright &copy; 2013 - Eric G. Wolfe -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

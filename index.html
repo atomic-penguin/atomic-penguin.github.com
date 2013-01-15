@@ -9,9 +9,8 @@
   <meta name="author" content="Eric G. Wolfe">
 
   
-  <meta name="description" content="Since the first week of this last November, the closed Linux Steam beta
-has been underway. I think the latest official count of Linux beta
-users is &hellip;">
+  <meta name="description" content="According to Wikipedia,
+Vertical synchronization (or VerticalSync) is an option in most systems, wherein the video card is prevented from doing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,57 @@ users is &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/">Disabling VerticalSync in KDE for Steam4Linux Beta</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-15T10:16:00-05:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>According to <a href="http://en.wikipedia.org/wiki/Screen_tearing#V-sync">Wikipedia</a>,
+Vertical synchronization (or VerticalSync) is</p>
+
+<p><code>an option in most systems, wherein the video card is prevented from doing anything visible to the
+display memory until after the monitor finishes its current refresh cycle.</code></p>
+
+<p>In layman&#8217;s terms, when Vertical synchronization is turned on, many aspects
+of video processing are locked to the reported refresh rate of your display
+hardware.  In other words, if your fancy LCD screen reports 60 Hz. is its own
+supported refresh rate, then games or video playback will be capped at 60 frames
+per second when Vertical synchronization is turned on.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -466,49 +516,6 @@ trademarks are owned by their respective owners.
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/">2 Cent Tip - Extend (Resize) a Whole Device Partition.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-09-02T00:00:00-04:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2010</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
-
-<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&#8217;t matter if you&#8217;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -524,6 +531,10 @@ trademarks are owned by their respective owners.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/">Disabling VerticalSync in KDE for Steam4Linux Beta</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/">Mini-HOWTO: Building a deb package for Beta NVidia drivers</a>
       </li>
     
@@ -537,10 +548,6 @@ trademarks are owned by their respective owners.
     
       <li class="post">
         <a href="/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/">HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/15/Foodfight-1-Chef-in-2012/">Foodfight podcast - Episode 1, Chef in 2012</a>
       </li>
     
   </ul>
@@ -629,7 +636,7 @@ trademarks are owned by their respective owners.
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Eric G. Wolfe -
+  Copyright &copy; 2013 - Eric G. Wolfe -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

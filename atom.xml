@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2012-12-14T15:08:07-05:00</updated>
+  <updated>2013-01-15T11:08:25-05:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -12,6 +12,87 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Disabling VerticalSync in KDE for Steam4Linux Beta]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/"/>
+    <updated>2013-01-15T10:16:00-05:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta</id>
+    <content type="html"><![CDATA[<p>According to <a href="http://en.wikipedia.org/wiki/Screen_tearing#V-sync">Wikipedia</a>,
+Vertical synchronization (or VerticalSync) is</p>
+
+<p><code>an option in most systems, wherein the video card is prevented from doing anything visible to the
+display memory until after the monitor finishes its current refresh cycle.</code></p>
+
+<p>In layman&#8217;s terms, when Vertical synchronization is turned on, many aspects
+of video processing are locked to the reported refresh rate of your display
+hardware.  In other words, if your fancy LCD screen reports 60 Hz. is its own
+supported refresh rate, then games or video playback will be capped at 60 frames
+per second when Vertical synchronization is turned on.</p>
+
+<!-- more -->
+
+
+<p>I have seen a couple reports that turning off <a href="http://www.reddit.com/r/tf2/comments/15o98u/psalinux_vsync_enabled_by_default_even_if_it_says/">VSync</a>
+doesn&#8217;t actually disable VSync in Linux Steam games like Team Fortress 2.  The proposed workaround in this reddit thread was toggling
+the option on, and off, until VSync was actually turned off.  Searching through the <a href="https://github.com/ValveSoftware/steam-for-linux">steam-for-linux issue tracker</a>
+last night, I found this <a href="https://github.com/ValveSoftware/steam-for-linux/issues/271">solution</a> on an unrelated AMD TearFree bug report.</p>
+
+<p>The solution offered by Github user dedoz, worked perfectly for me.  It turns out this is not a bug within any game, or Linux Steam,
+but rather a default option in compositing window managers such as KDE.  By default KDE turns on VSync for OpenGL rendering.  By
+changing the following setting, I am now able to toggle the option <code>mat_vsync 1</code> to enable VSync, or <code>mat_vsync 0</code> to disable VSync
+in-game from a game configuration file.  I have no idea, how to go about changing this in other window manager/desktop environments
+suffering from the same problem.  If you encounter such a problem on another desktop environment, or find another workaround, be sure to leave a comment.</p>
+
+<ol>
+<li>First locate kwinrc.  Mine lives in <code>~/.kde/share/config/kwinrc</code></li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>locate kwinrc
+</span><span class='line'><span class="nv">$HOME</span>/.kde/share/config/kwinrc
+</span><span class='line'>/usr/share/kubuntu-default-settings/kde4-profile/default/share/config/kwinrc
+</span><span class='line'>/usr/share/kubuntu-netbook-default-settings/share/config/kwinrc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Next, find the <code>[Compositing]</code> section in <code>kwinrc</code>.  Add the line <code>GLVSync=false</code> to this section.</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim <span class="nv">$HOME</span>/.kde/share/config/kwinrc
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span>Compositing<span class="o">]</span>
+</span><span class='line'><span class="nv">GLVSync</span><span class="o">=</span><span class="nb">false</span>
+</span><span class='line'><span class="nv">OpenGLIsUnsafe</span><span class="o">=</span><span class="nb">false</span>
+</span><span class='line'>
+</span><span class='line'>&lt;esc&gt;:wq
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Finally, use <code>qdbus</code> to call <code>org.kde.kwin.reconfigure()</code>.</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>qdbus org.kde.kwin /KWin reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mini-HOWTO: Building a deb package for Beta NVidia drivers]]></title>
@@ -292,31 +373,11 @@ to match the version increase.</p>
 
 <p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&#8217;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I&#39;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
-</code></pre>
-</div>
-
-
 <p>When I run the following command, however, I&#8217;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &#8220;Program Files&#8221; is an escaped space for the shell to properly interpret this.</p>
-
-<div class="highlight"><pre><code class="bash">    find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
-</code></pre>
-</div>
-
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
-</code></pre>
-</div>
-
-
 <p>Restoring is as simple as running the following command from within my home directory.</p>
-
-<div class="highlight"><pre><code class="bash">    tar xvf ~/etc/steam-settings.tar
-</code></pre>
-</div>
-
 
 <p>Perhaps some day we&#8217;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 ]]></content>
@@ -399,68 +460,19 @@ to match the version increase.</p>
 
 <p>Anyway, the configuration files for the temporary rsync daemon on your production system should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.conf</span>
-    syslog <span class="nv">facility</span> <span class="o">=</span> local3
-    <span class="nb">read </span><span class="nv">only</span> <span class="o">=</span> yes <span class="nv">list</span> <span class="o">=</span> yes
-    auth <span class="nv">users</span> <span class="o">=</span> root
-    secrets <span class="nv">file</span> <span class="o">=</span> /etc/rsyncd.secrets
-    hosts <span class="nv">allow</span> <span class="o">=</span> 1.2.3.4/32
-    <span class="nv">uid</span> <span class="o">=</span> 0
-    <span class="nv">gid</span> <span class="o">=</span> 0
-
-    <span class="o">[</span>root<span class="o">]</span>
-    <span class="nv">comment</span> <span class="o">=</span> /
-    <span class="nv">path</span> <span class="o">=</span> /
-</code></pre>
-</div>
-
-
 <p>Set a password for the daemon in /etc/rsyncd.secrets, and set the owner/group of that file to root:root with 600 permissions.  The password file format looks like this.</p>
-
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.secrets</span>
-    root:SuperSecretPasswordFTW
-</code></pre>
-</div>
-
 
 <p>Open TCP port 873 for the pre-production host, an appropriate iptables rule would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
-</div>
-
-
 <p>Finally run the following command to start up your temporary rsync daemon on the production host.</p>
-
-<div class="highlight"><pre><code class="bash">    
-    rsync --daemon
-</code></pre>
-</div>
-
 
 <p>Now you should have all the components necessary to copy files over the network using the rsync protocol, an rsync client on the pre-production server, and an rsync server on the production server.  Your command should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home/ /home
-</code></pre>
-</div>
-
-
 <p>Yet another way of saying the same thing, but also copying any special permissions on the top-level directory of home to the /home directory on the pre-prod server.</p>
-
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home /
-</code></pre>
-</div>
-
 
 <p>The rsync url components are user (root), followed by an @, hostname (prod-server), followed by a separator (::), followed by the share name (root), followed by the source directory with, or without an optional trailing-slash.</p>
 
 <p>Once the rsync job has finished on the pre-production server, you can run the following to kill off the daemon, and remove your temporary iptables rule.</p>
-
-<div class="highlight"><pre><code class="bash">    killall -9 rsync
-    iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
-</div>
-
 
 <h2>Advanced rsync usage</h2>
 
@@ -488,27 +500,7 @@ to match the version increase.</p>
 
 <p>So after playing around with some perl/sed, and awk to generate a list of source and destinations from a password file on the production server.  I might have a file rsync-home.list containing syntactically correct paired rsync sources and destinations, which would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    root@prod-server::root/home/a/alice /home
-    root@prod-server::root/home/b/bob /home
-    root@prod-server::root/u01/app/oracle /u01/app
-    root@prod-server::root/home/c/charlie /home
-    root@prod-server::root/home/d/dave /home
-    root@prod-server::root/home/e/eve /home
-    root@prod-server::root/home/m/mallory /home
-    root@prod-server::root/home/t/trent /home
-    root@prod-server::root/home/w/walter /home
-    root@prod-server::root/usr/local/vendor /usr/local
-</code></pre>
-</div>
-
-
 <p>Unfortunately there is no switch for rsync to read such a list, and operate on it directly.  However, it is fairly easy to script with a bash one-liner, like so.</p>
-
-<div class="highlight"><pre><code class="bash">    
-    <span class="nv">RSYNC_PASSWORD</span><span class="o">=</span><span class="s2">&quot;SuperSecretPasswordFTW&quot;</span>; cat rsync-home.list | <span class="k">while </span><span class="nb">read </span>LINE; <span class="k">do </span>rsync -av --progress <span class="nv">$LINE</span>; <span class="k">done</span>
-</code></pre>
-</div>
-
 
 <p>The <code>RSYNC_PASSWORD</code> is an environment variable you can set to avoid having to type in the actual password for the rsync daemon, just be aware it will show up in your .bash_history file, and output from <code>ps -ef</code>.  So it is advisable to not use the same password as your root account for the purposes of rsync.</p>
 
@@ -516,26 +508,7 @@ to match the version increase.</p>
 
 <p>Remember when I said you usually don&#39;t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
 
-<div class="highlight"><pre><code class="bash">    find /u01 -type l -xtype d -exec ls -l <span class="o">{}</span> ; | awk <span class="s1">&#39;{ print $NF }&#39;</span>
-</code></pre>
-</div>
-
-
 <p>Which returns a handy little list of items remaining to be copied over to our pre-prod server by rsync.  The couple of returned entries without a leading-slash can be thrown out, those are links within the <code>/u01</code> tree and would therefore be copied as a result of running an rsync job on <code>/u01</code>.</p>
-
-<div class="highlight"><pre><code class="bash">    /u04/app/oracle/RMAN
-    /u03/app/oracle/arclogs
-    /u05/app/oracle/exports
-    /u02/app/oracle/oradata/fooprod
-    /u06/app/oracle/oradata/foopreprd
-    client
-    /u08
-    linux
-</code></pre>
-</div>
-
-
-
 ]]></content>
   </entry>
   
@@ -1548,60 +1521,11 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk -l /dev/mapper/u02
-    Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
-
-    255 heads, 63 sectors/track, 13171 cylinders
-    <span class="nv">Units</span> <span class="o">=</span> cylinders of 16065 * <span class="nv">512</span> <span class="o">=</span> 8225280 bytes
-
-              Device Boot      Start         End      Blocks   Id  System
-    /dev/mapper/u02p1               1       13171   26450329   83  Linux
-</code></pre>
-</div>
-
-
 <p>Reboot the server after extending the volume or LUN on your SAN.  You want to do this before extending the partition in your Operating System.  The Operating System needs to re-read sector 0 on the extended SAN volume, before continuing. Note, that fdisk will report <strong>26109</strong> cylinders instead of <strong>13171</strong>, after rebooting the server.</p>
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk /dev/mapper/u02
-    WARNING: DOS-compatible mode is deprecated. It<span class="s1">&#39;s strongly recommended to</span>
-<span class="s1">             switch off the mode (command &#39;</span>c<span class="s1">&#39;) and change display units to</span>
-<span class="s1">             sectors (command &#39;</span>u<span class="err">&#39;</span><span class="o">)</span>.
-
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: d
-    Selected partition 1
-
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
-    Command action
-       e   extended
-       p   primary partition <span class="o">(</span>1-4<span class="o">)</span>
-    p
-    Partition number <span class="o">(</span>1-4<span class="o">)</span>: 1
-    First cylinder <span class="o">(</span>1-26109, default 1<span class="o">)</span>:
-    Using default value 1
-    Last cylinder, +cylinders or +size<span class="o">{</span>K,M,G<span class="o">}</span> <span class="o">(</span>1-26109, default 26109<span class="o">)</span>:
-    Using default value 26109
-
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: w
-    The partition table has been altered!
-
-    Calling ioctl<span class="o">()</span> to re-read partition table.
-    Syncing disks.
-</code></pre>
-</div>
-
-
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
-
-<div class="highlight"><pre><code class="bash">    root@localhost:~# resize2fs /dev/mapper/u02p1
-    resize2fs 1.39 <span class="o">(</span>29-May-2006<span class="o">)</span>
-    Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
-    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 <span class="o">(</span>4k<span class="o">)</span> blocks.
-    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
-</code></pre>
-</div>
-
 
 <p>Refer to the <code>resize2fs</code> for more information on the command, and its proper usage.</p>
 ]]></content>
@@ -1621,39 +1545,13 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&#8230;</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g 1280x1024&#39;</span>
-</code></pre>
-</div>
-
-
 <p>However, on my laptop, the max resolution without an external monitor is 1600x900.  So I still have to override the setting with <code>rdesktop -g 1280x1024</code> on the command line, any time I am running without an external monitor.</p>
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
-
-    <span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
-</div>
-
-
 <p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&#8217;ll skip.  I&#8217;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&#8217;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
-
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
-
-    <span class="k">if</span> <span class="o">[</span> <span class="nv">$RDESKTOP_SIZE</span> <span class="o">==</span> <span class="s2">&quot;3840x1200&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-<span class="k">        </span><span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="s2">&quot;1820x1100&quot;</span>
-    <span class="k">fi</span>
-
-<span class="k">    </span><span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
-</div>
-
 
 <p>In other words, if I have two monitors at 1920x1200 each, their combined resolution is reported by <code>xrandr</code> as 3840x1200.  I want to override the detected resolution to 100 pixels less than the resolution on one screen.  Therefore I set the <code>$RDESKTOP_SIZE</code> variable to 1820x1100, before setting my <code>rdesktop</code> alias in <code>.bashrc</code>.</p>
 ]]></content>
