@@ -1,0 +1,530 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Multi-knife HOWTO - atomic-penguin's blog</title>
+  <meta name="author" content="Eric G. Wolfe">
+
+  
+  <meta name="description" content="Overview Here is an example shared configuration for knife, the command and control utility which ships with Opscode Chef. You can drop this off in &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">atomic-penguin's blog</a></h1>
+  
+    <h2>Musings on Linux, Opscode Chef, online gaming, and home cooking.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:atomic-penguin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Multi-knife HOWTO</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-25T20:26:00-04:00" pubdate data-updated="true">Apr 25<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>Overview</h1>
+
+<p>  Here is an example shared configuration for knife, the command and control utility which ships with Opscode Chef.  You can drop this off in your <code>chef-repo/.chef/</code> directory, and multiple developers can use the same knife configuration to interact with more than one Chef server, or the Opscode platform.</p>
+
+<p>  By using Bash functions and environment variables we can change the chef server, which knife is configured to use, on the fly.</p>
+
+<!-- more -->
+
+
+<p><strong>NOTE</strong>: knife will probably ignore your <code>~/.chef/knife.rb</code> once you begin using a shared knife configuration.</p>
+
+<h1>Preparation</h1>
+
+<p>  So that we can interact with <code>api.opscode.com</code>, and an internal Open Source Chef server, you will need to name your keys according to your Chef server username, Opscode username, and Opscode platform organization name.  Assuming you already have a <code>~/.chef</code> directory, we will organize it like so.</p>
+
+<ol>
+<li>Re-name your Open Source chef-server private key according to your username on the chef-server system.  For example, move your chef-server private key to <code>~/.chef/corporate-username.pem</code>.</li>
+<li>Re-name your Opscode API key according to your Opscode platform username, for example I would move my Opscode key to <code>~/.chef/atomic-penguin.pem</code> to correspond to my own username.</li>
+<li>Re-name your Organization validation key so that it corresponds to your organization&#8217;s name on the Opscode platform.  For example, move your Opscode organization validation key to ~/.chef/companyname-validator.pem.</li>
+</ol>
+
+
+<h1>Environment in ~/.bashrc</h1>
+
+<p>  Somewhere near the end of my <code>~/.bashrc</code>, I am going to set 4 environment variables which will later be referenced in my shared knife configuration.  I am also going to use a couple of Bash functions to switch context between multiple servers.</p>
+
+<h2>Environment variables</h2>
+
+<p>The variables are as follows.</p>
+
+<ol>
+<li><code>OPSCODE_USER</code> - Set to your primary username.  This should be either your internal chef-server username or Opscode platform username.</li>
+<li><code>ORGNAME</code> - Should be set to &#8220;chef&#8221; for an internal chef-server.  Set this as your Opscode platform orgname, if using that as your primary Chef server.</li>
+<li><code>COOKBOOK_COPYRIGHT</code> - Set to your full name.</li>
+<li><code>COOKBOOK_EMAIL</code> - Set to your e-mail address.</li>
+</ol>
+
+
+<h2>Bash functions</h2>
+
+<p>  I have two knife related Bash functions in my <code>~/.bashrc</code> file.  I use a function called &#8220;ginsu&#8221; to interact with the Opscode API.  Then I use the &#8220;knife-reset&#8221; function to restore default behavior to interact with our internal Chef server.  This is just an example, you could use the ginsu function as a template.  This way you could have an &#8220;opscode-knife&#8221; function, or maybe &#8220;prod-knife&#8221;, &#8220;dev-knife&#8221;, or &#8220;preprod-knife&#8221; to correspond to different servers or environments.</p>
+
+<p>  The <code>knife-reset</code> function simply sets my <code>OPSCODE_USER</code> variable equal to my internal Open Source chef-server username, and <code>ORGNAME</code> equal to &#8220;chef&#8221;.  The <code>knife-reset</code> function then exports the variables so my knife configuration gets reset back to my primary Chef server.</p>
+
+<p>  The <code>ginsu</code> function sets the <code>OPSCODE_USER</code> variable equal to my Opscode platform username, and <code>ORGNAME</code> equal to my Opscode organization name.  The <code>ginsu</code> function then exports the variables and passes any parameters to the knife command.  This way I can do a <code>ginsu cookbook site share yumrepo "Package Management"</code> to upload my yumrepo cookbook to the Opscode Community Cookbook site.</p>
+
+<h1>Knife configuration</h1>
+
+<p>  This is the actual knife configuration file, which we can drop off in the <code>chef-repo/.chef</code> directory.  I will explain the important parts, so you can modify this to fit your own needs easily.  Note, once you drop this off in your <code>chef-repo</code>, your <code>~/.chef/knife.rb</code> will no longer work.</p>
+
+<p>Set a local Ruby variable <code>user</code> equal to the <code>OPSCODE_USER</code> or the environment variable <code>USER</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">user</span> <span class="o">=</span> ENV<span class="o">[</span><span class="s1">&#39;OPSCODE_USER&#39;</span><span class="o">]</span> <span class="o">||</span> ENV<span class="o">[</span><span class="s1">&#39;USER&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Switching back and forth between different keys and user names occurs by changing, and exporting, the <code>OPSCODE_USER</code> and <code>ORGNAME</code> Bash environment variables.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>client_key               <span class="s2">&quot;#{ENV[&#39;HOME&#39;]}/.chef/#{user}.pem&quot;</span>
+</span><span class='line'>validation_client_name   <span class="s2">&quot;#{ENV[&#39;ORGNAME&#39;]}-validator&quot;</span>
+</span><span class='line'>validation_key           <span class="s2">&quot;#{ENV[&#39;HOME&#39;]}/.chef/#{ENV[&#39;ORGNAME&#39;]}-validator.pem&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I used an if/then/else block in my shared knife.rb to switch the URL of my Chef server based on the <code>ORGNAME</code>.  You could use a <code>CHEF_SERVER</code> environment variable in your <code>~/.bashrc</code> if that would work better for you.  Obviously you&#8217;ll want to change the hardcoded <code>corporate</code> string to match your Opscode platform orgname, and also edit the <code>chef_server_url</code> to point another Chef server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;corporate&#39;</span>
+</span><span class='line'>  <span class="n">chef_server_url</span> <span class="s2">&quot;https://api.opscode.com/organizations/</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">elsif</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;chef&#39;</span>
+</span><span class='line'>  <span class="n">chef_server_url</span> <span class="s1">&#39;http://chef.example.com:4000&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you commit all your Community Cookbooks under corporate copyright rather than individual developer names, then you might want to hardcode the company name and a generic development team e-mail address.  This way, your developers don&#8217;t have to set <code>COOKBOOK_COPYRIGHT</code> or <code>COOKBOOK_EMAIL</code>.  The command <code>knife cookbook create &lt;cookbook name&gt;</code> will fill in the company name as the cookbook maintainer, and copyright owner in that case.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">cookbook_license</span>         <span class="s1">&#39;apachev2&#39;</span>
+</span><span class='line'><span class="n">cookbook_copyright</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKBOOK_COPYRIGHT&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;Corporate, Inc.&#39;</span>
+</span><span class='line'><span class="n">cookbook_email</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKBOOK_EMAIL&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;cookbooks@example.com&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Reference ~/.bashrc</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">OPSCODE_USER</span><span class="o">=</span>chef-server-username
+</span><span class='line'><span class="nv">ORGNAME</span><span class="o">=</span>chef
+</span><span class='line'><span class="nv">COOKBOOK_COPYRIGHT</span><span class="o">=</span><span class="s1">&#39;My Full Name&#39;</span>
+</span><span class='line'><span class="nv">COOKBOOK_EMAIL</span><span class="o">=</span><span class="s1">&#39;dev@example.org&#39;</span>
+</span><span class='line'><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span><span class="s2">&quot;BlahBlahBlah&quot;</span>
+</span><span class='line'><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span><span class="s2">&quot;BlahBlahBlahBlah&quot;</span>
+</span><span class='line'><span class="nb">export </span>OPSCODE_USER ORGNAME COOKBOOK_COPYRIGHT COOKBOOK_EMAIL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>knife-reset <span class="o">{</span>
+</span><span class='line'>  <span class="nv">OPSCODE_USER</span><span class="o">=</span>chef-server-username
+</span><span class='line'>  <span class="nv">ORGNAME</span><span class="o">=</span>chef
+</span><span class='line'>  <span class="nb">export </span>OPSCODE_USER ORGNAME
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>ginsu <span class="o">{</span>
+</span><span class='line'>  <span class="nv">OPSCODE_USER</span><span class="o">=</span>community-username
+</span><span class='line'>  <span class="nv">ORGNAME</span><span class="o">=</span>community-organization
+</span><span class='line'>  <span class="nb">export </span>OPSCODE_USER ORGNAME
+</span><span class='line'>  knife <span class="s2">&quot;$@&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Reference chef-repo/.chef/knife.rb</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">current_dir</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;OPSCODE_USER&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;USER&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">log_level</span>                <span class="ss">:info</span>
+</span><span class='line'><span class="n">log_location</span>             <span class="no">STDOUT</span>
+</span><span class='line'><span class="n">node_name</span>                <span class="n">user</span>
+</span><span class='line'><span class="n">client_key</span>               <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/.chef/</span><span class="si">#{</span><span class="n">user</span><span class="si">}</span><span class="s2">.pem&quot;</span>
+</span><span class='line'><span class="n">validation_client_name</span>   <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">-validator&quot;</span>
+</span><span class='line'><span class="n">validation_key</span>           <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/.chef/</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">-validator.pem&quot;</span>
+</span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;marshall&#39;</span>
+</span><span class='line'><span class="n">chef_server_url</span> <span class="s2">&quot;https://api.opscode.com/organizations/</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">elsif</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;ORGNAME&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;chef&#39;</span>
+</span><span class='line'><span class="n">chef_server_url</span> <span class="s1">&#39;http://chef.example.org:4000&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">cache_type</span>               <span class="s1">&#39;BasicFile&#39;</span>
+</span><span class='line'><span class="n">cache_options</span><span class="p">(</span> <span class="ss">:path</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/.chef/checksums&quot;</span> <span class="p">)</span>
+</span><span class='line'><span class="n">cookbook_path</span>            <span class="o">[</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/../cookbooks&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/../site-cookbooks&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">role_path</span> <span class="o">[</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/../roles&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">cookbook_license</span>         <span class="s1">&#39;apachev2&#39;</span>
+</span><span class='line'><span class="n">cookbook_copyright</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKBOOK_COPYRIGHT&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;Corporate, Inc.&#39;</span>
+</span><span class='line'><span class="n">cookbook_email</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKBOOK_EMAIL&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;corporate@example.com&#39;</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:aws_access_key_id</span><span class="o">]</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;AWS_ACCESS_KEY_ID&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:aws_secret_access_key</span><span class="o">]</span> <span class="o">=</span>  <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;AWS_SECRET_ACCESS_KEY&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:identity_file</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/.ssh/id_rsa&quot;</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:aws_ssh_key_id</span><span class="o">]</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;OPSCODE_USER&#39;</span><span class="o">]</span> <span class="o">||</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;USER&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:availability_zone</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;us-east-1a&quot;</span>
+</span><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:region</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;us-east-1&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Credits</h1>
+
+<p>This was partly adapted from Stephen Nelson-Smith&#8217;s (@LordCope) book Test-Driven Infrastructure with Chef (http://shop.oreilly.com/product/0636920020042.do).</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Eric G. Wolfe</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-25T20:26:00-04:00" pubdate data-updated="true">Apr 25<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/howto-/'>HOWTO,</a>, <a class='category' href='/blog/categories/chef-/'>chef,</a>, <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/knife-/'>knife,</a>, <a class='category' href='/blog/categories/opschef-/'>opschef,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/" title="Previous Post: Disabling VerticalSync in KDE for Steam4Linux Beta">&laquo; Disabling VerticalSync in KDE for Steam4Linux Beta</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/25/Multi-Knife-HOWTO/">Multi-knife HOWTO</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/">Disabling VerticalSync in KDE for Steam4Linux Beta</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/">Mini-HOWTO: Building a deb package for Beta NVidia drivers</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/08/atomic-penguins-feel-good-chili/">Atomic Penguins Feel Good Chili</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/">Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'atomic-penguin',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("atomic_penguin", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112791157300091682319?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section class="linkedin">
+<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+<script type="IN/MemberProfile" data-id="http://www.linkedin.com/in/ericgwolfe" data-format="click" data-text="Eric G. Wolfe" data-related="false"></script>
+<a href="http://resume.linkedinlabs.com/o1x0n1fiy">Résumé</a>
+</section>
+
+
+<section class="steam">
+  <a href="http://steamcommunity.com/atomic-penguin"><img src="/images/steam.png" width="32" height="32" style="border: 0px;">atomic-penguin on Steam</a>
+</section>
+
+
+<section>
+  <h1>About Me</h1>
+  <img src="/images/profile.png" style="border: 0px;">
+  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
+  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Eric G. Wolfe -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'atomicpenguin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/';
+        var disqus_url = 'http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
