@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: "data_bags" | atomic-penguin's blog]]></title>
-  <link href="http://atomic-penguin.github.com/blog/categories/-data-bags-/atom.xml" rel="self"/>
+  <title><![CDATA[Category: data_bags | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/data-bags/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-08-15T14:48:34-04:00</updated>
+  <updated>2013-08-15T16:19:48-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -25,6 +25,9 @@ into the certificates cookbook for integration testing with test-kitchen.</p>
 <p>Following, is the process used to set up test-kitchen for encrypted data_bag
 use.  This documentation might be useful to others trying to integrate encrypted
 data_bag testing into their cookbooks.</p>
+
+<!-- more -->
+
 
 <h3>Warning</h3>
 

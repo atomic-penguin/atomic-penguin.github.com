@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-08-15T14:48:31-04:00</updated>
+  <updated>2013-08-15T16:19:45-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -12,6 +12,182 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[TIL: system generated errata list and patch changelog with yum]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/"/>
+    <updated>2013-08-15T15:01:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum</id>
+    <content type="html"><![CDATA[<p>I was looking for a way to create a system generated CVE, or errata,
+list for a production change request today.  I recall this being
+easier on RHN (Red Hat Network) portal, in the past.  That has changed
+so much, I don&#8217;t even know where to look, and apparently cannot list
+more than 10 errata issues per-page.</p>
+
+<!-- more -->
+
+
+<p>So as I searched for a way to generate this report, I came across
+two yum plugins I have overlooked in the past.  The <code>yum-security</code>
+and <code>yum-changelog</code> plugins.  Assuming you have a change request process
+involving two identical servers, <code>test</code> and <code>production</code> you can use these two
+plugins to generate change request documentation.</p>
+
+<p>The <code>yum-security</code> plugin will generate a compact list of RedHat Bug/Security IDs,
+or even long-format issue reports, applicable to your production machine.</p>
+
+<p>The <code>yum-changelog</code> plugin can generate a list of what issues were just patched on
+the test machine, and be submitted as part of the chnage request documentation
+for the production machine.  The <code>yum-changelog</code> plugin needs the package
+<code>python-dateutil</code> for full functionality.</p>
+
+<h2>Install plugins</h2>
+
+<pre><code>yum -y install yum-security yum-changelogi python-dateutil
+</code></pre>
+
+<h3>Generate an errata list, or display issue reports.</h3>
+
+<p>Run <code>yum list-sec</code> to generate a short-format errata list.  Some
+third party packages may not be included in the list as they are probably
+lacking necessary metadata.</p>
+
+<pre><code>[root@production]# yum list-sec
+RHBA-2013:1040 bugfix   bash-3.2-32.el5_9.1.i386
+RHSA-2013:0983 security curl-7.15.5-17.el5_9.i386
+FEDORA-EPEL-2013-10647 bugfix   dkms-2.2.0.3-8.el5.noarch
+FEDORA-EPEL-2013-10952 bugfix   dkms-2.2.0.3-14.el5.noarch
+RHSA-2013:0981 security firefox-17.0.7-1.el5_9.i386
+RHSA-2013:1140 security firefox-17.0.8-1.el5_9.i386
+RHBA-2013:1039 bugfix   gnome-vfs2-2.16.2-12.el5_9.i386
+RHBA-2013:1039 bugfix   gnome-vfs2-smb-2.16.2-12.el5_9.i386
+RHSA-2013:1014 security java-1.6.0-openjdk-1:1.6.0.0-1.41.1.11.11.90.el5_9.i386
+RHSA-2013:1014 security java-1.6.0-openjdk-devel-1:1.6.0.0-1.41.1.11.11.90.el5_9.i386
+RHBA-2013:1123 bugfix   libxml2-2.6.26-2.1.21.el5_9.3.i386
+RHBA-2013:1123 bugfix   libxml2-devel-2.6.26-2.1.21.el5_9.3.i386
+RHBA-2013:1123 bugfix   libxml2-python-2.6.26-2.1.21.el5_9.3.i386
+RHSA-2013:1135 security nspr-4.9.5-1.el5_9.i386
+RHSA-2013:1135 security nss-3.14.3-6.el5_9.i386
+RHSA-2013:1135 security nss-tools-3.14.3-6.el5_9.i386
+RHBA-2013:1128 bugfix   poppler-0.5.4-19.el5_9.2.i386
+RHBA-2013:1128 bugfix   poppler-utils-0.5.4-19.el5_9.2.i386
+RHSA-2013:1121 security sos-1.7-9.62.el5_9.1.noarch
+RHBA-2013:1091 bugfix   sqlite-3.3.6-7.i386
+RHEA-2013:1025 enhancement tzdata-2013c-2.el5.i386
+RHEA-2013:1025 enhancement tzdata-java-2013c-2.el5.i386
+RHSA-2013:0981 security xulrunner-17.0.7-1.el5_9.i386
+RHSA-2013:1140 security xulrunner-17.0.8-3.el5_9.i386
+list-sec done
+</code></pre>
+
+<p>Run <code>yum info-security</code> to generate a long-format issue report.
+Here is a truncated output example.</p>
+
+<pre><code>[root@production]# yum info-security
+===============================================================================
+bash bug fix update
+===============================================================================
+  Update ID : RHBA-2013:1040
+    Release : 
+       Type : bugfix
+     Status : final
+     Issued : 2013-07-10 00:00:00
+    Summary : Updated bash packages that fix one bug are now available for Red
+            : Hat Enterprise Linux 5.
+Description : The GNU Bourne Again shell (Bash) is a shell and command
+            : language interpreter compatible with the Bourne
+            : shell (sh). Bash is the default shell for Red Hat
+            : Enterprise Linux.
+            : 
+            : This update fixes the following bug:
+            : 
+            : * When a trap handler was invoked while running
+            :   another trap handler, which was invoked during a
+            :   pipeline call, bash was unresponsive. With this
+            :   update, pipeline calls are saved and
+            :   subsequently restored in this scenario, and bash
+            :   responds normally. (BZ#978840)
+            : 
+            : Users of bash are advised to upgrade to these
+            : updated packages, which fix this bug.
+   Solution : Before applying this update, make sure all previously-released
+            : errata relevant to your system have been applied.
+            : 
+            : This update is available via the Red Hat Network.
+            : Details on how to use the Red Hat Network to apply
+            : this update are available at
+            : https://access.redhat.com/site/articles/11258
+     Rights : Copyright 2013 Red Hat Inc
+</code></pre>
+
+<h3>Generate a changelog after patching the test system.</h3>
+
+<p>According to my <code>/var/log/yum.log</code> let us say I last patched this
+system on 2013-7-18.  I would generate a changelog of installed patches on
+the test machine since that date, as follows.</p>
+
+<pre><code>[root@test]# yum -y upgrade
+...
+[root@test]# yum changelog 2013-7-18 installed
+Listing changelogs since 2013-07-18
+
+==================== Installed Packages ====================
+libxml2-2.6.26-2.1.21.el5_9.3.i386       installed
+* Tue Jul 23 18:00:00 2013 Daniel Veillard - 2.6.26-2.1.21.el5_9.3
+- fixed one regexp bug and added a (rhbz#987321)
+- Another small change on the algorithm for the elimination of epsilon (rhbz#987321)
+
+poppler-0.5.4-19.el5_9.2.i386            installed
+* Tue Jul 30 18:00:00 2013 Marek Kasik - 0.5.4-19.el5_9.2
+- Initialize variables correctly before their use
+- Resolves: #990097
+* Tue Jul 30 18:00:00 2013 Marek Kasik - 0.5.4-19.el5_9.1
+- Decode encoded streams before using them
+- Resolves: #990096
+
+nss-3.14.3-6.el5_9.i386                  installed
+* Tue Jul 23 18:00:00 2013 Elio Maldonado - 3.14.3-6
+- Resolves: rhbz#986969 - nssutil_ReadSecmodDB() leaks memory
+
+firefox-17.0.8-1.el5_9.i386              installed
+* Wed Jul 31 18:00:00 2013 Martin Stransky - 17.0.8-1
+- Update to 17.0.8 ESR
+
+dkms-2.2.0.3-14.el5.noarch               installed
+* Mon Jul 22 08:00:00 2013 Simone Caronni - 2.2.0.3-14
+- Remove systemd / SysV conversion as per new packaging guidelines.
+- Add patch for #986887 to force tarball creation.
+* Mon Jul 22 08:00:00 2013 Simone Caronni - 2.2.0.3-13
+- Add fix for #986887; do not use lib64 for storing data as it was in 2.2.0.3-5.
+* Sun Jul 21 08:00:00 2013 Simone Caronni - 2.2.0.3-12
+- Add patch for #986557.
+
+xulrunner-17.0.8-3.el5_9.i386            installed
+* Tue Aug  6 18:00:00 2013 Martin Stransky - 17.0.8-3
+- Update to 17.0.8 ESR Build 2
+- Disable strict aliasing - mozbz#821502
+* Thu Aug  1 18:00:00 2013 Martin Stransky - 17.0.8-2
+- Added fix for rhbz#990921 - firefox does not build with.
+  required nss/nspr
+* Wed Jul 31 18:00:00 2013 Martin Stransky - 17.0.8-1
+- Update to 17.0.8 ESR
+
+sos-1.7-9.62.el5_9.1.noarch              installed
+* Mon Jul 22 18:00:00 2013 Bryn M. Reeves - 1.7-9.62.el5_9.1
+- Remove anaconda-ks.cfg collection from general plug-in
+- Resolves: bz965807
+
+changelog stats. 951 pkgs, 947 source pkgs, 12 changelogs
+</code></pre>
+
+<h3>Conclusion</h3>
+
+<p>Even if you do <em>not</em> work in an environment with strict change control procedures.
+The <code>yum-security</code> plugin can be helpful to see what known bugs and security issues exist in your RHEL
+environment.  While the <code>yum-changelog</code> also allows you to thoroughly examine what changes
+you just made to your system.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HOWTO test-kitchen and encrypted data bags]]></title>
@@ -25,6 +201,9 @@ into the certificates cookbook for integration testing with test-kitchen.</p>
 <p>Following, is the process used to set up test-kitchen for encrypted data_bag
 use.  This documentation might be useful to others trying to integrate encrypted
 data_bag testing into their cookbooks.</p>
+
+<!-- more -->
+
 
 <h3>Warning</h3>
 

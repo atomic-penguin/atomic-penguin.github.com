@@ -4,7 +4,7 @@
   <title><![CDATA[Category: testing | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-08-15T14:48:34-04:00</updated>
+  <updated>2013-08-15T16:19:48-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HOWTO test-kitchen and encrypted data bags]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
+    <updated>2013-06-07T15:58:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
+    <content type="html"><![CDATA[<p>I have been playing around with <a href="https://github.com/opscode/test-kitchen">test-kitchen</a>
+more recently.  One of the community members suggested I embed an encrypted data_bag
+into the certificates cookbook for integration testing with test-kitchen.</p>
+
+<p>Following, is the process used to set up test-kitchen for encrypted data_bag
+use.  This documentation might be useful to others trying to integrate encrypted
+data_bag testing into their cookbooks.</p>
+
+<!-- more -->
+
+
+<h3>Warning</h3>
+
+<p>Encrypted data_bag files placed in <code>test/integration</code> should not be used in production.
+Files include a self-signed "snake oil" certificate/key and an encrypted_data_bag_secret file
+which are not secure to use beyond testing purposes.</p>
+
+<h3>Initialize test-kitchen</h3>
+
+<p>Run the following to create a <code>.kitchen.yml</code> file in your cookbook directory.</p>
+
+<pre><code>$ cd &lt;cookbook dir&gt;
+$ kitchen init
+</code></pre>
+
+<p>This <code>kitchen init</code> command will yield a file which looks like this:</p>
+
+<pre><code>---
+driver_plugin: vagrant
+driver_config:
+  require_chef_omnibus: true
+
+platforms:
+- name: ubuntu-12.04
+  driver_config:
+    box: opscode-ubuntu-12.04
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
+- name: ubuntu-10.04
+  driver_config:
+     box: opscode-ubuntu-10.04
+     box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
+- name: centos-6.4
+  driver_config:
+    box: opscode-centos-6.4
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
+- name: centos-5.9
+  driver_config:
+    box: opscode-centos-5.9
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
+
+suites:
+- name: default
+  run_list: ["recipe[certificate::default]"]                                                                                                                                    
+  attributes: {}
+</code></pre>
+
+<h3>Data bag and secret file setup</h3>
+
+<p>The test-kitchen initialization should create a <code>test/integration/default</code> directory.
+As of test-kitchen pull request #124, cookbook files are aggressively filtered from being
+copied to the chef-solo working directory.  Adding these files to the <code>suite</code> section of the
+<code>.kitchen.yml</code> will ensure those files get copied over for your integration testing.</p>
+
+<p>First, create a throwaway secret to encrypt testing data.</p>
+
+<pre><code>openssl rand -base64 512 &gt; test/integration/default/encrypted_data_bag_secret
+</code></pre>
+
+<p>Second, create an encrypted data bag with test data.  Apparently there is also
+a <a href="https://github.com/thbishop/knife-solo_data_bag">knife-solo_data_bag</a> knife
+plugin which can be used alternatively.</p>
+
+<pre><code>knife data bag create certificates test --secret-file test/integration/default/encrypted_data_bag_secret
+</code></pre>
+
+<p>Copy and paste the encrypted data bag object into a file.</p>
+
+<pre><code># Make a data_bag directory
+mkdir -p test/integration/default/data_bags/certificates
+
+# Copy the encrypted json output
+knife data bag show certificates test -Fj
+
+# Paste the encrypted json output into a json file
+cat &gt; test/integration/default/data_bags/certificates/test.json
+</code></pre>
+
+<h3>Configure test-kitchen</h3>
+
+<p>Edit the suites section in the <code>.kitchen.yml</code> and add <code>encrypted_data_bag_secret_key_path</code>
+and <code>data_bag_path</code>.</p>
+
+<p>Default generated configuration.</p>
+
+<pre><code>suites:
+- name: default
+ run_list: ["recipe[certificate::default]"]
+  attributes: {}
+</code></pre>
+
+<p>Configuration for test-kitchen with encrypted data bags.</p>
+
+<pre><code>suites:
+- name: default
+  data_bag_path: "test/integration/default/data_bags"
+  encrypted_data_bag_secret_key_path: "test/integration/default/encrypted_data_bag_secret"
+  run_list: ["recipe[certificate::default]"]
+  attributes: {}
+</code></pre>
+
+<p>That should be all you need to run test-kitchen integration tests
+with encrypted data bags.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol]]></title>

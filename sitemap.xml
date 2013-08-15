@@ -88,14 +88,20 @@
         <loc>
             http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/
         </loc>
-        <lastmod>2013-08-15T14:23:39-04:00</lastmod>
+        <lastmod>2013-08-15T15:04:58-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/
+        </loc>
+        <lastmod>2013-08-15T16:18:28-04:00</lastmod>
     </url>
     <url>
         <loc>http://atomic-penguin.github.com/</loc>
-        <lastmod>2013-08-15T14:23:39-04:00</lastmod>
+        <lastmod>2013-08-15T16:18:28-04:00</lastmod>
     </url>
     <url>
         <loc>http://atomic-penguin.github.com/blog/archives/</loc>
-        <lastmod>2013-08-15T14:23:39-04:00</lastmod>
+        <lastmod>2013-08-15T16:18:28-04:00</lastmod>
     </url>
 </urlset>
