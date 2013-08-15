@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Desktop Linux | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/desktop-linux/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-04-25T21:15:38-04:00</updated>
+  <updated>2013-08-15T14:48:34-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -27,19 +27,45 @@
 
 <p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so...</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+rdesktop='rdesktop -g 1280x1024'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>However, on my laptop, the max resolution without an external monitor is 1600x900.  So I still have to override the setting with <code>rdesktop -g 1280x1024</code> on the command line, any time I am running without an external monitor.</p>
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+RDESKTOP_SIZE=`xrandr | awk '{getline; getline; getline; print $1; exit;}'`
+
+alias rdesktop='rdesktop -g $RDESKTOP_SIZE'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we'll skip.  I'll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I'll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+RDESKTOP_SIZE=`xrandr | awk '{getline; getline; getline; print $1; exit;}'`
+
+if [ $RDESKTOP_SIZE == "3840x1200" ]; then
+    RDESKTOP_SIZE="1820x1100"
+fi
+
+alias rdesktop='rdesktop -g $RDESKTOP_SIZE'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>In other words, if I have two monitors at 1920x1200 each, their combined resolution is reported by <code>xrandr</code> as 3840x1200.  I want to override the detected resolution to 100 pixels less than the resolution on one screen.  Therefore I set the <code>$RDESKTOP_SIZE</code> variable to 1820x1100, before setting my <code>rdesktop</code> alias in <code>.bashrc</code>.</p>
 ]]></content>

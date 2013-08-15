@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 2 cent tip | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/2-cent-tip/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-04-25T21:15:38-04:00</updated>
+  <updated>2013-08-15T14:48:34-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -27,19 +27,39 @@
 
 <p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don't want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\'ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find ~/.cxgames -name "*.cfg"
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>When I run the following command, however, I'll get an error due to spaces in the directory/filename structure.  Note the backslash in "Program Files" is an escaped space for the shell to properly interpret this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name "*.cfg" -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Restoring is as simple as running the following command from within my home directory.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>tar xvf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Perhaps some day we'll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 ]]></content>
@@ -67,17 +87,66 @@
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>root@localhost:~# fdisk -l /dev/mapper/u02
+Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
+
+255 heads, 63 sectors/track, 13171 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+          Device Boot      Start         End      Blocks   Id  System
+/dev/mapper/u02p1               1       13171   26450329   83  Linux
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Reboot the server after extending the volume or LUN on your SAN.  You want to do this before extending the partition in your Operating System.  The Operating System needs to re-read sector 0 on the extended SAN volume, before continuing. Note, that fdisk will report <strong>26109</strong> cylinders instead of <strong>13171</strong>, after rebooting the server.</p>
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>root@localhost:~# fdisk /dev/mapper/u02
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
+
+Command (m for help): d
+Selected partition 1
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 1
+First cylinder (1-26109, default 1):
+Using default value 1
+Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
+Using default value 26109
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>root@localhost:~# resize2fs /dev/mapper/u02p1
+resize2fs 1.39 (29-May-2006)
+Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
+Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
+The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Refer to the <code>resize2fs</code> for more information on the command, and its proper usage.</p>
 ]]></content>
@@ -97,19 +166,45 @@
 
 <p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so...</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+rdesktop='rdesktop -g 1280x1024'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>However, on my laptop, the max resolution without an external monitor is 1600x900.  So I still have to override the setting with <code>rdesktop -g 1280x1024</code> on the command line, any time I am running without an external monitor.</p>
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+RDESKTOP_SIZE=`xrandr | awk '{getline; getline; getline; print $1; exit;}'`
+
+alias rdesktop='rdesktop -g $RDESKTOP_SIZE'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we'll skip.  I'll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I'll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code># ~/.bashrc
+RDESKTOP_SIZE=`xrandr | awk '{getline; getline; getline; print $1; exit;}'`
+
+if [ $RDESKTOP_SIZE == "3840x1200" ]; then
+    RDESKTOP_SIZE="1820x1100"
+fi
+
+alias rdesktop='rdesktop -g $RDESKTOP_SIZE'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>In other words, if I have two monitors at 1920x1200 each, their combined resolution is reported by <code>xrandr</code> as 3840x1200.  I want to override the detected resolution to 100 pixels less than the resolution on one screen.  Therefore I set the <code>$RDESKTOP_SIZE</code> variable to 1820x1100, before setting my <code>rdesktop</code> alias in <code>.bashrc</code>.</p>
 ]]></content>

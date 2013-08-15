@@ -9,9 +9,7 @@
   <meta name="author" content="Eric G. Wolfe">
 
   
-  <meta name="description" content="Abstract This document outlines in a detailed step-by-step fashion,
-how to properly configure iSCSI initiator, and multi-path I/O
-software on Red Hat &hellip;">
+  <meta name="description" content="In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data. I&#39;ll even &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +64,51 @@ software on Red Hat &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/">HOWTO Using Rsync to Move a Mountain of Data</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-16T00:00:00-04:00" pubdate data-updated="true">Apr 16<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I&#39;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
+
+<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don&#8217;t have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
+
+<p>I hope you enjoy this in-depth article.  Please feel free to comment: if you need clarification, find it useful, or something I wrote is just plain wrong.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -319,6 +362,10 @@ trademarks are owned by their respective owners.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/04/25/Multi-Knife-HOWTO/">Multi-knife HOWTO</a>
       </li>
     
@@ -332,10 +379,6 @@ trademarks are owned by their respective owners.
     
       <li class="post">
         <a href="/blog/2012/09/08/atomic-penguins-feel-good-chili/">Atomic Penguins Feel Good Chili</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/">Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rsync | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/rsync/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-04-25T21:15:38-04:00</updated>
+  <updated>2013-08-15T14:48:34-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -90,33 +90,81 @@
 
 <p>Anyway, the configuration files for the temporary rsync daemon on your production system should look something like this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>#/etc/rsyncd.conf
+syslog facility = local3
+read only = yes list = yes
+auth users = root
+secrets file = /etc/rsyncd.secrets
+hosts allow = 1.2.3.4/32
+uid = 0
+gid = 0
+
+[root]
+comment = /
+path = /
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Set a password for the daemon in /etc/rsyncd.secrets, and set the owner/group of that file to root:root with 600 permissions.  The password file format looks like this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>#/etc/rsyncd.secrets
+root:SuperSecretPasswordFTW
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Open TCP port 873 for the pre-production host, an appropriate iptables rule would look something like this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Finally run the following command to start up your temporary rsync daemon on the production host.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>rsync --daemon
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Now you should have all the components necessary to copy files over the network using the rsync protocol, an rsync client on the pre-production server, and an rsync server on the production server.  Your command should look something like this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>rsync -av root@prod-server::root/home/ /home
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Yet another way of saying the same thing, but also copying any special permissions on the top-level directory of home to the /home directory on the pre-prod server.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>rsync -av root@prod-server::root/home /
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>The rsync url components are user (root), followed by an @, hostname (prod-server), followed by a separator (::), followed by the share name (root), followed by the source directory with, or without an optional trailing-slash.</p>
 
 <p>Once the rsync job has finished on the pre-production server, you can run the following to kill off the daemon, and remove your temporary iptables rule.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>killall -9 rsync
+iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <h2>Advanced rsync usage</h2>
 
@@ -144,11 +192,30 @@
 
 <p>So after playing around with some perl/sed, and awk to generate a list of source and destinations from a password file on the production server.  I might have a file rsync-home.list containing syntactically correct paired rsync sources and destinations, which would look something like this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>root@prod-server::root/home/a/alice /home
+root@prod-server::root/home/b/bob /home
+root@prod-server::root/u01/app/oracle /u01/app
+root@prod-server::root/home/c/charlie /home
+root@prod-server::root/home/d/dave /home
+root@prod-server::root/home/e/eve /home
+root@prod-server::root/home/m/mallory /home
+root@prod-server::root/home/t/trent /home
+root@prod-server::root/home/w/walter /home
+root@prod-server::root/usr/local/vendor /usr/local
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Unfortunately there is no switch for rsync to read such a list, and operate on it directly.  However, it is fairly easy to script with a bash one-liner, like so.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>RSYNC_PASSWORD="SuperSecretPasswordFTW"; cat rsync-home.list | while read LINE; do rsync -av --progress $LINE; done
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>The <code>RSYNC_PASSWORD</code> is an environment variable you can set to avoid having to type in the actual password for the rsync daemon, just be aware it will show up in your .bash_history file, and output from <code>ps -ef</code>.  So it is advisable to not use the same password as your root account for the purposes of rsync.</p>
 
@@ -156,11 +223,28 @@
 
 <p>Remember when I said you usually don\'t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find /u01 -type l -xtype d -exec ls -l {} ; | awk '{ print $NF }'
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Which returns a handy little list of items remaining to be copied over to our pre-prod server by rsync.  The couple of returned entries without a leading-slash can be thrown out, those are links within the <code>/u01</code> tree and would therefore be copied as a result of running an rsync job on <code>/u01</code>.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>/u04/app/oracle/RMAN
+/u03/app/oracle/arclogs
+/u05/app/oracle/exports
+/u02/app/oracle/oradata/fooprod
+/u06/app/oracle/oradata/foopreprd
+client
+/u08
+linux
+</code></pre>
+
+<p>{% endhighlight %}</p>
 ]]></content>
   </entry>
   

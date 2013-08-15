@@ -4,7 +4,7 @@
   <title><![CDATA[Category: backup | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/backup/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-04-25T21:15:38-04:00</updated>
+  <updated>2013-08-15T14:48:34-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -27,19 +27,39 @@
 
 <p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don't want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\'ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find ~/.cxgames -name "*.cfg"
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>When I run the following command, however, I'll get an error due to spaces in the directory/filename structure.  Note the backslash in "Program Files" is an escaped space for the shell to properly interpret this.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name "*.cfg" -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Restoring is as simple as running the following command from within my home directory.</p>
 
-<p></p>
+<p>{% highlight bash %}</p>
+
+<pre><code>tar xvf ~/etc/steam-settings.tar
+</code></pre>
+
+<p>{% endhighlight %}</p>
 
 <p>Perhaps some day we'll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 ]]></content>
