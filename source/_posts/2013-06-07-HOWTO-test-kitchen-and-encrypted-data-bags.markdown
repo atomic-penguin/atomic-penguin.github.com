@@ -3,7 +3,7 @@ layout: post
 title: "HOWTO test-kitchen and encrypted data bags"
 date: 2013-06-07 15:58
 comments: true
-categories: test-kitchen opschef "integration testing" "data_bags" "encrypted data bags" HOWTO
+categories: test-kitchen opschef testing data_bags HOWTO
 ---
 
 I have been playing around with [test-kitchen](https://github.com/opscode/test-kitchen)
@@ -13,6 +13,8 @@ into the certificates cookbook for integration testing with test-kitchen.
 Following, is the process used to set up test-kitchen for encrypted data_bag
 use.  This documentation might be useful to others trying to integrate encrypted
 data_bag testing into their cookbooks.
+
+<!-- more -->
 
 ### Warning
 
