@@ -23,9 +23,8 @@ Without further ado, here is what you'll need for my own personal recipe of Chil
 * 2 - medium sweet yellow onions
 * 2 - bell peppers
 * 4 - jalapeno peppers
-* 2 - large tomatoes
 * 2-4 - cloves of garlic
-* 28 oz. can - crushed whole tomatoes
+* 2x 28 oz. can - crushed whole tomatoes
 * 14 oz. can - beef broth
 * 14 oz. can - kidney beans (optional)
 * 6 oz. can - tomato paste
@@ -38,7 +37,7 @@ Without further ado, here is what you'll need for my own personal recipe of Chil
 * 3/4 tsp. - ground cayenne pepper
 * 1/2 tsp. - ground cinnamon
 * 1/2 tsp. - black pepper
-* 3 lbs. - chuck beef steak/roast
+* at least 3 lbs. - chuck beef steak/roast
 * Shredded cheddar (optional)
 * 2 cans or bottles - Guinness, or other dark Stout, beer
 
@@ -96,7 +95,7 @@ Once you have the sides cut off of the jalapeno's seed pods.  Cut the sides into
 
 Check on your stock pot, throw in your peppers, and give it a good stir.
 
-Roughly chop your fresh tomatoes and add to the pot.  Add the can of beef stock, and the can of crushed tomatoes, stir the pot well
+Add the can of beef stock, and the can of crushed tomatoes, stir the pot well
 
 Time to throw in that magical spice mix to turn this stew into Chili proper.  The cocoa powder will thicken the stew up quite a bit, stir it so that everything mixes well.  You want to make sure with the stew thickening that nothing sticks to the pot, and burns.
 
