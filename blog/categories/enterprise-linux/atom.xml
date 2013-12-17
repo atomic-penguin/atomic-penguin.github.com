@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Enterprise Linux | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/enterprise-linux/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-10-14T14:57:37-04:00</updated>
+  <updated>2013-12-17T10:28:31-05:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -864,75 +864,66 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p>{% highlight bash %}</p>
 
-&lt;pre&gt;&lt;code&gt;root@localhost:~# fdisk -l /dev/mapper/u02
+<pre><code>root@localhost:~# fdisk -l /dev/mapper/u02
 Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
 
 255 heads, 63 sectors/track, 13171 cylinders
-<span class="nv">Units</span> <span class="o">=</span> cylinders of 16065 * <span class="nv">512</span> <span class="o">=</span> 8225280 bytes
+Units = cylinders of 16065 * 512 = 8225280 bytes
 
           Device Boot      Start         End      Blocks   Id  System
 /dev/mapper/u02p1               1       13171   26450329   83  Linux
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
 </code></pre>
-</div>
-</p>
+
+<p>{% endhighlight %}</p>
 
 <p>Reboot the server after extending the volume or LUN on your SAN.  You want to do this before extending the partition in your Operating System.  The Operating System needs to re-read sector 0 on the extended SAN volume, before continuing. Note, that fdisk will report <strong>26109</strong> cylinders instead of <strong>13171</strong>, after rebooting the server.</p>
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p>{% highlight bash %}</p>
 
-&lt;pre&gt;&lt;code&gt;root@localhost:~# fdisk /dev/mapper/u02
-WARNING: DOS-compatible mode is deprecated. It<span class="s1">&#39;s strongly recommended to</span>
-<span class="s1">         switch off the mode (command &#39;</span>c<span class="s1">&#39;) and change display units to</span>
-<span class="s1">         sectors (command &#39;</span>u<span class="err">&#39;</span><span class="o">)</span>.
+<pre><code>root@localhost:~# fdisk /dev/mapper/u02
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: d
+Command (m for help): d
 Selected partition 1
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+Command (m for help): n
 Command action
    e   extended
-   p   primary partition <span class="o">(</span>1-4<span class="o">)</span>
+   p   primary partition (1-4)
 p
-Partition number <span class="o">(</span>1-4<span class="o">)</span>: 1
-First cylinder <span class="o">(</span>1-26109, default 1<span class="o">)</span>:
+Partition number (1-4): 1
+First cylinder (1-26109, default 1):
 Using default value 1
-Last cylinder, +cylinders or +size<span class="o">{</span>K,M,G<span class="o">}</span> <span class="o">(</span>1-26109, default 26109<span class="o">)</span>:
+Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
 Using default value 26109
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: w
+Command (m for help): w
 The partition table has been altered!
 
-Calling ioctl<span class="o">()</span> to re-read partition table.
+Calling ioctl() to re-read partition table.
 Syncing disks.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
 </code></pre>
-</div>
-</p>
+
+<p>{% endhighlight %}</p>
 
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p>{% highlight bash %}</p>
 
-&lt;pre&gt;&lt;code&gt;root@localhost:~# resize2fs /dev/mapper/u02p1
-resize2fs 1.39 <span class="o">(</span>29-May-2006<span class="o">)</span>
+<pre><code>root@localhost:~# resize2fs /dev/mapper/u02p1
+resize2fs 1.39 (29-May-2006)
 Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
-Performing an on-line resize of /dev/mapper/u02p1 to 52430127 <span class="o">(</span>4k<span class="o">)</span> blocks.
+Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
 The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
 </code></pre>
-</div>
-</p>
+
+<p>{% endhighlight %}</p>
 
 <p>Refer to the <code>resize2fs</code> for more information on the command, and its proper usage.</p>
 ]]></content>

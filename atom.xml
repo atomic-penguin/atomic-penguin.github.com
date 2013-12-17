@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2013-10-14T14:57:37-04:00</updated>
+  <updated>2013-12-17T10:28:11-05:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -398,7 +398,7 @@ and <code>data_bag_path</code>.</p>
 
 <pre><code>suites:
 - name: default
-  data_bag_path: "test/integration/default/data_bags"
+  data_bags_path: "test/integration/default/data_bags"
   encrypted_data_bag_secret_key_path: "test/integration/default/encrypted_data_bag_secret"
   run_list: ["recipe[certificate::default]"]
   attributes: {}
@@ -830,9 +830,8 @@ to match the version increase.</p>
 <li>2 - medium sweet yellow onions</li>
 <li>2 - bell peppers</li>
 <li>4 - jalapeno peppers</li>
-<li>2 - large tomatoes</li>
 <li>2-4 - cloves of garlic</li>
-<li>28 oz. can - crushed whole tomatoes</li>
+<li>2x 28 oz. can - crushed whole tomatoes</li>
 <li>14 oz. can - beef broth</li>
 <li>14 oz. can - kidney beans (optional)</li>
 <li>6 oz. can - tomato paste</li>
@@ -845,7 +844,7 @@ to match the version increase.</p>
 <li>3/4 tsp. - ground cayenne pepper</li>
 <li>1/2 tsp. - ground cinnamon</li>
 <li>1/2 tsp. - black pepper</li>
-<li>3 lbs. - chuck beef steak/roast</li>
+<li>at least 3 lbs. - chuck beef steak/roast</li>
 <li>Shredded cheddar (optional)</li>
 <li>2 cans or bottles - Guinness, or other dark Stout, beer</li>
 </ul>
@@ -907,7 +906,7 @@ to match the version increase.</p>
 
 <p>Check on your stock pot, throw in your peppers, and give it a good stir.</p>
 
-<p>Roughly chop your fresh tomatoes and add to the pot.  Add the can of beef stock, and the can of crushed tomatoes, stir the pot well</p>
+<p>Add the can of beef stock, and the can of crushed tomatoes, stir the pot well</p>
 
 <p>Time to throw in that magical spice mix to turn this stew into Chili proper.  The cocoa powder will thicken the stew up quite a bit, stir it so that everything mixes well.  You want to make sure with the stew thickening that nothing sticks to the pot, and burns.</p>
 
