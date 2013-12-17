@@ -103,7 +103,7 @@ Configuration for test-kitchen with encrypted data bags.
 
     suites:
     - name: default
-      data_bag_path: "test/integration/default/data_bags"
+      data_bags_path: "test/integration/default/data_bags"
       encrypted_data_bag_secret_key_path: "test/integration/default/encrypted_data_bag_secret"
       run_list: ["recipe[certificate::default]"]
       attributes: {}
