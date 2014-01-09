@@ -4,7 +4,7 @@
   <title><![CDATA[Category: test-kitchen | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/test-kitchen/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:21:07-05:00</updated>
+  <updated>2014-01-09T11:22:10-05:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -52,17 +52,9 @@ driver_config:
 
 platforms:
 - name: ubuntu-12.04
-  driver_config:
-    box: opscode-ubuntu-12.04
 - name: ubuntu-10.04
-  driver_config:
-     box: opscode-ubuntu-10.04
 - name: centos-6.4
-  driver_config:
-    box: opscode-centos-6.4
 - name: centos-5.9
-  driver_config:
-    box: opscode-centos-5.9
 
 suites:
 - name: default
