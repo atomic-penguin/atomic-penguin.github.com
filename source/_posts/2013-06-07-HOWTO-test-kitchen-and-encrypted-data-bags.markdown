@@ -34,25 +34,13 @@ This `kitchen init` command will yield a file which looks like this:
     ---
     driver_plugin: vagrant
     driver_config:
-      require_chef_omnibus: true
+      require_chef_omnibus: latest 
 
     platforms:
     - name: ubuntu-12.04
-      driver_config:
-        box: opscode-ubuntu-12.04
-        box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
     - name: ubuntu-10.04
-      driver_config:
-         box: opscode-ubuntu-10.04
-         box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
     - name: centos-6.4
-      driver_config:
-        box: opscode-centos-6.4
-        box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
     - name: centos-5.9
-      driver_config:
-        box: opscode-centos-5.9
-        box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
 
     suites:
     - name: default
@@ -109,6 +97,7 @@ Configuration for test-kitchen with encrypted data bags.
       attributes: {}
 
 That should be all you need to run test-kitchen integration tests
-with encrypted data bags.
+with encrypted data bags.  Note, the default directory in `test/integration/default`
+corresponds to the suite name, `default`.
 
 
