@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>2 cent Linux tip using find and tar for a selective backup - atomic-penguin's blog</title>
+  <title>2 Cent Linux Tip Using Find and Tar for a Selective Backup - atomic-penguin's blog</title>
   <meta name="author" content="Eric G. Wolfe">
 
   
-  <meta name="description" content="So I&#39;m blowing away, and re-installing, my Steam Bottle on Codeweaver&#39;s Crossover games. I was hoping to get some in-game overlay support for &hellip;">
+  <meta name="description" content="So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on Codeweaver\&rsquo;s Crossover games. I was hoping to get some in-game overlay &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,16 +18,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/">
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
 
@@ -90,42 +91,42 @@
   </header>
 
 
-<div class="entry-content"><p>So I&#39;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver&#39;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+<div class="entry-content"><p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 
 <p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
 
 <!-- more -->
 
 
-<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&#8217;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I&#39;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&rsquo;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\&rsquo;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>find ~/.cxgames -name &quot;*.cfg&quot;</code></pre>
 </div>
 
 
-<p>When I run the following command, however, I&#8217;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &#8220;Program Files&#8221; is an escaped space for the shell to properly interpret this.</p>
+<p>When I run the following command, however, I&rsquo;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &ldquo;Program Files&rdquo; is an escaped space for the shell to properly interpret this.</p>
 
-<div class="highlight"><pre><code class="bash">    find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name &quot;*.cfg&quot; -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
 <p>Restoring is as simple as running the following command from within my home directory.</p>
 
-<div class="highlight"><pre><code class="bash">    tar xvf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>tar xvf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
-<p>Perhaps some day we&#8217;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+<p>Perhaps some day we&rsquo;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 </div>
 
 
@@ -162,8 +163,6 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/" >Tweet</a>
-  
   
   <div class="g-plusone" data-size="medium"></div>
   
@@ -199,15 +198,15 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC address change on RHEL</a>
+        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC Address Change on RHEL</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: system generated errata list and patch changelog with yum</a>
+        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: System Generated Errata List and Patch Changelog With Yum</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO Test-kitchen and Encrypted Data Bags</a>
       </li>
     
       <li class="post">
@@ -230,7 +229,7 @@
   <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -250,23 +249,11 @@
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
 <section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("atomic_penguin", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
-  
+  <h1>Twitter</h1>
+  <a class="twitter-timeline" href="https://twitter.com/atomic_penguin" data-widget-id="444543560017125376">Tweets by @atomic_penguin</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
 
 <section class="googleplus">
   <h1>
@@ -293,9 +280,7 @@
 
 <section>
   <h1>About Me</h1>
-  <img src="/images/profile.png" style="border: 0px;">
-  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
-  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+  <p>A little something about me.</p>
 </section>
 
   
@@ -323,7 +308,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -334,7 +319,7 @@
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s); js.id = id; js.async = true;
   js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
@@ -350,16 +335,6 @@
   </script>
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

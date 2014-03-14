@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: testing | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: Testing | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[HOWTO test-kitchen and encrypted data bags]]></title>
+    <title type="html"><![CDATA[HOWTO Test-kitchen and Encrypted Data Bags]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
     <updated>2013-06-07T15:58:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
@@ -32,7 +32,7 @@ data_bag testing into their cookbooks.</p>
 <h3>Warning</h3>
 
 <p>Encrypted data_bag files placed in <code>test/integration</code> should not be used in production.
-Files include a self-signed "snake oil" certificate/key and an encrypted_data_bag_secret file
+Files include a self-signed &ldquo;snake oil&rdquo; certificate/key and an encrypted_data_bag_secret file
 which are not secure to use beyond testing purposes.</p>
 
 <h3>Initialize test-kitchen</h3>
@@ -123,7 +123,7 @@ corresponds to the suite name, <code>default</code>.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol]]></title>
+    <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
     <updated>2012-06-12T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>

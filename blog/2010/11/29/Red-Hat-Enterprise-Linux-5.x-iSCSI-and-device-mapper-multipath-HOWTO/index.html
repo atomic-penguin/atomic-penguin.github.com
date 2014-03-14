@@ -20,16 +20,17 @@ software on Red Hat &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/">
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
 
@@ -146,7 +147,7 @@ of the storage array.  According to Dell EqualLogic (2008) some
 recommended guidelines are as follows:</p>
 
 <ul>
-<li>Do&#8230;
+<li>Do&hellip;
 
 <ul>
 <li>Use Cat 6 or Cat 5e TSB95 cables.</li>
@@ -156,7 +157,7 @@ recommended guidelines are as follows:</p>
 <li>Use VLANs, if physically separate switches are not available.</li>
 </ul>
 </li>
-<li>Do <strong>NOT</strong>&#8230;
+<li>Do <strong>NOT</strong>&hellip;
 
 <ul>
 <li>Use Spanning Tree Protocol on switch ports for iSCSI connections.</li>
@@ -167,7 +168,7 @@ recommended guidelines are as follows:</p>
 
 
 <p>See <em>PS Series Array Network Performance Guidelines</em>, or relevant
-storage vendor&#8217;s documentation for more information.</p>
+storage vendor&rsquo;s documentation for more information.</p>
 
 <h2>III. Manual installation</h2>
 
@@ -177,7 +178,7 @@ Enterprise Linux version 5.x.  If this is your first time installing
 and configuring Device Mapper Multipath, or Open-iSCSI software,
 then this is the recommended method of installation and configuration.<br/>
 It is possible to automate a portion of this installation and
-configuration with Red Hat&#8217;s Kickstart, or configuration management
+configuration with Red Hat&rsquo;s Kickstart, or configuration management
 engines such as Puppet.  However, that is beyond the scope of this
 document.</p>
 
@@ -407,7 +408,7 @@ the SCSI layer to your Multipath software, which would be necessary for
 quick fail-over.  With the default configuration, two minutes
 of I/O would be queued before failing the path. If you are familiar
 with Fiber Channel path fail-over, it tends to be instantaneous.<br/>
-Most people configuring iSCSI fail-over certainly don&#8217;t want
+Most people configuring iSCSI fail-over certainly don&rsquo;t want
 a failed path to be retried for two whole minutes.  Using the default
 configuration with a production database server could lead
 to massive amounts of I/O being queued instead of the expected
@@ -482,7 +483,7 @@ value set to the default, which is <em>Yes</em>.</p>
 <h3>1. Create iSCSI interfaces</h3>
 
 <p>The iSCSI interfaces are separate pseudo-devices used by Open-iSCSI.<br/>
-From Open-iSCSI&#8217;s point-of-view, these are not the same as physical
+From Open-iSCSI&rsquo;s point-of-view, these are not the same as physical
 Ethernet devices.  What you will need to do is bind
 each of your ethX devices to an iSCSI interface.  Technically speaking,
 you could call your iSCSI interfaces eth2 and eth3, and bind them to
@@ -586,7 +587,7 @@ You can do this with an update command:</p>
 
 <p>The file <em>/etc/iscsi/initiatorname.iscsi</em> should contain
 an initiator name for your iSCSI client host.  You need to include
-this initiator name on your iSCSI array&#8217;s configuration for
+this initiator name on your iSCSI array&rsquo;s configuration for
 this specific iSCSI client host.</p>
 
 <p>If you have not yet started the iSCSI daemon, run the following
@@ -602,7 +603,7 @@ command before we commence with discovering targets.</p>
 <h4>3.1. Discovering targets</h4>
 
 <p>Once the iscsid service is running
-and the client&#8217;s initiator name is configured on the iSCSI array,
+and the client&rsquo;s initiator name is configured on the iSCSI array,
 then you may proceed with the following command to discover available
 targets.  Assuming our iSCSI array had an IP address of 10.1.2.10,
 the following command would return the available targets.</p>
@@ -757,7 +758,7 @@ line in the <code>blacklist</code> section, thereby disabling Multipath
 for all devices in the system.  If you want to assign persistently
 bound names to iSCSI devices, be sure to set <code>user_friendly_names</code>
 to <em>yes</em>, as seen in the example on the following page.  If you do not
-use friendly names with Device Mapper, you&#8217;ll end up with device
+use friendly names with Device Mapper, you&rsquo;ll end up with device
 names such as <em>/dev/mapper/__36090afffffffffffffffffffffffffff</em>.
 When using friendly names, you will need to specify an <code>alias</code>
 line in the <code>multipaths</code> section after Open-iSCSI is configured
@@ -1107,8 +1108,6 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/" >Tweet</a>
-  
   
   <div class="g-plusone" data-size="medium"></div>
   
@@ -1144,15 +1143,15 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC address change on RHEL</a>
+        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC Address Change on RHEL</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: system generated errata list and patch changelog with yum</a>
+        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: System Generated Errata List and Patch Changelog With Yum</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO Test-kitchen and Encrypted Data Bags</a>
       </li>
     
       <li class="post">
@@ -1175,7 +1174,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -1195,23 +1194,11 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
 <section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("atomic_penguin", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
-  
+  <h1>Twitter</h1>
+  <a class="twitter-timeline" href="https://twitter.com/atomic_penguin" data-widget-id="444543560017125376">Tweets by @atomic_penguin</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
 
 <section class="googleplus">
   <h1>
@@ -1238,9 +1225,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <section>
   <h1>About Me</h1>
-  <img src="/images/profile.png" style="border: 0px;">
-  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
-  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+  <p>A little something about me.</p>
 </section>
 
   
@@ -1268,7 +1253,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -1279,7 +1264,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s); js.id = id; js.async = true;
   js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
@@ -1295,16 +1280,6 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   </script>
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

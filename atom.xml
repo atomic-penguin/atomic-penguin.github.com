@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Mini HOWTO - VMWare MAC address change on RHEL]]></title>
+    <title type="html"><![CDATA[Mini HOWTO - VMWare MAC Address Change on RHEL]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/"/>
     <updated>2013-10-14T14:15:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL</id>
@@ -26,7 +26,7 @@ This is a fairly easy fix, if you know where to look.</p>
 
 <h2>1. UDEV</h2>
 
-<p>Look for a &#8220;persistent net&#8221; rule in udev.</p>
+<p>Look for a &ldquo;persistent net&rdquo; rule in udev.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -39,7 +39,7 @@ This is a fairly easy fix, if you know where to look.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Edit the &#8220;persistent net&#8221; rule.  Comment out the old rule with a <code>#</code>,
+<p>Edit the &ldquo;persistent net&rdquo; rule.  Comment out the old rule with a <code>#</code>,
 and change <code>eth1</code> to eth0` on the new rule when the MAC has changed.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -114,14 +114,14 @@ and change <code>eth1</code> to eth0` on the new rule when the MAC has changed.<
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[TIL: system generated errata list and patch changelog with yum]]></title>
+    <title type="html"><![CDATA[TIL: System Generated Errata List and Patch Changelog With Yum]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/"/>
     <updated>2013-08-15T15:01:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum</id>
     <content type="html"><![CDATA[<p>I was looking for a way to create a system generated CVE, or errata,
 list for a production change request today.  I recall this being
 easier on RHN (Red Hat Network) portal, in the past.  That has changed
-so much, I don&#8217;t even know where to look, and apparently cannot list
+so much, I don&rsquo;t even know where to look, and apparently cannot list
 more than 10 errata issues per-page.</p>
 
 <!-- more -->
@@ -290,7 +290,7 @@ you just made to your system.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[HOWTO test-kitchen and encrypted data bags]]></title>
+    <title type="html"><![CDATA[HOWTO Test-kitchen and Encrypted Data Bags]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
     <updated>2013-06-07T15:58:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
@@ -308,7 +308,7 @@ data_bag testing into their cookbooks.</p>
 <h3>Warning</h3>
 
 <p>Encrypted data_bag files placed in <code>test/integration</code> should not be used in production.
-Files include a self-signed &#8220;snake oil&#8221; certificate/key and an encrypted_data_bag_secret file
+Files include a self-signed &ldquo;snake oil&rdquo; certificate/key and an encrypted_data_bag_secret file
 which are not secure to use beyond testing purposes.</p>
 
 <h3>Initialize test-kitchen</h3>
@@ -419,9 +419,9 @@ corresponds to the suite name, <code>default</code>.</p>
 <p>  So that we can interact with <code>api.opscode.com</code>, and an internal Open Source Chef server, you will need to name your keys according to your Chef server username, Opscode username, and Opscode platform organization name.  Assuming you already have a <code>~/.chef</code> directory, we will organize it like so.</p>
 
 <ol>
-<li>Re-name your Open Source chef-server private key according to your username on the chef-server system.  For example, move your chef-server private key to <code>~/.chef/corporate-username.pem</code>.</li>
-<li>Re-name your Opscode API key according to your Opscode platform username, for example I would move my Opscode key to <code>~/.chef/atomic-penguin.pem</code> to correspond to my own username.</li>
-<li>Re-name your Organization validation key so that it corresponds to your organization&#8217;s name on the Opscode platform.  For example, move your Opscode organization validation key to ~/.chef/companyname-validator.pem.</li>
+<li> Re-name your Open Source chef-server private key according to your username on the chef-server system.  For example, move your chef-server private key to <code>~/.chef/corporate-username.pem</code>.</li>
+<li> Re-name your Opscode API key according to your Opscode platform username, for example I would move my Opscode key to <code>~/.chef/atomic-penguin.pem</code> to correspond to my own username.</li>
+<li> Re-name your Organization validation key so that it corresponds to your organization&rsquo;s name on the Opscode platform.  For example, move your Opscode organization validation key to ~/.chef/companyname-validator.pem.</li>
 </ol>
 
 
@@ -434,18 +434,18 @@ corresponds to the suite name, <code>default</code>.</p>
 <p>The variables are as follows.</p>
 
 <ol>
-<li><code>OPSCODE_USER</code> - Set to your primary username.  This should be either your internal chef-server username or Opscode platform username.</li>
-<li><code>ORGNAME</code> - Should be set to &#8220;chef&#8221; for an internal chef-server.  Set this as your Opscode platform orgname, if using that as your primary Chef server.</li>
-<li><code>COOKBOOK_COPYRIGHT</code> - Set to your full name.</li>
-<li><code>COOKBOOK_EMAIL</code> - Set to your e-mail address.</li>
+<li> <code>OPSCODE_USER</code> &ndash; Set to your primary username.  This should be either your internal chef-server username or Opscode platform username.</li>
+<li> <code>ORGNAME</code> &ndash; Should be set to &ldquo;chef&rdquo; for an internal chef-server.  Set this as your Opscode platform orgname, if using that as your primary Chef server.</li>
+<li> <code>COOKBOOK_COPYRIGHT</code> &ndash; Set to your full name.</li>
+<li> <code>COOKBOOK_EMAIL</code> &ndash; Set to your e-mail address.</li>
 </ol>
 
 
 <h2>Bash functions</h2>
 
-<p>  I have two knife related Bash functions in my <code>~/.bashrc</code> file.  I use a function called &#8220;ginsu&#8221; to interact with the Opscode API.  Then I use the &#8220;knife-reset&#8221; function to restore default behavior to interact with our internal Chef server.  This is just an example, you could use the ginsu function as a template.  This way you could have an &#8220;opscode-knife&#8221; function, or maybe &#8220;prod-knife&#8221;, &#8220;dev-knife&#8221;, or &#8220;preprod-knife&#8221; to correspond to different servers or environments.</p>
+<p>  I have two knife related Bash functions in my <code>~/.bashrc</code> file.  I use a function called &ldquo;ginsu&rdquo; to interact with the Opscode API.  Then I use the &ldquo;knife-reset&rdquo; function to restore default behavior to interact with our internal Chef server.  This is just an example, you could use the ginsu function as a template.  This way you could have an &ldquo;opscode-knife&rdquo; function, or maybe &ldquo;prod-knife&rdquo;, &ldquo;dev-knife&rdquo;, or &ldquo;preprod-knife&rdquo; to correspond to different servers or environments.</p>
 
-<p>  The <code>knife-reset</code> function simply sets my <code>OPSCODE_USER</code> variable equal to my internal Open Source chef-server username, and <code>ORGNAME</code> equal to &#8220;chef&#8221;.  The <code>knife-reset</code> function then exports the variables so my knife configuration gets reset back to my primary Chef server.</p>
+<p>  The <code>knife-reset</code> function simply sets my <code>OPSCODE_USER</code> variable equal to my internal Open Source chef-server username, and <code>ORGNAME</code> equal to &ldquo;chef&rdquo;.  The <code>knife-reset</code> function then exports the variables so my knife configuration gets reset back to my primary Chef server.</p>
 
 <p>  The <code>ginsu</code> function sets the <code>OPSCODE_USER</code> variable equal to my Opscode platform username, and <code>ORGNAME</code> equal to my Opscode organization name.  The <code>ginsu</code> function then exports the variables and passes any parameters to the knife command.  This way I can do a <code>ginsu cookbook site share yumrepo "Package Management"</code> to upload my yumrepo cookbook to the Opscode Community Cookbook site.</p>
 
@@ -471,7 +471,7 @@ corresponds to the suite name, <code>default</code>.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I used an if/then/else block in my shared knife.rb to switch the URL of my Chef server based on the <code>ORGNAME</code>.  You could use a <code>CHEF_SERVER</code> environment variable in your <code>~/.bashrc</code> if that would work better for you.  Obviously you&#8217;ll want to change the hardcoded <code>corporate</code> string to match your Opscode platform orgname, and also edit the <code>chef_server_url</code> to point another Chef server.</p>
+<p>I used an if/then/else block in my shared knife.rb to switch the URL of my Chef server based on the <code>ORGNAME</code>.  You could use a <code>CHEF_SERVER</code> environment variable in your <code>~/.bashrc</code> if that would work better for you.  Obviously you&rsquo;ll want to change the hardcoded <code>corporate</code> string to match your Opscode platform orgname, and also edit the <code>chef_server_url</code> to point another Chef server.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -486,7 +486,7 @@ corresponds to the suite name, <code>default</code>.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>If you commit all your Community Cookbooks under corporate copyright rather than individual developer names, then you might want to hardcode the company name and a generic development team e-mail address.  This way, your developers don&#8217;t have to set <code>COOKBOOK_COPYRIGHT</code> or <code>COOKBOOK_EMAIL</code>.  The command <code>knife cookbook create &lt;cookbook name&gt;</code> will fill in the company name as the cookbook maintainer, and copyright owner in that case.</p>
+<p>If you commit all your Community Cookbooks under corporate copyright rather than individual developer names, then you might want to hardcode the company name and a generic development team e-mail address.  This way, your developers don&rsquo;t have to set <code>COOKBOOK_COPYRIGHT</code> or <code>COOKBOOK_EMAIL</code>.  The command <code>knife cookbook create &lt;cookbook name&gt;</code> will fill in the company name as the cookbook maintainer, and copyright owner in that case.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -601,7 +601,7 @@ corresponds to the suite name, <code>default</code>.</p>
 
 <h1>Credits</h1>
 
-<p>This was partly adapted from Stephen Nelson-Smith&#8217;s (@LordCope) book Test-Driven Infrastructure with Chef (http://shop.oreilly.com/product/0636920020042.do).</p>
+<p>This was partly adapted from Stephen Nelson-Smith&rsquo;s (@LordCope) book Test-Driven Infrastructure with Chef (<a href="http://shop.oreilly.com/product/0636920020042.do">http://shop.oreilly.com/product/0636920020042.do</a>).</p>
 ]]></content>
   </entry>
   
@@ -616,7 +616,7 @@ Vertical synchronization (or VerticalSync) is</p>
 <p><code>an option in most systems, wherein the video card is prevented from doing anything visible to the
 display memory until after the monitor finishes its current refresh cycle.</code></p>
 
-<p>In layman&#8217;s terms, when Vertical synchronization is turned on, many aspects
+<p>In layman&rsquo;s terms, when Vertical synchronization is turned on, many aspects
 of video processing are locked to the reported refresh rate of your display
 hardware.  In other words, if your fancy LCD screen reports 60 Hz. is its own
 supported refresh rate, then games or video playback will be capped at 60 frames
@@ -626,7 +626,7 @@ per second when Vertical synchronization is turned on.</p>
 
 
 <p>I have seen a couple reports that turning off <a href="http://www.reddit.com/r/tf2/comments/15o98u/psalinux_vsync_enabled_by_default_even_if_it_says/">VSync</a>
-doesn&#8217;t actually disable VSync in Linux Steam games like Team Fortress 2.  The proposed workaround in this reddit thread was toggling
+doesn&rsquo;t actually disable VSync in Linux Steam games like Team Fortress 2.  The proposed workaround in this reddit thread was toggling
 the option on, and off, until VSync was actually turned off.  Searching through the <a href="https://github.com/ValveSoftware/steam-for-linux">steam-for-linux issue tracker</a>
 last night, I found this <a href="https://github.com/ValveSoftware/steam-for-linux/issues/271">solution</a> on an unrelated AMD TearFree bug report.</p>
 
@@ -692,7 +692,7 @@ within the window manager, so that the user can decide on the setting which they
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Mini-HOWTO: Building a deb package for Beta NVidia drivers]]></title>
+    <title type="html"><![CDATA[Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/"/>
     <updated>2012-12-14T12:12:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers</id>
@@ -715,7 +715,7 @@ beta has led to many Linux video driver improvements from major
 GPU vendors.  As of this post, there have been several experimental
 NVidia driver releases with major bugfixes and performance improvements
 for Linux users.  The NVidia experimental driver releases have perhaps
-happened so quickly that it isn&#8217;t feasible to re-package every iteration
+happened so quickly that it isn&rsquo;t feasible to re-package every iteration
 for Ubuntu/Debian users.</p>
 
 <p>Read on if you would like to re-package the NVidia experimental releases,
@@ -727,15 +727,15 @@ officially supported repositories.</p>
 <h2>Experimental NVidia drivers as deb packages</h2>
 
 <p>The package maintainer for the nvidia-graphics-drivers has general build guidelines <a href="https://github.com/tseliot/nvidia-graphics-drivers/blob/master/debian/nvidia-current.README.Debian">here</a>.
-If you&#8217;re desperate for the new drivers via Ubuntu packaging, you can rebuild them with the 310.19, or 313.09 packages.
+If you&rsquo;re desperate for the new drivers via Ubuntu packaging, you can rebuild them with the 310.19, or 313.09 packages.
 Here is the process I followed to install the latest NVidia Beta drivers from deb packages.  The major version bump
 to 313.09 is a slightly different process.  I could not find any automated way to regenerate the names of the packaging templates
 to match the version increase.</p>
 
-<h3>Minor version bump 310.14 - 310.19</h3>
+<h3>Minor version bump 310.14 &ndash; 310.19</h3>
 
 <ol>
-<li><code>cd /usr/src</code> (you&#8217;ll need src group membership to write to /usr/src)</li>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
 <li><code>apt-get source nvidia-experimental-310</code></li>
 <li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
 <li><code>sudo apt-get install devscripts</code></li>
@@ -760,10 +760,10 @@ to match the version increase.</p>
 </ol>
 
 
-<h3>Major version bump 310.14 -> 313.09</h3>
+<h3>Major version bump 310.14 &ndash;> 313.09</h3>
 
 <ol>
-<li><code>cd /usr/src</code> (you&#8217;ll need src group membership to write to /usr/src)</li>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
 <li><code>apt-get source nvidia-experimental-310</code></li>
 <li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
 <li><code>sudo apt-get install devscripts</code></li>
@@ -805,43 +805,43 @@ to match the version increase.</p>
     <id>http://atomic-penguin.github.com/blog/2012/09/08/atomic-penguins-feel-good-chili</id>
     <content type="html"><![CDATA[<p>When I am not writing Opschef cookbooks, I do enjoy real cooking in my spare time.  I have been down and out with a bit of a cold for the last week.  With it getting colder outside and with me feeling a bit better today, I decided to make a big pot of chili.</p>
 
-<p>There is just something about having a big pot stewing and making your house smell homey, like a big pot of soup, which can make you feel better.  Capsaicin, the magical stuff which make peppers hot, is thought to break up congestion, to help clear up your sinuses, and helps with the management of pain.  So some spicy Chili certainly can&#8217;t hurt, especially given the cold I have suffered through this week.</p>
+<p>There is just something about having a big pot stewing and making your house smell homey, like a big pot of soup, which can make you feel better.  Capsaicin, the magical stuff which make peppers hot, is thought to break up congestion, to help clear up your sinuses, and helps with the management of pain.  So some spicy Chili certainly can&rsquo;t hurt, especially given the cold I have suffered through this week.</p>
 
 <!-- more -->
 
 
-<p>Without further ado, here is what you&#8217;ll need for my own personal recipe of Chili.  I have a 15.6 Quart stock pot, and this recipe fills about half the pot.  I would estimate the yield at about 2 gallons, and it makes great leftovers, or can be frozen for later.  The recipe takes about 45 minutes of preparation time, and about 2 hours of cooking time.  It is totally worth the effort, and a great way to spend a weekend afternoon.</p>
+<p>Without further ado, here is what you&rsquo;ll need for my own personal recipe of Chili.  I have a 15.6 Quart stock pot, and this recipe fills about half the pot.  I would estimate the yield at about 2 gallons, and it makes great leftovers, or can be frozen for later.  The recipe takes about 45 minutes of preparation time, and about 2 hours of cooking time.  It is totally worth the effort, and a great way to spend a weekend afternoon.</p>
 
 <h2>Ingredient list</h2>
 
 <ul>
 <li>~15 Quart. / ~7 Litre stock pot</li>
-<li>2 - medium sweet yellow onions</li>
-<li>2 - bell peppers</li>
-<li>4 - jalapeno peppers</li>
-<li>2-4 - cloves of garlic</li>
-<li>2x 28 oz. can - crushed whole tomatoes</li>
-<li>14 oz. can - beef broth</li>
-<li>14 oz. can - kidney beans (optional)</li>
-<li>6 oz. can - tomato paste</li>
-<li>2 Tbsp. - cooking oil</li>
-<li>3 Tbsp. - chili powder</li>
-<li>1 Tbsp. - ground cumin seed</li>
-<li>1 Tbsp. - cocoa powder (bakers cocoa)</li>
-<li>2 tsp. - coarse sea, or kosher, salt</li>
-<li>1 tsp. - crushed red pepper</li>
-<li>3/4 tsp. - ground cayenne pepper</li>
-<li>1/2 tsp. - ground cinnamon</li>
-<li>1/2 tsp. - black pepper</li>
-<li>at least 3 lbs. - chuck beef steak/roast</li>
+<li>2 &ndash; medium sweet yellow onions</li>
+<li>2 &ndash; bell peppers</li>
+<li>4 &ndash; jalapeno peppers</li>
+<li>2-4 &ndash; cloves of garlic</li>
+<li>2x 28 oz. can &ndash; crushed whole tomatoes</li>
+<li>14 oz. can &ndash; beef broth</li>
+<li>14 oz. can &ndash; kidney beans (optional)</li>
+<li>6 oz. can &ndash; tomato paste</li>
+<li>2 Tbsp. &ndash; cooking oil</li>
+<li>3 Tbsp. &ndash; chili powder</li>
+<li>1 Tbsp. &ndash; ground cumin seed</li>
+<li>1 Tbsp. &ndash; cocoa powder (bakers cocoa)</li>
+<li>2 tsp. &ndash; coarse sea, or kosher, salt</li>
+<li>1 tsp. &ndash; crushed red pepper</li>
+<li>&frac34; tsp. &ndash; ground cayenne pepper</li>
+<li>&frac12; tsp. &ndash; ground cinnamon</li>
+<li>&frac12; tsp. &ndash; black pepper</li>
+<li>at least 3 lbs. &ndash; chuck beef steak/roast</li>
 <li>Shredded cheddar (optional)</li>
-<li>2 cans or bottles - Guinness, or other dark Stout, beer</li>
+<li>2 cans or bottles &ndash; Guinness, or other dark Stout, beer</li>
 </ul>
 
 
 <h2>Directions</h2>
 
-<p>Gather all your dry spices and dump into a small bowl.  This should include: 3 Tbsp. chili powder; 1 Tbsp. cumin; 1 Tbsp cocoa powder; 2 tsp. coarse salt; 1 tsp. red pepper; 3/4 tsp. cayenne; 1/2 tsp. cinnamon; 1/2 tsp. pepper.  Set the small bowl aside, for use later.</p>
+<p>Gather all your dry spices and dump into a small bowl.  This should include: 3 Tbsp. chili powder; 1 Tbsp. cumin; 1 Tbsp cocoa powder; 2 tsp. coarse salt; 1 tsp. red pepper; &frac34; tsp. cayenne; &frac12; tsp. cinnamon; &frac12; tsp. pepper.  Set the small bowl aside, for use later.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/01spicemix.jpg" title="Spice mix, mise en place" alt="Spice mix" /></p>
 
@@ -853,7 +853,7 @@ to match the version increase.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/03choppedgarlic.jpg" title="Then finely mince the garlic" alt="Mince the garlic" /></p>
 
-<p>Roughly chop your onions.  See the following video from Gordon Ramsay on how to chop an onion.  You don&#8217;t have to chop it so thinly or precisely as in the video.  The roughly chopped pieces will break apart and cook down in your stew.  If you can cut 1/4 inch pieces that would be just about right.  You probably don&#8217;t want large strings, rings, or chunks of onion in your chili though.</p>
+<p>Roughly chop your onions.  See the following video from Gordon Ramsay on how to chop an onion.  You don&rsquo;t have to chop it so thinly or precisely as in the video.  The roughly chopped pieces will break apart and cook down in your stew.  If you can cut &frac14; inch pieces that would be just about right.  You probably don&rsquo;t want large strings, rings, or chunks of onion in your chili though.</p>
 
 <iframe width="560" height="315" src="http://www.youtube.com/embed/TwGBt3V0yvc#t=6s" frameborder="0" allowfullscreen></iframe>
 
@@ -862,17 +862,17 @@ to match the version increase.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/04choppedonionsandgarlic.jpg" title="Chopped onions and garlic." alt="Chopped onions and garlic" /></p>
 
-<p>Trim and cut the steak into roughly 1/2 inch cubes.  You want to trim away any cartilage or excess fat.</p>
+<p>Trim and cut the steak into roughly &frac12; inch cubes.  You want to trim away any cartilage or excess fat.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/05chucksteak.jpg" title="Chuck beef roast/steak" alt="Chuck beef" /></p>
 
-<p>A little extra fat on the meat is good, it will render down as it stews, so you don&#8217;t have to be obsessive compulsive in trimming away every little piece.  On the other hand, you don&#8217;t want a big chunk of cartilage hanging off a bit of meat, as big chunks will never render down and it is fairly unappetizing to get a mouthful.</p>
+<p>A little extra fat on the meat is good, it will render down as it stews, so you don&rsquo;t have to be obsessive compulsive in trimming away every little piece.  On the other hand, you don&rsquo;t want a big chunk of cartilage hanging off a bit of meat, as big chunks will never render down and it is fairly unappetizing to get a mouthful.</p>
 
-<p>This is the most labor intensive part of making stew or Chili.  If butchering meat isn&#8217;t your cup of tea, you can always buy convenience packages of <em>stew meat</em> at many supermarkets.  You&#8217;ll typically pay a little more for the same meat, and the convenience of not having to trim your own beef for stew.</p>
+<p>This is the most labor intensive part of making stew or Chili.  If butchering meat isn&rsquo;t your cup of tea, you can always buy convenience packages of <em>stew meat</em> at many supermarkets.  You&rsquo;ll typically pay a little more for the same meat, and the convenience of not having to trim your own beef for stew.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/06choppedsteak.jpg" title="Trimmed stew meat" alt="Trimmed stew meat" /></p>
 
-<p>Now that the hard part is out of the way.  Set your stock pot on a stove burner, set at medium high, and add your oil.  Wait a couple minutes for it to get hot, then dump in your meat stirring so it doesn&#8217;t burn or stick.  Just want to get the meat a little brown, not really cook it through.  Add your onions and garlic, and turn down the heat to medium low.  Give the onions, garlic, and meat an occasional stir while you chop your peppers to keep things from burning.  If anything starts burning, or smoking, you have got the fire way too hot.  Just turn down the fire, and maybe add a splash of beef stock to cool things down.</p>
+<p>Now that the hard part is out of the way.  Set your stock pot on a stove burner, set at medium high, and add your oil.  Wait a couple minutes for it to get hot, then dump in your meat stirring so it doesn&rsquo;t burn or stick.  Just want to get the meat a little brown, not really cook it through.  Add your onions and garlic, and turn down the heat to medium low.  Give the onions, garlic, and meat an occasional stir while you chop your peppers to keep things from burning.  If anything starts burning, or smoking, you have got the fire way too hot.  Just turn down the fire, and maybe add a splash of beef stock to cool things down.</p>
 
 <p>While your beef is browning and the onions and garlic are cooking, then you can start chopping your peppers.  Once again, you can defer to the Gordon Ramsay video below for a quick way to chop peppers.</p>
 
@@ -880,9 +880,9 @@ to match the version increase.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/07choppingpeppers.jpg" title="Cut down the wall of the pepper, around the seed pod" alt="Chopping peppers" /></p>
 
-<p>You should have 3 or 4 large chunks after cutting out the seed pod.  Cut the chunks of pepper into 1/4 inch strips, and then cut across the strips for a 1/4 inch dice.</p>
+<p>You should have 3 or 4 large chunks after cutting out the seed pod.  Cut the chunks of pepper into &frac14; inch strips, and then cut across the strips for a &frac14; inch dice.</p>
 
-<p>Once again, you can defer to the Gordon Ramsay video below for a video demonstration.  Again, we&#8217;re not cutting our peppers for our chili as thin as his Julienned cut seen in the video.</p>
+<p>Once again, you can defer to the Gordon Ramsay video below for a video demonstration.  Again, we&rsquo;re not cutting our peppers for our chili as thin as his Julienned cut seen in the video.</p>
 
 <iframe width="560" height="315" src="http://www.youtube.com/embed/_fU1p-iGieI" frameborder="0" allowfullscreen></iframe>
 
@@ -891,7 +891,7 @@ to match the version increase.</p>
 
 <p><img src="http://atomic-penguin.github.com/images/20120908/09choppingjalapenos.jpg" title="Use the same method on jalapenos" alt="Chopping jalapenos" /></p>
 
-<p>Once you have the sides cut off of the jalapeno&#8217;s seed pods.  Cut the sides into strips, then cut across the strips to mince.  We want to get rid of the <em>veins</em> and <em>seeds</em> of the jalapeno because those hold most of the heat.  With the chili spices, and the jalapenos themselves, the Chili stew will have a nice kick.  It won&#8217;t be an overbearing amount of spicy heat though.</p>
+<p>Once you have the sides cut off of the jalapeno&rsquo;s seed pods.  Cut the sides into strips, then cut across the strips to mince.  We want to get rid of the <em>veins</em> and <em>seeds</em> of the jalapeno because those hold most of the heat.  With the chili spices, and the jalapenos themselves, the Chili stew will have a nice kick.  It won&rsquo;t be an overbearing amount of spicy heat though.</p>
 
 <p>Check on your stock pot, throw in your peppers, and give it a good stir.</p>
 
@@ -912,7 +912,7 @@ to match the version increase.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Foodfight podcast - Episode 17, Testing with Eric G. Wolfe & Fletcher Nichol]]></title>
+    <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
     <updated>2012-06-12T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
@@ -936,7 +936,7 @@ to match the version increase.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Foodfight podcast - Episode 1, Chef in 2012]]></title>
+    <title type="html"><![CDATA[Foodfight Podcast - Episode 1, Chef in 2012]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012/"/>
     <updated>2012-01-15T00:00:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012</id>
@@ -945,7 +945,7 @@ to match the version increase.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Marshall University case study]]></title>
+    <title type="html"><![CDATA[Marshall University Case Study]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study/"/>
     <updated>2011-09-06T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study</id>
@@ -956,57 +956,57 @@ to match the version increase.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[2 cent Linux tip using find and tar for a selective backup]]></title>
+    <title type="html"><![CDATA[2 Cent Linux Tip Using Find and Tar for a Selective Backup]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
     <updated>2011-07-11T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
-    <content type="html"><![CDATA[<p>So I&#39;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver&#39;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+    <content type="html"><![CDATA[<p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 
 <p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
 
 <!-- more -->
 
 
-<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&#8217;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I&#39;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&rsquo;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\&rsquo;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>find ~/.cxgames -name &quot;*.cfg&quot;</code></pre>
 </div>
 
 
-<p>When I run the following command, however, I&#8217;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &#8220;Program Files&#8221; is an escaped space for the shell to properly interpret this.</p>
+<p>When I run the following command, however, I&rsquo;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &ldquo;Program Files&rdquo; is an escaped space for the shell to properly interpret this.</p>
 
-<div class="highlight"><pre><code class="bash">    find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<div class="highlight"><pre><code class="bash">    find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name &quot;*.cfg&quot; -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
 <p>Restoring is as simple as running the following command from within my home directory.</p>
 
-<div class="highlight"><pre><code class="bash">    tar xvf ~/etc/steam-settings.tar
-</code></pre>
+<div>
+  <pre><code class='bash'>tar xvf ~/etc/steam-settings.tar</code></pre>
 </div>
 
 
-<p>Perhaps some day we&#8217;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+<p>Perhaps some day we&rsquo;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[HOWTO Using rsync to move a mountain of data]]></title>
+    <title type="html"><![CDATA[HOWTO Using Rsync to Move a Mountain of Data]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/"/>
     <updated>2011-04-16T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data</id>
-    <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I&#39;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
+    <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\&rsquo;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
 
-<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don&#8217;t have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
+<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don&rsquo;t have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
 
 <p>I hope you enjoy this in-depth article.  Please feel free to comment: if you need clarification, find it useful, or something I wrote is just plain wrong.</p>
 
@@ -1015,12 +1015,12 @@ to match the version increase.</p>
 
 <h2>The Tools</h2>
 
-<p>Three things you&#8217;ll need for this exercise:</p>
+<p>Three things you&rsquo;ll need for this exercise:</p>
 
 <ol>
-<li><code>screen</code> - lets you detach a console session, and can be re-attached after logging out and walking away.</li>
-<li><code>rsync</code> - the swiss-army knife of copy/archiving programs.</li>
-<li><code>data</code> - any will do. Whether its a large group of /home directories, or even a live Oracle database.</li>
+<li><code>screen</code> &ndash; lets you detach a console session, and can be re-attached after logging out and walking away.</li>
+<li><code>rsync</code> &ndash; the swiss-army knife of copy/archiving programs.</li>
+<li><code>data</code> &ndash; any will do. Whether its a large group of /home directories, or even a live Oracle database.</li>
 </ol>
 
 
@@ -1065,7 +1065,7 @@ to match the version increase.</p>
 <p>Some other useful switches</p>
 
 <ul>
-<li><code>--progress</code>: gives you per-file data transfer rates, and spinning progress bars if you&#39;re into that sort of thing.</li>
+<li><code>--progress</code>: gives you per-file data transfer rates, and spinning progress bars if you\&rsquo;re into that sort of thing.</li>
 <li><code>--stats</code>: gives you a nice summary rate, and speed-up rate at the end of the job.</li>
 </ul>
 
@@ -1076,56 +1076,55 @@ to match the version increase.</p>
 
 <p>Anyway, the configuration files for the temporary rsync daemon on your production system should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.conf</span>
-    syslog <span class="nv">facility</span> <span class="o">=</span> local3
-    <span class="nb">read </span><span class="nv">only</span> <span class="o">=</span> yes <span class="nv">list</span> <span class="o">=</span> yes
-    auth <span class="nv">users</span> <span class="o">=</span> root
-    secrets <span class="nv">file</span> <span class="o">=</span> /etc/rsyncd.secrets
-    hosts <span class="nv">allow</span> <span class="o">=</span> 1.2.3.4/32
-    <span class="nv">uid</span> <span class="o">=</span> 0
-    <span class="nv">gid</span> <span class="o">=</span> 0
+<div>
+  <pre><code class='bash'>#/etc/rsyncd.conf
+    syslog facility = local3
+    read only = yes list = yes
+    auth users = root
+    secrets file = /etc/rsyncd.secrets
+    hosts allow = 1.2.3.4/32
+    uid = 0
+    gid = 0
 
-    <span class="o">[</span>root<span class="o">]</span>
-    <span class="nv">comment</span> <span class="o">=</span> /
-    <span class="nv">path</span> <span class="o">=</span> /
-</code></pre>
+    [root]
+    comment = /
+    path = /</code></pre>
 </div>
 
 
 <p>Set a password for the daemon in /etc/rsyncd.secrets, and set the owner/group of that file to root:root with 600 permissions.  The password file format looks like this.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.secrets</span>
-    root:SuperSecretPasswordFTW
-</code></pre>
+<div>
+  <pre><code class='bash'>#/etc/rsyncd.secrets
+    root:SuperSecretPasswordFTW</code></pre>
 </div>
 
 
 <p>Open TCP port 873 for the pre-production host, an appropriate iptables rule would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
+<div>
+  <pre><code class='bash'>iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT</code></pre>
 </div>
 
 
 <p>Finally run the following command to start up your temporary rsync daemon on the production host.</p>
 
-<div class="highlight"><pre><code class="bash">    
-    rsync --daemon
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync --daemon</code></pre>
 </div>
 
 
 <p>Now you should have all the components necessary to copy files over the network using the rsync protocol, an rsync client on the pre-production server, and an rsync server on the production server.  Your command should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home/ /home
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync -av root@prod-server::root/home/ /home</code></pre>
 </div>
 
 
 <p>Yet another way of saying the same thing, but also copying any special permissions on the top-level directory of home to the /home directory on the pre-prod server.</p>
 
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home /
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync -av root@prod-server::root/home /</code></pre>
 </div>
 
 
@@ -1133,9 +1132,9 @@ to match the version increase.</p>
 
 <p>Once the rsync job has finished on the pre-production server, you can run the following to kill off the daemon, and remove your temporary iptables rule.</p>
 
-<div class="highlight"><pre><code class="bash">    killall -9 rsync
-    iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
+<div>
+  <pre><code class='bash'>killall -9 rsync
+    iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT</code></pre>
 </div>
 
 
@@ -1149,13 +1148,13 @@ to match the version increase.</p>
 <li><code>--inplace</code>: rsync writes updated data directly to a file, instead of making a copy and moving it into place.
 
 <ul>
-<li>I strongly advise you to RTFM on this one, it comes with several warnings.  But from what I understand, this option was added to rsync for cloning large files such as databases.  Both server&#39;s rsync programs need to support the in-place option for this to work, otherwise it will give you an error.</li>
+<li>I strongly advise you to RTFM on this one, it comes with several warnings.  But from what I understand, this option was added to rsync for cloning large files such as databases.  Both server\&rsquo;s rsync programs need to support the in-place option for this to work, otherwise it will give you an error.</li>
 </ul>
 </li>
 </ul>
 
 
-<p>I usually kick off a large rysnc job on a hot database, and run one or even a few catch-up jobs on a cold database before the final switch in any large-scale data migration.  What that means is you can run rsync on a running database, but you will not get a consistent Oracle DBF file on your pre-production host during a hot run.  It doesn&#39;t matter if you use the <code>--inplace</code> option, or not, on the first hot run.  Either way, you probably will not get a consistent copy of the database.</p>
+<p>I usually kick off a large rysnc job on a hot database, and run one or even a few catch-up jobs on a cold database before the final switch in any large-scale data migration.  What that means is you can run rsync on a running database, but you will not get a consistent Oracle DBF file on your pre-production host during a hot run.  It doesn\&rsquo;t matter if you use the <code>--inplace</code> option, or not, on the first hot run.  Either way, you probably will not get a consistent copy of the database.</p>
 
 <p>However, on any subsequent cold run (when the database is shut down) <code>--inplace</code> can significantly reduce the amount of data written on the pre-production host.  Because this particular option has the ability to do block-level updates to large files, when used on your final rsync catch-up job.  I have witnessed rsync updating half a Terabyte worth of dbf files in close to half an hour, during a final cold run on a quiet weekend.  I have also seen it take up to four hours to do just as much after close of business on a Friday night.  Your mileage may vary from my results, probably the most significant variable in rsync performance is the amount of usage between the initial hot run and final cold run.</p>
 
@@ -1165,7 +1164,8 @@ to match the version increase.</p>
 
 <p>So after playing around with some perl/sed, and awk to generate a list of source and destinations from a password file on the production server.  I might have a file rsync-home.list containing syntactically correct paired rsync sources and destinations, which would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    root@prod-server::root/home/a/alice /home
+<div>
+  <pre><code class='bash'>root@prod-server::root/home/a/alice /home
     root@prod-server::root/home/b/bob /home
     root@prod-server::root/u01/app/oracle /u01/app
     root@prod-server::root/home/c/charlie /home
@@ -1174,16 +1174,14 @@ to match the version increase.</p>
     root@prod-server::root/home/m/mallory /home
     root@prod-server::root/home/t/trent /home
     root@prod-server::root/home/w/walter /home
-    root@prod-server::root/usr/local/vendor /usr/local
-</code></pre>
+    root@prod-server::root/usr/local/vendor /usr/local</code></pre>
 </div>
 
 
 <p>Unfortunately there is no switch for rsync to read such a list, and operate on it directly.  However, it is fairly easy to script with a bash one-liner, like so.</p>
 
-<div class="highlight"><pre><code class="bash">    
-    <span class="nv">RSYNC_PASSWORD</span><span class="o">=</span><span class="s2">&quot;SuperSecretPasswordFTW&quot;</span>; cat rsync-home.list | <span class="k">while </span><span class="nb">read </span>LINE; <span class="k">do </span>rsync -av --progress <span class="nv">$LINE</span>; <span class="k">done</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>RSYNC_PASSWORD=&quot;SuperSecretPasswordFTW&quot;; cat rsync-home.list | while read LINE; do rsync -av --progress $LINE; done</code></pre>
 </div>
 
 
@@ -1191,24 +1189,24 @@ to match the version increase.</p>
 
 <h3>Hunting down symlinks in the archive tree</h3>
 
-<p>Remember when I said you usually don&#39;t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
+<p>Remember when I said you usually don\&rsquo;t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
 
-<div class="highlight"><pre><code class="bash">    find /u01 -type l -xtype d -exec ls -l <span class="o">{}</span> ; | awk <span class="s1">&#39;{ print $NF }&#39;</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>find /u01 -type l -xtype d -exec ls -l {} ; | awk &#39;{ print $NF }&#39;</code></pre>
 </div>
 
 
 <p>Which returns a handy little list of items remaining to be copied over to our pre-prod server by rsync.  The couple of returned entries without a leading-slash can be thrown out, those are links within the <code>/u01</code> tree and would therefore be copied as a result of running an rsync job on <code>/u01</code>.</p>
 
-<div class="highlight"><pre><code class="bash">    /u04/app/oracle/RMAN
+<div>
+  <pre><code class='bash'>/u04/app/oracle/RMAN
     /u03/app/oracle/arclogs
     /u05/app/oracle/exports
     /u02/app/oracle/oradata/fooprod
     /u06/app/oracle/oradata/foopreprd
     client
     /u08
-    linux
-</code></pre>
+    linux</code></pre>
 </div>
 
 
@@ -1275,7 +1273,7 @@ of the storage array.  According to Dell EqualLogic (2008) some
 recommended guidelines are as follows:</p>
 
 <ul>
-<li>Do&#8230;
+<li>Do&hellip;
 
 <ul>
 <li>Use Cat 6 or Cat 5e TSB95 cables.</li>
@@ -1285,7 +1283,7 @@ recommended guidelines are as follows:</p>
 <li>Use VLANs, if physically separate switches are not available.</li>
 </ul>
 </li>
-<li>Do <strong>NOT</strong>&#8230;
+<li>Do <strong>NOT</strong>&hellip;
 
 <ul>
 <li>Use Spanning Tree Protocol on switch ports for iSCSI connections.</li>
@@ -1296,7 +1294,7 @@ recommended guidelines are as follows:</p>
 
 
 <p>See <em>PS Series Array Network Performance Guidelines</em>, or relevant
-storage vendor&#8217;s documentation for more information.</p>
+storage vendor&rsquo;s documentation for more information.</p>
 
 <h2>III. Manual installation</h2>
 
@@ -1306,7 +1304,7 @@ Enterprise Linux version 5.x.  If this is your first time installing
 and configuring Device Mapper Multipath, or Open-iSCSI software,
 then this is the recommended method of installation and configuration.<br/>
 It is possible to automate a portion of this installation and
-configuration with Red Hat&#8217;s Kickstart, or configuration management
+configuration with Red Hat&rsquo;s Kickstart, or configuration management
 engines such as Puppet.  However, that is beyond the scope of this
 document.</p>
 
@@ -1536,7 +1534,7 @@ the SCSI layer to your Multipath software, which would be necessary for
 quick fail-over.  With the default configuration, two minutes
 of I/O would be queued before failing the path. If you are familiar
 with Fiber Channel path fail-over, it tends to be instantaneous.<br/>
-Most people configuring iSCSI fail-over certainly don&#8217;t want
+Most people configuring iSCSI fail-over certainly don&rsquo;t want
 a failed path to be retried for two whole minutes.  Using the default
 configuration with a production database server could lead
 to massive amounts of I/O being queued instead of the expected
@@ -1611,7 +1609,7 @@ value set to the default, which is <em>Yes</em>.</p>
 <h3>1. Create iSCSI interfaces</h3>
 
 <p>The iSCSI interfaces are separate pseudo-devices used by Open-iSCSI.<br/>
-From Open-iSCSI&#8217;s point-of-view, these are not the same as physical
+From Open-iSCSI&rsquo;s point-of-view, these are not the same as physical
 Ethernet devices.  What you will need to do is bind
 each of your ethX devices to an iSCSI interface.  Technically speaking,
 you could call your iSCSI interfaces eth2 and eth3, and bind them to
@@ -1715,7 +1713,7 @@ You can do this with an update command:</p>
 
 <p>The file <em>/etc/iscsi/initiatorname.iscsi</em> should contain
 an initiator name for your iSCSI client host.  You need to include
-this initiator name on your iSCSI array&#8217;s configuration for
+this initiator name on your iSCSI array&rsquo;s configuration for
 this specific iSCSI client host.</p>
 
 <p>If you have not yet started the iSCSI daemon, run the following
@@ -1731,7 +1729,7 @@ command before we commence with discovering targets.</p>
 <h4>3.1. Discovering targets</h4>
 
 <p>Once the iscsid service is running
-and the client&#8217;s initiator name is configured on the iSCSI array,
+and the client&rsquo;s initiator name is configured on the iSCSI array,
 then you may proceed with the following command to discover available
 targets.  Assuming our iSCSI array had an IP address of 10.1.2.10,
 the following command would return the available targets.</p>
@@ -1886,7 +1884,7 @@ line in the <code>blacklist</code> section, thereby disabling Multipath
 for all devices in the system.  If you want to assign persistently
 bound names to iSCSI devices, be sure to set <code>user_friendly_names</code>
 to <em>yes</em>, as seen in the example on the following page.  If you do not
-use friendly names with Device Mapper, you&#8217;ll end up with device
+use friendly names with Device Mapper, you&rsquo;ll end up with device
 names such as <em>/dev/mapper/__36090afffffffffffffffffffffffffff</em>.
 When using friendly names, you will need to specify an <code>alias</code>
 line in the <code>multipaths</code> section after Open-iSCSI is configured
@@ -2204,13 +2202,13 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[2 Cent Tip - Extend (resize) a whole device partition.]]></title>
+    <title type="html"><![CDATA[2 Cent Tip - Extend (Resize) a Whole Device Partition.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/"/>
     <updated>2010-09-02T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition</id>
     <content type="html"><![CDATA[<p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
 
-<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&#8217;t matter if you&#8217;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
+<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&rsquo;t matter if you&rsquo;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
 
 <!-- more -->
 
@@ -2219,21 +2217,21 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Furthermore, the version of <a href="http://www.gnu.org/software/parted/index.shtml">parted</a> that shipped with RHEL 5 threw an incompatible filesystem error, refusing to modify the filesystem. So, in the end, I twiddled some bits on the partition table with fdisk, and used resize2fs to extend the partition.</p>
 
-<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you&#8217;ll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
+<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you&rsquo;ll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
 
 <p>The device name in this example is <code>/dev/mapper/u02</code>, the first partition is <code>/dev/mapper/u02p1</code>:</p>
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk -l /dev/mapper/u02
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk -l /dev/mapper/u02
     Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
 
     255 heads, 63 sectors/track, 13171 cylinders
-    <span class="nv">Units</span> <span class="o">=</span> cylinders of 16065 * <span class="nv">512</span> <span class="o">=</span> 8225280 bytes
+    Units = cylinders of 16065 * 512 = 8225280 bytes
 
               Device Boot      Start         End      Blocks   Id  System
-    /dev/mapper/u02p1               1       13171   26450329   83  Linux
-</code></pre>
+    /dev/mapper/u02p1               1       13171   26450329   83  Linux</code></pre>
 </div>
 
 
@@ -2241,42 +2239,42 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk /dev/mapper/u02
-    WARNING: DOS-compatible mode is deprecated. It<span class="s1">&#39;s strongly recommended to</span>
-<span class="s1">             switch off the mode (command &#39;</span>c<span class="s1">&#39;) and change display units to</span>
-<span class="s1">             sectors (command &#39;</span>u<span class="err">&#39;</span><span class="o">)</span>.
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk /dev/mapper/u02
+    WARNING: DOS-compatible mode is deprecated. It&#39;s strongly recommended to
+             switch off the mode (command &#39;c&#39;) and change display units to
+             sectors (command &#39;u&#39;).
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: d
+    Command (m for help): d
     Selected partition 1
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+    Command (m for help): n
     Command action
        e   extended
-       p   primary partition <span class="o">(</span>1-4<span class="o">)</span>
+       p   primary partition (1-4)
     p
-    Partition number <span class="o">(</span>1-4<span class="o">)</span>: 1
-    First cylinder <span class="o">(</span>1-26109, default 1<span class="o">)</span>:
+    Partition number (1-4): 1
+    First cylinder (1-26109, default 1):
     Using default value 1
-    Last cylinder, +cylinders or +size<span class="o">{</span>K,M,G<span class="o">}</span> <span class="o">(</span>1-26109, default 26109<span class="o">)</span>:
+    Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
     Using default value 26109
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: w
+    Command (m for help): w
     The partition table has been altered!
 
-    Calling ioctl<span class="o">()</span> to re-read partition table.
-    Syncing disks.
-</code></pre>
+    Calling ioctl() to re-read partition table.
+    Syncing disks.</code></pre>
 </div>
 
 
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# resize2fs /dev/mapper/u02p1
-    resize2fs 1.39 <span class="o">(</span>29-May-2006<span class="o">)</span>
+<div>
+  <pre><code class='bash'>root@localhost:~# resize2fs /dev/mapper/u02p1
+    resize2fs 1.39 (29-May-2006)
     Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
-    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 <span class="o">(</span>4k<span class="o">)</span> blocks.
-    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
-</code></pre>
+    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
+    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.</code></pre>
 </div>
 
 
@@ -2285,22 +2283,22 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[2 Cent Tip - Dynamic rdesktop resolution.]]></title>
+    <title type="html"><![CDATA[2 Cent Tip - Dynamic Rdesktop Resolution.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/"/>
     <updated>2010-06-28T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution</id>
-    <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&#8217;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&#8217;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
+    <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&rsquo;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&rsquo;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
 
-<p>It&#8217;s a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop&#8217;s X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in <code>rdesktop -g 1280x1024</code> is much more tedious than typing in <code>rdesktop</code> on the command line interface.</p>
+<p>It&rsquo;s a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop&rsquo;s X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in <code>rdesktop -g 1280x1024</code> is much more tedious than typing in <code>rdesktop</code> on the command line interface.</p>
 
 <!-- more -->
 
 
-<p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&#8230;</p>
+<p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&hellip;</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g 1280x1024&#39;</span>
-</code></pre>
+<div>
+  <pre><code class='bash'># ~/.bashrc
+    rdesktop=&#39;rdesktop -g 1280x1024&#39;</code></pre>
 </div>
 
 
@@ -2308,27 +2306,27 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+<div>
+  <pre><code class='bash'># ~/.bashrc
+    RDESKTOP_SIZE=`xrandr | awk &#39;{getline; getline; getline; print $1; exit;}&#39;`
 
-    <span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
+    alias rdesktop=&#39;rdesktop -g $RDESKTOP_SIZE&#39;</code></pre>
 </div>
 
 
-<p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&#8217;ll skip.  I&#8217;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&#8217;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
+<p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&rsquo;ll skip.  I&rsquo;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&rsquo;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c"># ~/.bashrc</span>
-    <span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+<div>
+  <pre><code class='bash'># ~/.bashrc
+    RDESKTOP_SIZE=`xrandr | awk &#39;{getline; getline; getline; print $1; exit;}&#39;`
 
-    <span class="k">if</span> <span class="o">[</span> <span class="nv">$RDESKTOP_SIZE</span> <span class="o">==</span> <span class="s2">&quot;3840x1200&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-<span class="k">        </span><span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="s2">&quot;1820x1100&quot;</span>
-    <span class="k">fi</span>
+    if [ $RDESKTOP_SIZE == &quot;3840x1200&quot; ]; then
+        RDESKTOP_SIZE=&quot;1820x1100&quot;
+    fi
 
-<span class="k">    </span><span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
-</code></pre>
+    alias rdesktop=&#39;rdesktop -g $RDESKTOP_SIZE&#39;</code></pre>
 </div>
 
 
@@ -2337,7 +2335,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I learned to stop worrying, and love PXE booting]]></title>
+    <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I Learned to Stop Worrying, and Love PXE Booting]]></title>
     <link href="http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting/"/>
     <updated>2009-09-26T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting</id>

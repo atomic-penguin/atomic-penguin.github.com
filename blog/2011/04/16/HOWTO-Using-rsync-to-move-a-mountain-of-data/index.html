@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>HOWTO Using rsync to move a mountain of data - atomic-penguin's blog</title>
+  <title>HOWTO Using Rsync to Move a Mountain of Data - atomic-penguin's blog</title>
   <meta name="author" content="Eric G. Wolfe">
 
   
@@ -18,16 +18,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/">
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
 
@@ -82,9 +83,9 @@
 <time datetime="2011-04-16T00:00:00-04:00" pubdate data-updated="true">Apr 16<span>th</span>, 2011</time></p>
   </header>
   
-  <p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I&#39;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
+  <p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\&rsquo;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
 
-<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don&#8217;t have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
+<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don&rsquo;t have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
 
 <p>I hope you enjoy this in-depth article.  Please feel free to comment: if you need clarification, find it useful, or something I wrote is just plain wrong.</p>
 
@@ -93,12 +94,12 @@
 
 <h2>The Tools</h2>
 
-<p>Three things you&#8217;ll need for this exercise:</p>
+<p>Three things you&rsquo;ll need for this exercise:</p>
 
 <ol>
-<li><code>screen</code> - lets you detach a console session, and can be re-attached after logging out and walking away.</li>
-<li><code>rsync</code> - the swiss-army knife of copy/archiving programs.</li>
-<li><code>data</code> - any will do. Whether its a large group of /home directories, or even a live Oracle database.</li>
+<li><code>screen</code> &ndash; lets you detach a console session, and can be re-attached after logging out and walking away.</li>
+<li><code>rsync</code> &ndash; the swiss-army knife of copy/archiving programs.</li>
+<li><code>data</code> &ndash; any will do. Whether its a large group of /home directories, or even a live Oracle database.</li>
 </ol>
 
 
@@ -143,7 +144,7 @@
 <p>Some other useful switches</p>
 
 <ul>
-<li><code>--progress</code>: gives you per-file data transfer rates, and spinning progress bars if you&#39;re into that sort of thing.</li>
+<li><code>--progress</code>: gives you per-file data transfer rates, and spinning progress bars if you\&rsquo;re into that sort of thing.</li>
 <li><code>--stats</code>: gives you a nice summary rate, and speed-up rate at the end of the job.</li>
 </ul>
 
@@ -154,56 +155,55 @@
 
 <p>Anyway, the configuration files for the temporary rsync daemon on your production system should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.conf</span>
-    syslog <span class="nv">facility</span> <span class="o">=</span> local3
-    <span class="nb">read </span><span class="nv">only</span> <span class="o">=</span> yes <span class="nv">list</span> <span class="o">=</span> yes
-    auth <span class="nv">users</span> <span class="o">=</span> root
-    secrets <span class="nv">file</span> <span class="o">=</span> /etc/rsyncd.secrets
-    hosts <span class="nv">allow</span> <span class="o">=</span> 1.2.3.4/32
-    <span class="nv">uid</span> <span class="o">=</span> 0
-    <span class="nv">gid</span> <span class="o">=</span> 0
+<div>
+  <pre><code class='bash'>#/etc/rsyncd.conf
+    syslog facility = local3
+    read only = yes list = yes
+    auth users = root
+    secrets file = /etc/rsyncd.secrets
+    hosts allow = 1.2.3.4/32
+    uid = 0
+    gid = 0
 
-    <span class="o">[</span>root<span class="o">]</span>
-    <span class="nv">comment</span> <span class="o">=</span> /
-    <span class="nv">path</span> <span class="o">=</span> /
-</code></pre>
+    [root]
+    comment = /
+    path = /</code></pre>
 </div>
 
 
 <p>Set a password for the daemon in /etc/rsyncd.secrets, and set the owner/group of that file to root:root with 600 permissions.  The password file format looks like this.</p>
 
-<div class="highlight"><pre><code class="bash">    <span class="c">#/etc/rsyncd.secrets</span>
-    root:SuperSecretPasswordFTW
-</code></pre>
+<div>
+  <pre><code class='bash'>#/etc/rsyncd.secrets
+    root:SuperSecretPasswordFTW</code></pre>
 </div>
 
 
 <p>Open TCP port 873 for the pre-production host, an appropriate iptables rule would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
+<div>
+  <pre><code class='bash'>iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT</code></pre>
 </div>
 
 
 <p>Finally run the following command to start up your temporary rsync daemon on the production host.</p>
 
-<div class="highlight"><pre><code class="bash">    
-    rsync --daemon
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync --daemon</code></pre>
 </div>
 
 
 <p>Now you should have all the components necessary to copy files over the network using the rsync protocol, an rsync client on the pre-production server, and an rsync server on the production server.  Your command should look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home/ /home
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync -av root@prod-server::root/home/ /home</code></pre>
 </div>
 
 
 <p>Yet another way of saying the same thing, but also copying any special permissions on the top-level directory of home to the /home directory on the pre-prod server.</p>
 
-<div class="highlight"><pre><code class="bash">    rsync -av root@prod-server::root/home /
-</code></pre>
+<div>
+  <pre><code class='bash'>rsync -av root@prod-server::root/home /</code></pre>
 </div>
 
 
@@ -211,9 +211,9 @@
 
 <p>Once the rsync job has finished on the pre-production server, you can run the following to kill off the daemon, and remove your temporary iptables rule.</p>
 
-<div class="highlight"><pre><code class="bash">    killall -9 rsync
-    iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-</code></pre>
+<div>
+  <pre><code class='bash'>killall -9 rsync
+    iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT</code></pre>
 </div>
 
 
@@ -227,13 +227,13 @@
 <li><code>--inplace</code>: rsync writes updated data directly to a file, instead of making a copy and moving it into place.
 
 <ul>
-<li>I strongly advise you to RTFM on this one, it comes with several warnings.  But from what I understand, this option was added to rsync for cloning large files such as databases.  Both server&#39;s rsync programs need to support the in-place option for this to work, otherwise it will give you an error.</li>
+<li>I strongly advise you to RTFM on this one, it comes with several warnings.  But from what I understand, this option was added to rsync for cloning large files such as databases.  Both server\&rsquo;s rsync programs need to support the in-place option for this to work, otherwise it will give you an error.</li>
 </ul>
 </li>
 </ul>
 
 
-<p>I usually kick off a large rysnc job on a hot database, and run one or even a few catch-up jobs on a cold database before the final switch in any large-scale data migration.  What that means is you can run rsync on a running database, but you will not get a consistent Oracle DBF file on your pre-production host during a hot run.  It doesn&#39;t matter if you use the <code>--inplace</code> option, or not, on the first hot run.  Either way, you probably will not get a consistent copy of the database.</p>
+<p>I usually kick off a large rysnc job on a hot database, and run one or even a few catch-up jobs on a cold database before the final switch in any large-scale data migration.  What that means is you can run rsync on a running database, but you will not get a consistent Oracle DBF file on your pre-production host during a hot run.  It doesn\&rsquo;t matter if you use the <code>--inplace</code> option, or not, on the first hot run.  Either way, you probably will not get a consistent copy of the database.</p>
 
 <p>However, on any subsequent cold run (when the database is shut down) <code>--inplace</code> can significantly reduce the amount of data written on the pre-production host.  Because this particular option has the ability to do block-level updates to large files, when used on your final rsync catch-up job.  I have witnessed rsync updating half a Terabyte worth of dbf files in close to half an hour, during a final cold run on a quiet weekend.  I have also seen it take up to four hours to do just as much after close of business on a Friday night.  Your mileage may vary from my results, probably the most significant variable in rsync performance is the amount of usage between the initial hot run and final cold run.</p>
 
@@ -243,7 +243,8 @@
 
 <p>So after playing around with some perl/sed, and awk to generate a list of source and destinations from a password file on the production server.  I might have a file rsync-home.list containing syntactically correct paired rsync sources and destinations, which would look something like this.</p>
 
-<div class="highlight"><pre><code class="bash">    root@prod-server::root/home/a/alice /home
+<div>
+  <pre><code class='bash'>root@prod-server::root/home/a/alice /home
     root@prod-server::root/home/b/bob /home
     root@prod-server::root/u01/app/oracle /u01/app
     root@prod-server::root/home/c/charlie /home
@@ -252,16 +253,14 @@
     root@prod-server::root/home/m/mallory /home
     root@prod-server::root/home/t/trent /home
     root@prod-server::root/home/w/walter /home
-    root@prod-server::root/usr/local/vendor /usr/local
-</code></pre>
+    root@prod-server::root/usr/local/vendor /usr/local</code></pre>
 </div>
 
 
 <p>Unfortunately there is no switch for rsync to read such a list, and operate on it directly.  However, it is fairly easy to script with a bash one-liner, like so.</p>
 
-<div class="highlight"><pre><code class="bash">    
-    <span class="nv">RSYNC_PASSWORD</span><span class="o">=</span><span class="s2">&quot;SuperSecretPasswordFTW&quot;</span>; cat rsync-home.list | <span class="k">while </span><span class="nb">read </span>LINE; <span class="k">do </span>rsync -av --progress <span class="nv">$LINE</span>; <span class="k">done</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>RSYNC_PASSWORD=&quot;SuperSecretPasswordFTW&quot;; cat rsync-home.list | while read LINE; do rsync -av --progress $LINE; done</code></pre>
 </div>
 
 
@@ -269,24 +268,24 @@
 
 <h3>Hunting down symlinks in the archive tree</h3>
 
-<p>Remember when I said you usually don&#39;t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
+<p>Remember when I said you usually don\&rsquo;t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
 
-<div class="highlight"><pre><code class="bash">    find /u01 -type l -xtype d -exec ls -l <span class="o">{}</span> ; | awk <span class="s1">&#39;{ print $NF }&#39;</span>
-</code></pre>
+<div>
+  <pre><code class='bash'>find /u01 -type l -xtype d -exec ls -l {} ; | awk &#39;{ print $NF }&#39;</code></pre>
 </div>
 
 
 <p>Which returns a handy little list of items remaining to be copied over to our pre-prod server by rsync.  The couple of returned entries without a leading-slash can be thrown out, those are links within the <code>/u01</code> tree and would therefore be copied as a result of running an rsync job on <code>/u01</code>.</p>
 
-<div class="highlight"><pre><code class="bash">    /u04/app/oracle/RMAN
+<div>
+  <pre><code class='bash'>/u04/app/oracle/RMAN
     /u03/app/oracle/arclogs
     /u05/app/oracle/exports
     /u02/app/oracle/oradata/fooprod
     /u06/app/oracle/oradata/foopreprd
     client
     /u08
-    linux
-</code></pre>
+    linux</code></pre>
 </div>
 
 
@@ -322,8 +321,6 @@
       
         <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/" >Tweet</a>
-  
   
   <div class="g-plusone" data-size="medium"></div>
   
@@ -352,15 +349,15 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC address change on RHEL</a>
+        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC Address Change on RHEL</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: system generated errata list and patch changelog with yum</a>
+        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: System Generated Errata List and Patch Changelog With Yum</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO Test-kitchen and Encrypted Data Bags</a>
       </li>
     
       <li class="post">
@@ -383,7 +380,7 @@
   <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -403,23 +400,11 @@
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
 <section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("atomic_penguin", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
-  
+  <h1>Twitter</h1>
+  <a class="twitter-timeline" href="https://twitter.com/atomic_penguin" data-widget-id="444543560017125376">Tweets by @atomic_penguin</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
 
 <section class="googleplus">
   <h1>
@@ -446,9 +431,7 @@
 
 <section>
   <h1>About Me</h1>
-  <img src="/images/profile.png" style="border: 0px;">
-  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
-  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+  <p>A little something about me.</p>
 </section>
 
   
@@ -476,7 +459,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -487,7 +470,7 @@
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s); js.id = id; js.async = true;
   js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
@@ -503,16 +486,6 @@
   </script>
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

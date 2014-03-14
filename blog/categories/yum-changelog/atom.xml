@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: yum-changelog | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: Yum-changelog | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/yum-changelog/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,14 +14,14 @@
 
   
   <entry>
-    <title type="html"><![CDATA[TIL: system generated errata list and patch changelog with yum]]></title>
+    <title type="html"><![CDATA[TIL: System Generated Errata List and Patch Changelog With Yum]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/"/>
     <updated>2013-08-15T15:01:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum</id>
     <content type="html"><![CDATA[<p>I was looking for a way to create a system generated CVE, or errata,
 list for a production change request today.  I recall this being
 easier on RHN (Red Hat Network) portal, in the past.  That has changed
-so much, I don't even know where to look, and apparently cannot list
+so much, I don&rsquo;t even know where to look, and apparently cannot list
 more than 10 errata issues per-page.</p>
 
 <!-- more -->

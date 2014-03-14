@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: HOWTO | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: HOWTO, | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/howto/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,1208 +14,151 @@
 
   
   <entry>
-    <title type="html"><![CDATA[HOWTO test-kitchen and encrypted data bags]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
-    <updated>2013-06-07T15:58:00-04:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
-    <content type="html"><![CDATA[<p>I have been playing around with <a href="https://github.com/opscode/test-kitchen">test-kitchen</a>
-more recently.  One of the community members suggested I embed an encrypted data_bag
-into the certificates cookbook for integration testing with test-kitchen.</p>
+    <title type="html"><![CDATA[Multi-knife HOWTO]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/"/>
+    <updated>2013-04-25T20:26:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO</id>
+    <content type="html"><![CDATA[<h1>Overview</h1>
 
-<p>Following, is the process used to set up test-kitchen for encrypted data_bag
-use.  This documentation might be useful to others trying to integrate encrypted
-data_bag testing into their cookbooks.</p>
+<p>  Here is an example shared configuration for knife, the command and control utility which ships with Opscode Chef.  You can drop this off in your <code>chef-repo/.chef/</code> directory, and multiple developers can use the same knife configuration to interact with more than one Chef server, or the Opscode platform.</p>
+
+<p>  By using Bash functions and environment variables we can change the chef server, which knife is configured to use, on the fly.</p>
 
 <!-- more -->
 
 
-<h3>Warning</h3>
+<p><strong>NOTE</strong>: knife will probably ignore your <code>~/.chef/knife.rb</code> once you begin using a shared knife configuration.</p>
 
-<p>Encrypted data_bag files placed in <code>test/integration</code> should not be used in production.
-Files include a self-signed "snake oil" certificate/key and an encrypted_data_bag_secret file
-which are not secure to use beyond testing purposes.</p>
+<h1>Preparation</h1>
 
-<h3>Initialize test-kitchen</h3>
-
-<p>Run the following to create a <code>.kitchen.yml</code> file in your cookbook directory.</p>
-
-<pre><code>$ cd &lt;cookbook dir&gt;
-$ kitchen init
-</code></pre>
-
-<p>This <code>kitchen init</code> command will yield a file which looks like this:</p>
-
-<pre><code>---
-driver_plugin: vagrant
-driver_config:
-  require_chef_omnibus: latest 
-
-platforms:
-- name: ubuntu-12.04
-- name: ubuntu-10.04
-- name: centos-6.4
-- name: centos-5.9
-
-suites:
-- name: default
-  run_list: ["recipe[certificate::default]"]                                                                                                                                    
-  attributes: {}
-</code></pre>
-
-<h3>Data bag and secret file setup</h3>
-
-<p>The test-kitchen initialization should create a <code>test/integration/default</code> directory.
-As of test-kitchen pull request #124, cookbook files are aggressively filtered from being
-copied to the chef-solo working directory.  Adding these files to the <code>suite</code> section of the
-<code>.kitchen.yml</code> will ensure those files get copied over for your integration testing.</p>
-
-<p>First, create a throwaway secret to encrypt testing data.</p>
-
-<pre><code>openssl rand -base64 512 &gt; test/integration/default/encrypted_data_bag_secret
-</code></pre>
-
-<p>Second, create an encrypted data bag with test data.  Apparently there is also
-a <a href="https://github.com/thbishop/knife-solo_data_bag">knife-solo_data_bag</a> knife
-plugin which can be used alternatively.</p>
-
-<pre><code>knife data bag create certificates test --secret-file test/integration/default/encrypted_data_bag_secret
-</code></pre>
-
-<p>Copy and paste the encrypted data bag object into a file.</p>
-
-<pre><code># Make a data_bag directory
-mkdir -p test/integration/default/data_bags/certificates
-
-# Copy the encrypted json output
-knife data bag show certificates test -Fj
-
-# Paste the encrypted json output into a json file
-cat &gt; test/integration/default/data_bags/certificates/test.json
-</code></pre>
-
-<h3>Configure test-kitchen</h3>
-
-<p>Edit the suites section in the <code>.kitchen.yml</code> and add <code>encrypted_data_bag_secret_key_path</code>
-and <code>data_bag_path</code>.</p>
-
-<p>Default generated configuration.</p>
-
-<pre><code>suites:
-- name: default
- run_list: ["recipe[certificate::default]"]
-  attributes: {}
-</code></pre>
-
-<p>Configuration for test-kitchen with encrypted data bags.</p>
-
-<pre><code>suites:
-- name: default
-  data_bags_path: "test/integration/default/data_bags"
-  encrypted_data_bag_secret_key_path: "test/integration/default/encrypted_data_bag_secret"
-  run_list: ["recipe[certificate::default]"]
-  attributes: {}
-</code></pre>
-
-<p>That should be all you need to run test-kitchen integration tests
-with encrypted data bags.  Note, the default directory in <code>test/integration/default</code>
-corresponds to the suite name, <code>default</code>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HOWTO Using rsync to move a mountain of data]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/"/>
-    <updated>2011-04-16T00:00:00-04:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data</id>
-    <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\'ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
-
-<p>I use rsync to migrate Oracle databases between servers at least a few times per year.  In a snap, its one of the easiest ways to clone a database from a Production server to a Pre-Production/Development server or even a Virtual Machine.  You don't have to have a fancy Fibre-Channel or iSCSI storage array attached to both servers, in order to do a data LUN clone, thanks to rsync.</p>
-
-<p>I hope you enjoy this in-depth article.  Please feel free to comment: if you need clarification, find it useful, or something I wrote is just plain wrong.</p>
-
-<!-- more -->
-
-
-<h2>The Tools</h2>
-
-<p>Three things you'll need for this exercise:</p>
+<p>  So that we can interact with <code>api.opscode.com</code>, and an internal Open Source Chef server, you will need to name your keys according to your Chef server username, Opscode username, and Opscode platform organization name.  Assuming you already have a <code>~/.chef</code> directory, we will organize it like so.</p>
 
 <ol>
-<li><code>screen</code> - lets you detach a console session, and can be re-attached after logging out and walking away.</li>
-<li><code>rsync</code> - the swiss-army knife of copy/archiving programs.</li>
-<li><code>data</code> - any will do. Whether its a large group of /home directories, or even a live Oracle database.</li>
+<li> Re-name your Open Source chef-server private key according to your username on the chef-server system.  For example, move your chef-server private key to <code>~/.chef/corporate-username.pem</code>.</li>
+<li> Re-name your Opscode API key according to your Opscode platform username, for example I would move my Opscode key to <code>~/.chef/atomic-penguin.pem</code> to correspond to my own username.</li>
+<li> Re-name your Organization validation key so that it corresponds to your organization&rsquo;s name on the Opscode platform.  For example, move your Opscode organization validation key to ~/.chef/companyname-validator.pem.</li>
 </ol>
 
 
-<h2>Basics of screen</h2>
+<h1>Environment in ~/.bashrc</h1>
+
+<p>  Somewhere near the end of my <code>~/.bashrc</code>, I am going to set 4 environment variables which will later be referenced in my shared knife configuration.  I am also going to use a couple of Bash functions to switch context between multiple servers.</p>
+
+<h2>Environment variables</h2>
+
+<p>The variables are as follows.</p>
 
 <ol>
-<li>Simply type <code>screen</code> in the command-line interface.</li>
-<li>Kick off a large rsync job that may take several hours to finish</li>
-<li><code>ctrl-a d</code> detaches your screen session.  You may then proceed to logout, walk away, and go grab a lunch, or two.</li>
-<li>Log back in to the server later, and re-attach your session by running <code>screen -r</code>.</li>
-<li>If your connection to the server was interrupted by an unreliable network, screen may throw an error saying the session is already attached, however screen -dr will de-tach and re-attach the session with no problem.</li>
+<li> <code>OPSCODE_USER</code> &ndash; Set to your primary username.  This should be either your internal chef-server username or Opscode platform username.</li>
+<li> <code>ORGNAME</code> &ndash; Should be set to &ldquo;chef&rdquo; for an internal chef-server.  Set this as your Opscode platform orgname, if using that as your primary Chef server.</li>
+<li> <code>COOKBOOK_COPYRIGHT</code> &ndash; Set to your full name.</li>
+<li> <code>COOKBOOK_EMAIL</code> &ndash; Set to your e-mail address.</li>
 </ol>
 
 
-<h2>Basics of rsync</h2>
+<h2>Bash functions</h2>
 
-<p>There is a daunting amount of options to be found in the <code>rsync</code> manpage.  An important point to remember is what no-slash and trailing slashes on directories mean.</p>
+<p>  I have two knife related Bash functions in my <code>~/.bashrc</code> file.  I use a function called &ldquo;ginsu&rdquo; to interact with the Opscode API.  Then I use the &ldquo;knife-reset&rdquo; function to restore default behavior to interact with our internal Chef server.  This is just an example, you could use the ginsu function as a template.  This way you could have an &ldquo;opscode-knife&rdquo; function, or maybe &ldquo;prod-knife&rdquo;, &ldquo;dev-knife&rdquo;, or &ldquo;preprod-knife&rdquo; to correspond to different servers or environments.</p>
 
-<p>For instance if I want to copy everything within a folder named <code>/home</code>, I would use <code>rsync -av /home/ /path/to/destination</code> to copy the files within <code>/home</code>, to the folder <code>/path/to/destination</code>.</p>
+<p>  The <code>knife-reset</code> function simply sets my <code>OPSCODE_USER</code> variable equal to my internal Open Source chef-server username, and <code>ORGNAME</code> equal to &ldquo;chef&rdquo;.  The <code>knife-reset</code> function then exports the variables so my knife configuration gets reset back to my primary Chef server.</p>
 
-<p>On the other hand, if I want to copy the folder <code>/home</code> itself to <code>/path/to/destination</code>, then I would use <code>rsync -av /home /path/to/destination</code>, which will then create the folder <code>/path/to/destination/home</code>.</p>
+<p>  The <code>ginsu</code> function sets the <code>OPSCODE_USER</code> variable equal to my Opscode platform username, and <code>ORGNAME</code> equal to my Opscode organization name.  The <code>ginsu</code> function then exports the variables and passes any parameters to the knife command.  This way I can do a <code>ginsu cookbook site share yumrepo "Package Management"</code> to upload my yumrepo cookbook to the Opscode Community Cookbook site.</p>
 
-<p>Here are a few of the most important command-line options to remember.</p>
+<h1>Knife configuration</h1>
 
-<ul>
-<li><code>-v</code>: verbose, will tell you what file its on, how many left to check, etc.</li>
-<li><code>-a</code>: archive, will set most of the preferable options, this is shorthand for -rlptgoD. If in doubt, you most always want the -a option.
+<p>  This is the actual knife configuration file, which we can drop off in the <code>chef-repo/.chef</code> directory.  I will explain the important parts, so you can modify this to fit your own needs easily.  Note, once you drop this off in your <code>chef-repo</code>, your <code>~/.chef/knife.rb</code> will no longer work.</p>
 
-<ul>
-<li><code>-r</code>: recursive</li>
-<li><code>-l</code>: copy symlinks as files, not the file to which they point.  Why do you want this? It prevents your rsync job from looping back to a directory above itself, causing an infinite loop, in the case there are a few unruly symlinks in your filesystem tree.</li>
-<li><code>-p</code>: preserve permissions</li>
-<li><code>-t</code>: preserve modification timestamps</li>
-<li><code>-g</code>: preserve group ownership. rsync is smart enough to change the group ID by name, rather than numerical group ID on the destination.</li>
-<li><code>-o</code>: preserve ownership. Same behavior applies to user ID by name, rather than numerical ID.</li>
-<li><code>-D</code>: preserve special files. Such as device files, named pipes, etc.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>Some other useful switches</p>
-
-<ul>
-<li><code>--progress</code>: gives you per-file data transfer rates, and spinning progress bars if you\'re into that sort of thing.</li>
-<li><code>--stats</code>: gives you a nice summary rate, and speed-up rate at the end of the job.</li>
-</ul>
-
-
-<h2>Set up a rsync daemon</h2>
-
-<p>If you are cloning a database or migrating a complex ERP system, the fastest way to do that is export a root share for your destination host, by defining it in rsyncd.conf. I typically set up a temporary read-only rsync daemon on the production host.  The reasoning for that is the the client end of rsync will consume more memory as it indexes the list of files to transfer.  Therefore rsync should have less impact by running the job from a pre-production host, while the daemon runs on your production server.</p>
-
-<p>Anyway, the configuration files for the temporary rsync daemon on your production system should look something like this.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#/etc/rsyncd.conf
-syslog <span class="nv">facility</span> <span class="o">=</span> local3
-<span class="nb">read </span><span class="nv">only</span> <span class="o">=</span> yes <span class="nv">list</span> <span class="o">=</span> yes
-auth <span class="nv">users</span> <span class="o">=</span> root
-secrets <span class="nv">file</span> <span class="o">=</span> /etc/rsyncd.secrets
-hosts <span class="nv">allow</span> <span class="o">=</span> 1.2.3.4/32
-<span class="nv">uid</span> <span class="o">=</span> 0
-<span class="nv">gid</span> <span class="o">=</span> 0
-
-<span class="o">[</span>root<span class="o">]</span>
-<span class="nv">comment</span> <span class="o">=</span> /
-<span class="nv">path</span> <span class="o">=</span> /
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Set a password for the daemon in /etc/rsyncd.secrets, and set the owner/group of that file to root:root with 600 permissions.  The password file format looks like this.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#/etc/rsyncd.secrets
-root:SuperSecretPasswordFTW
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Open TCP port 873 for the pre-production host, an appropriate iptables rule would look something like this.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;iptables -I INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Finally run the following command to start up your temporary rsync daemon on the production host.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rsync --daemon
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Now you should have all the components necessary to copy files over the network using the rsync protocol, an rsync client on the pre-production server, and an rsync server on the production server.  Your command should look something like this.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rsync -av root@prod-server::root/home/ /home
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Yet another way of saying the same thing, but also copying any special permissions on the top-level directory of home to the /home directory on the pre-prod server.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rsync -av root@prod-server::root/home /
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>The rsync url components are user (root), followed by an @, hostname (prod-server), followed by a separator (::), followed by the share name (root), followed by the source directory with, or without an optional trailing-slash.</p>
-
-<p>Once the rsync job has finished on the pre-production server, you can run the following to kill off the daemon, and remove your temporary iptables rule.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;killall -9 rsync
-iptables -D INPUT -s preprod-server -m tcp -p tcp --dport 873 --syn -j ACCEPT
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<h2>Advanced rsync usage</h2>
-
-<h3>block-level replication</h3>
-
-<p>In theory you would want to use the following option to update block-level changes on large files.</p>
-
-<ul>
-<li><code>--inplace</code>: rsync writes updated data directly to a file, instead of making a copy and moving it into place.
-
-<ul>
-<li>I strongly advise you to RTFM on this one, it comes with several warnings.  But from what I understand, this option was added to rsync for cloning large files such as databases.  Both server\'s rsync programs need to support the in-place option for this to work, otherwise it will give you an error.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>I usually kick off a large rysnc job on a hot database, and run one or even a few catch-up jobs on a cold database before the final switch in any large-scale data migration.  What that means is you can run rsync on a running database, but you will not get a consistent Oracle DBF file on your pre-production host during a hot run.  It doesn\'t matter if you use the <code>--inplace</code> option, or not, on the first hot run.  Either way, you probably will not get a consistent copy of the database.</p>
-
-<p>However, on any subsequent cold run (when the database is shut down) <code>--inplace</code> can significantly reduce the amount of data written on the pre-production host.  Because this particular option has the ability to do block-level updates to large files, when used on your final rsync catch-up job.  I have witnessed rsync updating half a Terabyte worth of dbf files in close to half an hour, during a final cold run on a quiet weekend.  I have also seen it take up to four hours to do just as much after close of business on a Friday night.  Your mileage may vary from my results, probably the most significant variable in rsync performance is the amount of usage between the initial hot run and final cold run.</p>
-
-<h3>Extending rsync by automation with Bash</h3>
-
-<p>Lets say you have a long paired list of source and destination directories.  For example, I might want to archive <code>/home/u/user1</code> on the prod server to <code>/home/user1</code> on the pre-prod server.  The rsync rules of the trailing slashes on directories do come into play here.</p>
-
-<p>So after playing around with some perl/sed, and awk to generate a list of source and destinations from a password file on the production server.  I might have a file rsync-home.list containing syntactically correct paired rsync sources and destinations, which would look something like this.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;root@prod-server::root/home/a/alice /home
-root@prod-server::root/home/b/bob /home
-root@prod-server::root/u01/app/oracle /u01/app
-root@prod-server::root/home/c/charlie /home
-root@prod-server::root/home/d/dave /home
-root@prod-server::root/home/e/eve /home
-root@prod-server::root/home/m/mallory /home
-root@prod-server::root/home/t/trent /home
-root@prod-server::root/home/w/walter /home
-root@prod-server::root/usr/local/vendor /usr/local
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Unfortunately there is no switch for rsync to read such a list, and operate on it directly.  However, it is fairly easy to script with a bash one-liner, like so.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;RSYNC_PASSWORD<span class="o">=</span><span class="s2">&quot;SuperSecretPasswordFTW&quot;</span>; cat rsync-home.list | <span class="k">while </span><span class="nb">read </span>LINE; <span class="k">do </span>rsync -av --progress <span class="nv">$LINE</span>; <span class="k">done</span>
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>The <code>RSYNC_PASSWORD</code> is an environment variable you can set to avoid having to type in the actual password for the rsync daemon, just be aware it will show up in your .bash_history file, and output from <code>ps -ef</code>.  So it is advisable to not use the same password as your root account for the purposes of rsync.</p>
-
-<h3>Hunting down symlinks in the archive tree</h3>
-
-<p>Remember when I said you usually don\'t want to copy what a symlink points at, rather copy the pointer (symlink file) itself.  If you want a quick and easy way to make a list of symlinked directories within the <code>/u01</code> tree on your production server, you can pair <code>find</code>, and <code>awk</code> commands to generate a list like this. The <code>-type l</code> option tells <code>find</code> to look for symlinks, the <code>-xtype d</code> option tells find to look for symlinks pointing at directories.  The <code>$NF</code> variable in <code>awk</code> returns the last field from the long-list <code>ls -l</code> output.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;find /u01 -type l -xtype d -exec ls -l <span class="o">{}</span> ; | awk <span class="s1">&#39;{ print $NF }&#39;</span>
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-
-<p>Which returns a handy little list of items remaining to be copied over to our pre-prod server by rsync.  The couple of returned entries without a leading-slash can be thrown out, those are links within the <code>/u01</code> tree and would therefore be copied as a result of running an rsync job on <code>/u01</code>.</p>
-
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/u04/app/oracle/RMAN
-/u03/app/oracle/arclogs
-/u05/app/oracle/exports
-/u02/app/oracle/oradata/fooprod
-/u06/app/oracle/oradata/foopreprd
-client
-/u08
-linux
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;
-</code></pre>
-</div>
-</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Red Hat Enterprise Linux 5.x iSCSI and Device Mapper Multipath HOWTO]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/"/>
-    <updated>2010-11-29T00:00:00-05:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO</id>
-    <content type="html"><![CDATA[<h2>Abstract</h2>
-
-<p><img src="/images/muwam.png" alt="Marshall University Systems Infrastructure Team" /></p>
-
-<p>This document outlines in a detailed step-by-step fashion,
-how to properly configure iSCSI initiator, and multi-path I/O
-software on Red Hat Enterprise Linux version 5.</p>
-
-<pre><code>Copyright © 2010, Marshall University Systems Infrastructure Team
-Author: Eric G. Wolfe 
-Contributor: Jaymz Mynes 
-Editor: Tim Calvert 
-
-Marshall University 
-400 Hal Greer Blvd. 
-Huntington, WV 25755 
-
-This work is licensed under the Creative Commons Attribution-Noncommercial-Share 
-Alike 3.0 United States License. To view a copy of this license, 
-visit http://creativecommons.org/licenses/by-nc-sa/3.0/us/ 
-or send a letter to Creative Commons, 171 Second Street, Suite 
-300, San Francisco, California, 94105, USA. 
-
-The block M logo is a trademark of Marshall University. All other 
-trademarks are owned by their respective owners. 
-</code></pre>
-
-<!-- more -->
-
-
-<h2>I. Introduction</h2>
-
-<p>The following configuration was documented and tested on a Dell
-Poweredge R710, with RedHat Enterprise Linux 5.0 x64.  The R710
-server has 4 Broadcom NeteXtreme II BCM5709 Gigabit Network
-Interface Cards (NIC), and is connected by Ethernet to an EqualLogic
-PS6000 storage array.</p>
-
-<p>This step-by-step guide is directly applicable to these software
-and hardware components.  However, much of the software configuration
-would remain the same for any Linux distribution on either X86
-or AMD64 based hardware.  The most dynamic variable in any case will be
-specific storage solutions.  Consider any factors that your
-storage vendor may support, or recommend, before proceeding.</p>
-
-<h2>II. Hardware preparation</h2>
-
-<p>Appropriate hardware preparation is beyond the scope of this
-document.  See vendor documentation for connecting Ethernet
-cables to the storage array, and appropriate configuration
-of the storage array.  According to Dell EqualLogic (2008) some
-recommended guidelines are as follows:</p>
-
-<ul>
-<li>Do...
-
-<ul>
-<li>Use Cat 6 or Cat 5e TSB95 cables.</li>
-<li>Use redundant switches and network paths.</li>
-<li>Use Flow Control on switches and NICs</li>
-<li>Use Jumbo Frames on switches and NICs</li>
-<li>Use VLANs, if physically separate switches are not available.</li>
-</ul>
-</li>
-<li>Do <strong>NOT</strong>...
-
-<ul>
-<li>Use Spanning Tree Protocol on switch ports for iSCSI connections.</li>
-<li>Use Unicast storm control on a switch that handles iSCSI traffic.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>See <em>PS Series Array Network Performance Guidelines</em>, or relevant
-storage vendor's documentation for more information.</p>
-
-<h2>III. Manual installation</h2>
-
-<p>The following section outlines manual installation and configuration
-of Device Mapper Multipath and Open-iSCSI initiator on Red Hat
-Enterprise Linux version 5.x.  If this is your first time installing
-and configuring Device Mapper Multipath, or Open-iSCSI software,
-then this is the recommended method of installation and configuration.<br/>
-It is possible to automate a portion of this installation and
-configuration with Red Hat's Kickstart, or configuration management
-engines such as Puppet.  However, that is beyond the scope of this
-document.</p>
-
-<p>The methods outlined in this guide apply directly to Red Hat Enterprise
-Linux, though a major portion of the configuration items are generic
-and could be applied to other Linux distributions.  The author of this
-HOWTO assumes these steps will, for the most part, remain constant
-for subsequent versions of Red Hat Enterprise Linux.</p>
-
-<h3>1. Package installation and verification</h3>
-
-<p>After performing a base install of Red Hat Enterprise v5, make
-sure to upgrade the system to the latest patch-level.</p>
-
-<h4>1. Change this line in <em>/etc/yum.conf</em> as illustrated below.</h4>
+<p>Set a local Ruby variable <code>user</code> equal to the <code>OPSCODE_USER</code> or the environment variable <code>USER</code>.</p>
 
 <p><code>bash
-exclude=kernel*
+user = ENV['OPSCODE_USER'] || ENV['USER']
 </code></p>
 
-<h4>2. Comment out the exclude options, so the kernel may be upgraded.</h4>
+<p>Switching back and forth between different keys and user names occurs by changing, and exporting, the <code>OPSCODE_USER</code> and <code>ORGNAME</code> Bash environment variables.</p>
 
 <p><code>bash
-exclude=#kernel*
+client_key               "#{ENV['HOME']}/.chef/#{user}.pem"
+validation_client_name   "#{ENV['ORGNAME']}-validator"
+validation_key           "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
 </code></p>
 
-<h4>3. Run the following to upgrade to the latest patch-level.</h4>
+<p>I used an if/then/else block in my shared knife.rb to switch the URL of my Chef server based on the <code>ORGNAME</code>.  You could use a <code>CHEF_SERVER</code> environment variable in your <code>~/.bashrc</code> if that would work better for you.  Obviously you&rsquo;ll want to change the hardcoded <code>corporate</code> string to match your Opscode platform orgname, and also edit the <code>chef_server_url</code> to point another Chef server.</p>
 
-<p><code>bash
-yum -y upgrade
+<p><code>ruby
+if ENV['ORGNAME'] == 'corporate'
+  chef_server_url "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+elsif ENV['ORGNAME'] == 'chef'
+  chef_server_url 'http://chef.example.com:4000'
+end
 </code></p>
 
-<h4>4. Run the following to install needed software.</h4>
+<p>If you commit all your Community Cookbooks under corporate copyright rather than individual developer names, then you might want to hardcode the company name and a generic development team e-mail address.  This way, your developers don&rsquo;t have to set <code>COOKBOOK_COPYRIGHT</code> or <code>COOKBOOK_EMAIL</code>.  The command <code>knife cookbook create &lt;cookbook name&gt;</code> will fill in the company name as the cookbook maintainer, and copyright owner in that case.</p>
 
-<p><code>bash
-yum -y install iscsi-initiator-utils device-mapper-multipath
+<p><code>ruby
+cookbook_license         'apachev2'
+cookbook_copyright ENV['COOKBOOK_COPYRIGHT'] || 'Corporate, Inc.'
+cookbook_email ENV['COOKBOOK_EMAIL'] || 'cookbooks@example.com'
 </code></p>
 
-<p>Dell Equallogic (2009) recommends using RHEL 5.4 (version 5
-update 4) or newer for best performance and interoperability
-with PS Series storage arrays.  Ensure the following requirements
-are met before proceeding.</p>
-
-<h4>5. Run the following to check for minimum package versions.</h4>
-
-<p><code>bash
-rpm -qa iscsi-initiator-utils device-mapper-multipath
-device-mapper-multipath-&lt;version&gt;-&lt;patch-level&gt;.el5
-iscsi-initiator-utils-&lt;version&gt;-&lt;patch-level&gt;.el5
-</code></p>
-
-<ul>
-<li>Minimum package version for PS Series arrays
-
-<ul>
-<li>iscsi-initiator-utils-<strong>6.2.0.742-0.6</strong>.el5</li>
-</ul>
-</li>
-<li>Minimum package version for GbE NICs
-
-<ul>
-<li>iscsi-iniator-utils-<strong>6.2.0.868-0.7</strong>.el5</li>
-</ul>
-</li>
-<li>With SELinux enabled, you may not be able to login to iSCSI targets.
-You may have to create a policy for iSCSI traffic, or disable
-SELinux.</li>
-</ul>
-
-
-<h3>2. Selecting an I/O scheduler</h3>
-
-<p>After updating the kernel, you will need to reboot the system,
-before proceeding.  This would be a good time to pick an appropriate
-I/O scheduler.  Available I/O schedulers, and the kernel option
-to select them, are as follows.</p>
-
-<ul>
-<li>Completely Fair Queueing – elevator=cfq</li>
-<li>Deadline – <strong>elevator=deadline</strong></li>
-<li>NOOP – <strong>elevator=noop</strong></li>
-<li>Anticipatory – elevator=as</li>
-</ul>
-
-
-<p>According to a citation in Dell Equallogic (2009), the Open-iSCSI
-group reports that sometimes the <strong>NOOP</strong> scheduler works best for
-iSCSI server environments.  However, if this server will be used
-as an Oracle database or application server, it is standard best
-practice to use the <strong>Deadline</strong> scheduler for optimal performance.</p>
-
-<h4>Run the following command to enable the NOOP scheduler, before rebooting.</h4>
-
-<p><code>bash
-sed -e 's!/vmlinuz.*!&amp; elevator=noop!g' -i /boot/grub/menu.lst
-</code></p>
-
-<h4>If you are provisioning an Oracle server, then run the following to select Deadline.</h4>
-
-<p><code>bash
-sed -e 's!/vmlinuz.*!&amp; elevator=deadline!g' -i /boot/grub/menu.lst
-</code></p>
-
-<p>Finally, reboot the server after upgrading the system and kernel. <br/>
-Do this before proceeding with the configuration steps that
-follow so the proper I/O scheduler will be active and the newer
-kernel will be available.  You may also want to go back and
-uncomment the <code>exclude=#kernel*</code> line in <em>/etc/yum.conf</em>, at
-your own discretion.</p>
-
-<h2>IV. Configuring Open-iSCSI</h2>
-
-<h3>1. Configuring the NIC cards for iSCSI use</h3>
-
-<p>In the following example, it is assumed you will be using the third
-(eth2) and fourth (eth3) Network Interface Cards in the system
-for iSCSI traffic.  If this is not the case, then adjust the configuration
-for different NICs as necessary.</p>
-
-<p>Add the following bold lines to each of the <em>ifcfg-ethX</em> scripts
-for each iSCSI NIC.  Ensure that <code>IPADDR</code>, and <code>NETMASK</code> are correctly
-set for your iSCSI subnet.  Make sure <code>ONBOOT</code> is set to <em>yes</em>.<br/>
-This is set so that each interface will be automatically initialized
-when the system is booted.  The <code>MTU</code> variable should be set to
-<em>9000</em>, for each iSCSI NIC, this MTU setting will enable jumbo
-frames.</p>
-
-<p><em>/etc/sysconfig/network-scripts/ifcfg-eth2</em>
-```bash</p>
-
-<h1>Broadcom Corporation NetXtreme II BCM5709 Gigabit Ethernet</h1>
-
-<p>DEVICE=eth2
-HWADDR=00:11:22:33:44:aa
-ONBOOT=yes
-BOOTPROTO=none
-NETMASK=255.255.255.0
-IPADDR=10.1.2.3
-TYPE=Ethernet
-MTU=9000
-```</p>
-
-<p><em>/etc/sysconfig/network-scripts/ifcfg-eth3</em>
-```bash</p>
-
-<h1>Broadcom Corporation NetXtreme II BCM5709 Gigabit Ethernet</h1>
-
-<p>DEVICE=eth3
-HWADDR=00:11:22:33:44:bb
-ONBOOT=yes
-BOOTPROTO=none
-NETMASK=255.255.255.0
-IPADDR=10.1.2.4
-TYPE=Ethernet
-MTU=9000
-```</p>
-
-<p>Dell EqualLogic (2009) recommends enabling Flow Control, and
-disabling Auto Negotiation on each iSCSI NIC.  For these settings
-to be automatically applied upon each boot, add the following
-code, in boldface, to the <em>/etc/rc.local</em> file.</p>
-
-<p><em>/etc/rc.local</em>
-```bash</p>
-
-<h1>iSCSI Interface Settings for Equallogic</h1>
-
-<p>ISCSI_IF="eth2 eth3"
-ETHTOOL_OPTS="autoneg off rx on tx on"
-ETHTOOL=<code>which ethtool</code></p>
-
-<p>for i in $ISCSI_IF; do
-  echo "$ETHTOOL -A $i $ETHTOOL_OPTS"
-  $ETHTOOL -A $ISCSI_IF $ETHTOOL_OPTS
-done
-```</p>
-
-<h4>1.1. Configuring Open-iSCSI initiator utilities</h4>
-
-<p>You need to tune a few lines in the <em>/etc/iscsi/iscid.conf</em> file,
-per vendor recommendations.  You can grep out blank and comment
-lines in this file for quick inspection.  The lines we are most
-concerned about are followed by comments, noting vendor-specific
-recommendations.</p>
-
-<h5>1.1.1. Notes about iscsid.conf configuration</h5>
-
-<p>As I understand it, the configuration item, <code>node.session.timeo.replacement_timeout</code>
-is for specifying the length of time, in seconds,
-after which the iSCSI layer will fail back to the Device Mapper
-Multipath application layer.  By default, this is <em>120</em> seconds, or 2 minutes.
-According to Red Hat (2008), it is preferable to pass the path failure quickly from
-the SCSI layer to your Multipath software, which would be necessary for
-quick fail-over.  With the default configuration, two minutes
-of I/O would be queued before failing the path. If you are familiar
-with Fiber Channel path fail-over, it tends to be instantaneous.<br/>
-Most people configuring iSCSI fail-over certainly don't want
-a failed path to be retried for two whole minutes.  Using the default
-configuration with a production database server could lead
-to massive amounts of I/O being queued instead of the expected
-behavior of failing over to another working path quickly.  Changing the
-<code>node.session.timeo.replacement_timeout</code> value to <em>15</em> will allow the path
-to failover much more quickly.</p>
-
-<p>According to Dell (2010), if the Broadcom <strong>bnx2i</strong> interface fails
-to login to an Equallogic iSCSI storage volume, the <code>node.session.initial_login_retry_max</code>
-should be changed from the default value of <em>8</em> to <em>12</em>.</p>
-
-<p>According to Dell Equallogic (2009) the options <code>node.session.cmds_max</code>,
-and <code>node.session.queue_depth</code> should be changed for Equallogic
-arrays.  The recommendation for <code>node.session.cmds_max</code> is
-to change the value from <em>128</em> to <em>1024</em>.  The recommendation for
-<code>node.session.queue_depth</code> is to change the value from <em>32</em>
-to <em>128</em>.</p>
-
-<p>Finally, according to the in-line comments in the default <em>iscsid.conf</em>,
-and Dell (2010) Equallogic arrays should have <code>node.session.iscsi.FastAbort</code>
-set to <em>No</em>.  If using software such as iSCSI Enterprise Target
-(IET), instead of an Equallogic Array, leave the <code>node.session.iscsi.FastAbort</code>
-value set to the default, which is <em>Yes</em>.</p>
-
-<h5>1.1.2. iscsid.conf</h5>
-
-<p><code>bash
-egrep -v “^(#|$)” /etc/iscsi/iscid.conf
-node.startup = automatic
-node.session.timeo.replacement_timeout = 15 # default 120; RedHat recommended
-node.conn[0].timeo.login_timeout = 15
-node.conn[0].timeo.logout_timeout = 15
-node.conn[0].timeo.noop_out_interval = 5
-node.conn[0].timeo.noop_out_timeout = 5
-node.session.err_timeo.abort_timeout = 15
-node.session.err_timeo.lu_reset_timeout = 20
-node.session.initial_login_retry_max = 12 # default 8; Dell recommended
-node.session.cmds_max = 1024 # default 128; Equallogic recommended
-node.session.queue_depth = 128 # default 32; Equallogic recommended
-node.session.iscsi.InitialR2T = No
-node.session.iscsi.ImmediateData = Yes
-node.session.iscsi.FirstBurstLength = 262144
-node.session.iscsi.MaxBurstLength = 16776192
-node.conn[0].iscsi.MaxRecvDataSegmentLength = 262144
-discovery.sendtargets.iscsi.MaxRecvDataSegmentLength = 32768
-node.conn[0].iscsi.HeaderDigest = None
-node.session.iscsi.FastAbort = No # default Yes; Dell / Open-iSCSI recommended**
-</code></p>
-
-<h2>IV. Targeting and logging in with iscsiadm</h2>
-
-<h3>1. Create iSCSI interfaces</h3>
-
-<p>The iSCSI interfaces are separate pseudo-devices used by Open-iSCSI.<br/>
-From Open-iSCSI's point-of-view, these are not the same as physical
-Ethernet devices.  What you will need to do is bind
-each of your ethX devices to an iSCSI interface.  Technically speaking,
-you could call your iSCSI interfaces eth2 and eth3, and bind them to
-the corresponding physical devices in the /dev folder.  To avoid any
-confusion about physical NICs and iSCSI interfaces, it is recommended
-to give the interfaces different names like <code>iface0</code> and <code>iface1</code>.</p>
-
-<p>You can create your iSCSI interfaces with the following commands.</p>
+<h1>Reference ~/.bashrc</h1>
 
 <p>```bash
-iscsiadm -m iface -I iface0 -o new</p>
-
-<p>iscsiadm -m iface -I iface1 -o new
-```</p>
-
-<p>When you pass no options to <code>iscsiadm</code> then you may examine
-the iSCSI interface properties for one of the new interfaces.  Being able
-to view the currently active configuration can come in handy in cases where
-you need to troubleshoot.</p>
-
-<p>```bash
-iscsiadm -m iface -I iface0</p>
-
-<h1>BEGIN RECORD 2.0-871</h1>
-
-<p>iface.iscsi_ifacename = iface0
-iface.net_ifacename = <empty>
-iface.ipaddress = <empty>
-iface.hwaddress = <empty>
-iface.transport_name = tcp
-iface.initiatorname = <empty></p>
-
-<h1>END RECORD</h1>
-
-<p>```</p>
-
-<h3>2. Bind iSCSI interfaces</h3>
-
-<p>Now that we have iSCSI interfaces, we need to bind them to a physical
-Ethernet device.  You can use either a device name or MAC address.  Open-iSCSI
-will not allow you to bind the interfaces with both device name
-and MAC address.</p>
-
-<h4>Binding by physical device name</h4>
-
-<p>```bash
-iscsiadm -m iface -o update -I iface0 -n iface.net_ifacename -v eth2</p>
-
-<p>iscsiadm -m iface -o update -I iface1 -n iface.net_ifacename -v eth3
-```</p>
-
-<h4>Binding by MAC address</h4>
-
-<p>```bash
-iscsiadm -m iface -o update -I iface0 -n iface.hwaddress -v 00:aa:bb:cc:dd:ee</p>
-
-<p>iscsiadm -m iface -o update -I iface1 -n iface.hwaddress -v 00:aa:bb:cc:dd:ff
-```</p>
-
-<p>An <strong>important note</strong> about alternate transport drivers for iSCSI
-offload:</p>
-
-<p>By default, your new iSCSI interfaces will use TCP as
-the iSCSI transport. There are other offload transport drivers
-available to use, such as <strong>bnx2i</strong>, <strong>iser</strong>, and <strong>cxgb3i</strong>.
-According to the iscsiadm manual page and personal conversation
-with a Dell storage engineer, these are experimental drivers
-which are not supported or considered stable.</p>
-
-<h4>2.1. Updating iSCSI interfaces</h4>
-
-<p>If you bind an interface by MAC address, and have a hardware replacement
-which changes the MAC address. Then the iSCSI interface bindings
-will need to be updated to reflect such system changes.
-You can do this with an update command:</p>
-
-<p>```bash
-iscsiadm -m iface -o update -I iface0 -n iface.hwaddress -v 00:aa:bb:cc:dd:11</p>
-
-<p>iscsiadm -m iface -o update -I iface1 -n iface.hwaddress -v 00:aa:bb:cc:dd:33
-```</p>
-
-<h3>3. Connecting to the iSCSI array</h3>
-
-<p>The file <em>/etc/iscsi/initiatorname.iscsi</em> should contain
-an initiator name for your iSCSI client host.  You need to include
-this initiator name on your iSCSI array's configuration for
-this specific iSCSI client host.</p>
-
-<p>If you have not yet started the iSCSI daemon, run the following
-command before we commence with discovering targets.</p>
-
-<h4>Start the iSCSI daemon</h4>
-
-<p><code>bash
-service iscsid start
-</code></p>
-
-<h4>3.1. Discovering targets</h4>
-
-<p>Once the iscsid service is running
-and the client's initiator name is configured on the iSCSI array,
-then you may proceed with the following command to discover available
-targets.  Assuming our iSCSI array had an IP address of 10.1.2.10,
-the following command would return the available targets.</p>
-
-<h5>Target discovery command</h5>
-
-<p><code>bash
-iscsiadm -m discovery -t st -p 10.1.2.10:3260
-10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
-10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
-</code></p>
-
-<h4>3.2. Login to target</h4>
-
-<p>We are finally ready to login to our target.  To log in to all targets, use
-the following command.  This should return successful
-if everything is working correctly.</p>
-
-<h5>Login command</h5>
-
-<p><code>bash
-iscsiadm -m node -l
-</code></p>
-
-<p>Individual targets can be logged into by specifying a whole target name.</p>
-
-<h5>Login to a specific target by name</h5>
-
-<p><code>bash
-iscsiadm -m node -T iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0 -l -p 10.1.2.10:3260
-</code></p>
-
-<h4>3.3. Logoff a target</h4>
-
-<p>Logging off is basically the same as logging into a target, except
-you use the <em>-u</em> switch, instead of <em>-l</em>.</p>
-
-<h5>Command to log out of a target</h5>
-
-<p><code>bash
-iscsiadm -m node -u
-</code></p>
-
-<h4>3.4. Session status</h4>
-
-<p>The session command can be used to print the basic status
-or more verbose output for debugging and troubleshooting.</p>
-
-<h5>Basic session status command</h5>
-
-<p><code>bash
-iscsiadm -m session
-tcp: [10] 10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
-tcp: [9] 10.1.2.10:3260,1 iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
-</code></p>
-
-<h5>Troubleshooting information with -P (print) flag and verbosity level 0-3</h5>
-
-<p>```bash
-iscsiadm -m session -P3
-iSCSI Transport Class version 2.0-871
-version 2.0-871
-Target: iqn.2001-05.com.equallogic:0-8a0906-7008ec504-23d000000204bad0-hostname-vol0
-Current Portal: 10.1.2.25:3260,1
-Persistent Portal: 10.1.2.10:3260,1</p>
-
-<hr />
-
-<p>Interface:</p>
-
-<hr />
-
-<p>Iface Name: iface0
-Iface Transport: tcp
-Iface Initiatorname: iqn.1994-05.com.redhat:13c39f80866f
-Iface IPaddress: 10.1.2.3
-Iface HWaddress: <empty>
-Iface Netdev: eth2
-SID: 10
-iSCSI Connection State: LOGGED IN
-iSCSI Session State: LOGGED_IN
-Internal iscsid Session State: NO CHANGE</p>
-
-<hr />
-
-<p>Negotiated iSCSI params:</p>
-
-<hr />
-
-<p>HeaderDigest: None
-DataDigest: None
-MaxRecvDataSegmentLength: 262144
-MaxXmitDataSegmentLength: 65536
-FirstBurstLength: 65536
-MaxBurstLength: 262144
-ImmediateData: Yes
-InitialR2T: No
-MaxOutstandingR2T: 1</p>
-
-<hr />
-
-<p>Attached SCSI devices:</p>
-
-<hr />
-
-<p>Host Number: 27 State: running
-scsi27 Channel 00 Id 0 Lun: 0
-Attached scsi disk sdc State: running
-```</p>
-
-<h2>V. Configuring Device Mapper Multipath</h2>
-
-<h3>1. Notes about the Device Mapper Multipath example</h3>
-
-<p>The final major step is to configure Device Mapper Multipath
-using the configuration file <em>/etc/multipath.conf</em>.  By default there will be a <code>devnode “*”</code>
-line in the <code>blacklist</code> section, thereby disabling Multipath
-for all devices in the system.  If you want to assign persistently
-bound names to iSCSI devices, be sure to set <code>user_friendly_names</code>
-to <em>yes</em>, as seen in the example on the following page.  If you do not
-use friendly names with Device Mapper, you'll end up with device
-names such as <em>/dev/mapper/__36090afffffffffffffffffffffffffff</em>.
-When using friendly names, you will need to specify an <code>alias</code>
-line in the <code>multipaths</code> section after Open-iSCSI is configured
-and working correctly with your iSCSI target or array.</p>
-
-<p>You will want to blacklist any local devices that do not have multiple
-paths to be managed in the <em>blacklist</em> section. It is recommended
-to blacklist the local SCSI disks by World Wide Identifier (WWID).
-The WWID is a unique identifier for any block device and may be retrieved with the command
-<code>scsi_id -g -u -s /block/sdX</code>, where <em>X</em> is the letter identifier of the local SCSI disk.
-It cannot hurt to also blacklist local devices by physical device name with
-a <code>devnode</code> line and a Perl-compatible regular expression string.<br/>
-The reason for blacklisting a second time with a regular expression
-is in case the <code>scsi_id</code> program fails to read the WWID from sector
-zero of a local device.  See the blacklist section in the configuration
-example.  The WWID line and <code>devnode “^sd[a]$”</code> line both serve as a
-blacklist for device sda.</p>
-
-<p>Once you have discovered targets and logged in to the iSCSI array, you can use the <code>iscsiadm -m
-session -P3</code> command to find the physical device names of your
-iSCSI volumes.  Then you can use
-the <code>scsi_id -g -u -s /block/sdX</code> command to find the WWID of
-your iSCSI volumes. Once you have the WWIDs of your iSCSI volumes,
-you can configure friendly name aliases in the <code>multipaths</code>
-section, as seen in the example <em>multipath.conf</em> below.</p>
-
-<p>The device section in the configuration example is pertinent
-to an Equallogic PS Series array.  The lines followed by comments are
-of particular importance, and are the recommended defaults
-for Equallogic devices. You can override the parameters on a
-per-volume basis in the <code>multipaths</code> section.</p>
-
-<p>For best performance, the value for <code>rr_min_io</code> should
-be in the range of <em>10-20</em> for database environments.
-For more sequential loads, which may be seen on file servers,
-performance might be better if
-<em>rr_min_io</em> is set in the range
-<em>100-512</em>.  Any <code>rr_min_io</code> value over <em>200</em>
-will require <code>cmds_max</code> and <code>queue_depth</code> parameters in
-<em>iscsid.conf</em> to be increased.</p>
-
-<h4>1.1. multipath.conf</h4>
-
-<p>```bash
-defaults {
-  user_friendly_names yes
+OPSCODE_USER=chef-server-username
+ORGNAME=chef
+COOKBOOK_COPYRIGHT=&lsquo;My Full Name&rsquo;
+COOKBOOK_EMAIL=&lsquo;<a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#100;&#101;&#x76;&#64;&#x65;&#x78;&#97;&#x6d;&#112;&#108;&#101;&#x2e;&#x6f;&#114;&#103;">&#100;&#x65;&#118;&#x40;&#x65;&#120;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#x6f;&#x72;&#x67;</a>&rsquo;
+AWS_ACCESS_KEY_ID=&ldquo;BlahBlahBlah&rdquo;
+AWS_SECRET_ACCESS_KEY=&ldquo;BlahBlahBlahBlah&rdquo;
+export OPSCODE_USER ORGNAME COOKBOOK_COPYRIGHT COOKBOOK_EMAIL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY</p>
+
+<p>function knife-reset {
+  OPSCODE_USER=chef-server-username
+  ORGNAME=chef
+  export OPSCODE_USER ORGNAME
 }</p>
 
-<p>blacklist {
-  wwid 360924fffffffffffffffffffffffffff
-  devnode "<sup>sd[a]$"</sup>
-  devnode "<sup>(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]*"</sup>
-  devnode "<sup>hd[a-z][[0-9]*]"</sup>
-  devnode "<sup>cciss!c[0-9]d[0-9]<em>[p[0-9]</em>]"</sup>
-}</p>
-
-<p>devices {
-  device {</p>
-
-<pre><code>vendor "EQLOGIC" # Manufacturer
-product "100E-00" # Model identifier
-path_grouping_policy multibus 
-getuid_callout "/sbin/scsi_id -g -u -s /block/%n" {text:change} 
-no_path_retry queue # If no paths, queue I/O 
-path_checker readsector0 
-failback immediate 
-path_selector "round-robin 0" 
-rr_min_io 10 # 10-20 Database / 100-512 File server
-rr_weight priorities 
-</code></pre>
-
-<p>  }
-}</p>
-
-<p>multipaths {
-  multipath {</p>
-
-<pre><code>wwid 36090afffffffffffffffffffffffffff 
-alias u02 
-</code></pre>
-
-<p>  }
+<p>function ginsu {
+  OPSCODE_USER=community-username
+  ORGNAME=community-organization
+  export OPSCODE_USER ORGNAME
+  knife &ldquo;$@&rdquo;
 }
 ```</p>
 
-<h4>1.2. Start and test Device Mapper Multipath</h4>
+<h1>Reference chef-repo/.chef/knife.rb</h1>
 
-<p>Device Mapper Multipath can be started with the following command
-once it has been configured.</p>
-
-<h5>Start multipathd service</h5>
-
-<p><code>bash
-service multipathd start
+<p><code>ruby
+current_dir = File.dirname(__FILE__)
+user = ENV['OPSCODE_USER'] || ENV['USER']
+log_level                :info
+log_location             STDOUT
+node_name                user
+client_key               "#{ENV['HOME']}/.chef/#{user}.pem"
+validation_client_name   "#{ENV['ORGNAME']}-validator"
+validation_key           "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
+if ENV['ORGNAME'] == 'marshall'
+chef_server_url "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+elsif ENV['ORGNAME'] == 'chef'
+chef_server_url 'http://chef.example.org:4000'
+end
+cache_type               'BasicFile'
+cache_options( :path =&gt; "#{ENV['HOME']}/.chef/checksums" )
+cookbook_path            ["#{current_dir}/../cookbooks", "#{current_dir}/../site-cookbooks"]
+role_path ["#{current_dir}/../roles"]
+cookbook_license         'apachev2'
+cookbook_copyright ENV['COOKBOOK_COPYRIGHT'] || 'Corporate, Inc.'
+cookbook_email ENV['COOKBOOK_EMAIL'] || 'corporate@example.com'
+knife[:aws_access_key_id] = ENV['AWS_ACCESS_KEY_ID']
+knife[:aws_secret_access_key] =  ENV['AWS_SECRET_ACCESS_KEY']
+knife[:identity_file] = "#{ENV['HOME']}/.ssh/id_rsa"
+knife[:aws_ssh_key_id] = ENV['OPSCODE_USER'] || ENV['USER']
+knife[:availability_zone] = "us-east-1a"
+knife[:region] = "us-east-1"
 </code></p>
 
-<p>You can list the Multipath topology with the following command
-to verify everything is working correctly.</p>
+<h1>Credits</h1>
 
-<h5>Multipath listing</h5>
-
-<p><code>bash
-multipath -ll -v2
-u02 (36090a04850ec0870d0ba04020000d023) dm-0 EQLOGIC,100E-00
-[size=100G][features=0][hwhandler=0][rw]
-\_ round-robin 0 [prio=2][active]
-\_ 10:0:0:0 sdb 8:16 [active][ready]
-\_ 11:0:0:0 sdc 8:32 [active][ready]
-</code></p>
-
-<h4>1.3. Reload udev to test friendly alias names</h4>
-
-<p>Once Multipath has been verified to be working correctly,
-you may need to run the following <code>udev</code> command to create
-devices with friendly names.  This only applies if you
-have chosen to use persistent Multipath binding by defining
-<code>alias</code> lines in the <code>multipaths</code> section of <em>multipath.conf</em>.<br/>
-Reloading udev will automagically create your aliased devices in the <em>/dev/mapper</em>
-folder.</p>
-
-<h5>Reload udev command</h5>
-
-<p><code>bash
-udevcontrol reload_rules
-</code></p>
-
-<p>You may proceed to <code>fdisk</code> and
-format the aliased device, just as you would any other SCSI disk
-device appearing in the <em>/dev</em> directory.</p>
-
-<h2>VI. Final steps</h2>
-
-<h3>1. Set services to start automatically.</h3>
-
-<p>Once you have everything up and running, with regards to Open-iSCSI
-and Device Mapper Multipath, run the following
-commands to ensure services get started automatically during
-server boot up.</p>
-
-<h4>Set iscsid to start at boot</h4>
-
-<p><code>bash
-chkconfig iscsid on
-</code></p>
-
-<h4>Set iscsi to login to target at boot</h4>
-
-<p><code>bash
-chkconfig iscsi on
-</code></p>
-
-<h4>Set multipathd to start at boot</h4>
-
-<p><code>bash
-chkconfig multipathd on
-</code></p>
-
-<p>Edit <em>/etc/fstab</em>, and add a line with the <code>_netdev</code> keyword
-for all your volumes to be mounted. Using the <code>_netdev</code> keyword
-ensures this device will not be mounted before the networking
-subsystem has started.</p>
-
-<p>We have observed Open-iSCSI failing both paths temporarily while
-updating firmware on the group node.  This could
-result in a machine remounting a filesystem in read-only mode
-upon error unless an <code>errors=continue</code> option is added to
-<em>/etc/fstab</em>.</p>
-
-<p><em>/etc/fstab</em>
-<code>bash
-LABEL=/             /       ext3     defaults 1 1
-LABEL=/u01          /u01    ext3     defaults 1 2
-/dev/mapper/u02p1   /u02    ext3     _netdev,defaults,errors=continue 0 0
-tmpfs               /dev/shm  tmpfs  defaults 0 0
-devpts              /dev/pts  devpts gid=5,mode=620 0 0
-sysfs               /sys    sysfs    defaults 0 0
-proc                /proc   proc     defaults 0 0
-LABEL=SWAP-sda5     swap    swap     defaults 0 0
-</code></p>
-
-<h3>2. Final testing</h3>
-
-<h4>2.1. Reboot</h4>
-
-<p>Reboot your server, and make sure everything comes up. The iscsi
-initialization script should log the server in to the iSCSI targets.
-Multipath should be started, and it should see both of its paths to the iSCSI array. If
-everything is working correctly, the <em>fstab</em> entry should automatically
-mount any iSCSI volumes.</p>
-
-<h4>2.2. Test your Multipath software</h4>
-
-<p>The easiest way to test your Multipath software is to take down
-one of the Ethernet devices manually.  To do this, run the following command.</p>
-
-<h5>Faking network failure</h5>
-
-<p><code>bash
-ifdown eth3
-</code></p>
-
-<p>After about 15 seconds you should see something like this in the
-messages log.</p>
-
-<h5>Path failure log message</h5>
-
-<p><code>bash
-kernel: device-mapper: multipath: Failing path X:XX
-multipathd: &lt;alias&gt;: remaining active paths: 1
-</code></p>
-
-<p>Then, bring the device back up manually.</p>
-
-<h5>End fake network failure</h5>
-
-<p><code>bash
-ifup eth3
-</code></p>
-
-<p>Again, after about 15 seconds you should see something like this
-in the messages log.</p>
-
-<h5>Path resolved log message</h5>
-
-<p><code>bash
-multipathd: X:XX: reinstated
-multipathd: &lt;alias&gt;: remaining active paths: 2
-</code></p>
-
-<p>Repeat this test for every other NIC being used for iSCSI and make
-sure every iSCSI Network Interface fails-over from faulty paths,
-and reinstate all active iSCSI paths gracefully.</p>
-
-<h2>References and recommended reading</h2>
-
-<p>Aizman, Alex, and Dmitry Yusupov. 2007. Open-iSCSI – RFC3720
-architecture and implementation. <em>Open-iSCSI project</em>. <a href="http://www.open-iscsi.org/index.html#docs">http://www.open-iscsi.org/index.html#docs</a>.</p>
-
-<p>Anon. Device-mapper Resource Page. <em>Device-Mapper-Multipath
-Project</em>. <a href="http://sources.redhat.com/dm/">http://sources.redhat.com/dm/</a>.</p>
-
-<p>Dell EqualLogic, Inc. 2008. <em>PS Series Array Network Performance
-Guidelines</em>. 3rd ed. Nashua, NH: Dell, Inc, June. <a href="http://www.equallogic.com/uploadedfiles/Resources/Tech_Reports/tr-network-guidelines-TR1017.pdf">http://www.equallogic.com/uploadedfiles/Resources/Tech_Reports/tr-network-guidelines-TR1017.pdf</a>.</p>
-
-<p>———. 2009. <em>Red Hat Linux v5.x Software iSCSI Initiator Configuration,
-MPIO and tuning Guide</em>. Nashua, NH: Dell, Inc, December. <a href="http://www.equallogic.com/resourcecenter/assetview.aspx?id=8727">http://www.equallogic.com/resourcecenter/assetview.aspx?id=8727</a>.</p>
-
-<p>Red Hat, Inc. 2007. How do I configure the iscsi-initiator in
-Red Hat Enterprise Linux 5? <em>Red Hat Knowledgebase</em>. June 25.
-<a href="http://access.redhat.com/kb/docs/DOC-6388">https://access.redhat.com/kb/docs/DOC-6388</a>.</p>
-
-<p>———. 2008. How can I improve the failover time of a faulty path
-when using device-mapper-multipath over iSCSI? <em>Red Hat Knowledgebase</em>.
-October 1. <a href="https://access.redhat.com/kb/docs/DOC-2877">https://access.redhat.com/kb/docs/DOC-2877</a>.</p>
-
-<p>———. 2010a. <em>DM Multipath</em>. <a href="http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/DM_Multipath/index.html">http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/DM_Multipath/index.html</a>.</p>
-
-<p>———. 2010b. Kickstart Installations. In <em>Installing Red Hat
-Enterprise Linux 5 for all architectures</em>, Chap. 31. Research
-Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/Installation_Guide/index.html">http://www.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/5.5/html/Installation_Guide/index.html</a>.</p>
+<p>This was partly adapted from Stephen Nelson-Smith&rsquo;s (@LordCope) book Test-Driven Infrastructure with Chef (<a href="http://shop.oreilly.com/product/0636920020042.do">http://shop.oreilly.com/product/0636920020042.do</a>).</p>
 ]]></content>
   </entry>
   

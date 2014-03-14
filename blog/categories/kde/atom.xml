@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: kde | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: Kde | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/kde/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -24,7 +24,7 @@ Vertical synchronization (or VerticalSync) is</p>
 <p><code>an option in most systems, wherein the video card is prevented from doing anything visible to the
 display memory until after the monitor finishes its current refresh cycle.</code></p>
 
-<p>In layman's terms, when Vertical synchronization is turned on, many aspects
+<p>In layman&rsquo;s terms, when Vertical synchronization is turned on, many aspects
 of video processing are locked to the reported refresh rate of your display
 hardware.  In other words, if your fancy LCD screen reports 60 Hz. is its own
 supported refresh rate, then games or video playback will be capped at 60 frames
@@ -34,7 +34,7 @@ per second when Vertical synchronization is turned on.</p>
 
 
 <p>I have seen a couple reports that turning off <a href="http://www.reddit.com/r/tf2/comments/15o98u/psalinux_vsync_enabled_by_default_even_if_it_says/">VSync</a>
-doesn't actually disable VSync in Linux Steam games like Team Fortress 2.  The proposed workaround in this reddit thread was toggling
+doesn&rsquo;t actually disable VSync in Linux Steam games like Team Fortress 2.  The proposed workaround in this reddit thread was toggling
 the option on, and off, until VSync was actually turned off.  Searching through the <a href="https://github.com/ValveSoftware/steam-for-linux">steam-for-linux issue tracker</a>
 last night, I found this <a href="https://github.com/ValveSoftware/steam-for-linux/issues/271">solution</a> on an unrelated AMD TearFree bug report.</p>
 

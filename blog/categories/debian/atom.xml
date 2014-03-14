@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Debian, | atomic-penguin's blog]]></title>
+  <link href="http://atomic-penguin.github.com/blog/categories/debian/atom.xml" rel="self"/>
+  <link href="http://atomic-penguin.github.com/"/>
+  <updated>2014-03-14T14:49:14-04:00</updated>
+  <id>http://atomic-penguin.github.com/</id>
+  <author>
+    <name><![CDATA[Eric G. Wolfe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/"/>
+    <updated>2012-12-14T12:12:00-05:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers</id>
+    <content type="html"><![CDATA[<p>Since the first week of this last November, the closed <a href="http://steamcommunity.com/linux">Linux Steam beta</a>
+has been underway.  I think the latest official count of Linux beta
+users is somewhere near 80,000 gamers.  That is a pretty impressive
+closed beta headcount considering that is more than 1% of the active
+5 million users who use Steam daily.  It is really an exciting time
+for all the Linux desktop users.  As the introduction of Steam
+has encouraged GPU OEMs to improve their Linux video drivers.  Also,
+some of the game developers participating in the Linux beta have been
+supporting their customers and fixing bugs, even for those not
+officially included in the closed beta program.</p>
+
+<!-- more -->
+
+
+<p>On to the point of this blog post, as I mentioned, the Steam Linux
+beta has led to many Linux video driver improvements from major
+GPU vendors.  As of this post, there have been several experimental
+NVidia driver releases with major bugfixes and performance improvements
+for Linux users.  The NVidia experimental driver releases have perhaps
+happened so quickly that it isn&rsquo;t feasible to re-package every iteration
+for Ubuntu/Debian users.</p>
+
+<p>Read on if you would like to re-package the NVidia experimental releases,
+in a <code>.deb</code> package for yourself.  The point of using the <code>.deb</code> packaging
+is to maintain the ability to upgrade to an official Ubuntu/Debian package
+using native package management as newer releases become available in
+officially supported repositories.</p>
+
+<h2>Experimental NVidia drivers as deb packages</h2>
+
+<p>The package maintainer for the nvidia-graphics-drivers has general build guidelines <a href="https://github.com/tseliot/nvidia-graphics-drivers/blob/master/debian/nvidia-current.README.Debian">here</a>.
+If you&rsquo;re desperate for the new drivers via Ubuntu packaging, you can rebuild them with the 310.19, or 313.09 packages.
+Here is the process I followed to install the latest NVidia Beta drivers from deb packages.  The major version bump
+to 313.09 is a slightly different process.  I could not find any automated way to regenerate the names of the packaging templates
+to match the version increase.</p>
+
+<h3>Minor version bump 310.14 &ndash; 310.19</h3>
+
+<ol>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
+<li><code>apt-get source nvidia-experimental-310</code></li>
+<li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
+<li><code>sudo apt-get install devscripts</code></li>
+<li><code>cd nvidia-current &amp;&amp; rm -f *.run</code></li>
+<li>Download both NVIDIA-Linux-x86-310.19.run and NVIDIA-Linux-x86_64-310.19.run.
+
+<ul>
+<li>Move those to your build directory, which should be your current working directory.</li>
+</ul>
+</li>
+<li><code>tar zcvf ../nvidia-graphics-drivers-experimental-310_310.19.orig.tar.gz --exclude debian .</code></li>
+<li><code>dch -i</code>
+
+<ul>
+<li>Edit the changelog, making sure to bump the version on the tom line from 310.14 to 310.19. Might get a warning that the source directory changed.</li>
+</ul>
+</li>
+<li><code>debclean</code></li>
+<li><code>debuild</code></li>
+<li><code>cd /usr/src</code> (Your new .deb files should be in /usr/src)</li>
+<li><code>sudo dpkg -i nvidia-experimental-310_310.19-0ubuntu0.1_amd64.deb</code></li>
+</ol>
+
+
+<h3>Major version bump 310.14 &ndash;> 313.09</h3>
+
+<ol>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
+<li><code>apt-get source nvidia-experimental-310</code></li>
+<li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
+<li><code>sudo apt-get install devscripts</code></li>
+<li><code>cd nvidia-experimental-310 &amp;&amp; rm -f *.run</code></li>
+<li>Download both NVIDIA-Linux-x86-313.09.run and NVIDIA-Linux-x86_64-313.09.run.
+
+<ul>
+<li>Move those to your build directory, which should be your current working directory.</li>
+</ul>
+</li>
+<li><code>tar zcvf ../nvidia-graphics-drivers-experimental-313_313.09.orig.tar.gz --exclude debian .</code></li>
+<li><code>dch --package nvidia-graphics-drivers-experimental-313 --newversion 313.09-0ubuntu0.1</code>
+
+<ul>
+<li>Edit the changelog.  Might get a warning that the source directory changed.</li>
+</ul>
+</li>
+<li><code>cd debian</code></li>
+<li><code>rename 's/(nvidia-experimental)-310(.*\.in)/$1-313$2/' *.in</code>
+
+<ul>
+<li>Rename the <code>.in</code> templates for the major version bump.</li>
+</ul>
+</li>
+<li><code>cd ..</code></li>
+<li><code>debclean</code></li>
+<li><code>debuild</code></li>
+<li><code>cd /usr/src</code> (Your new .deb files should be in /usr/src)</li>
+<li><code>sudo dpkg -i nvidia-experimental-313_313.09-0ubuntu0.1_amd64.deb</code></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

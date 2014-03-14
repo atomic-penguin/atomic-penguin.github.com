@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>2 Cent Tip - Extend (resize) a whole device partition. - atomic-penguin's blog</title>
+  <title>2 Cent Tip - Extend (Resize) a Whole Device Partition. - atomic-penguin's blog</title>
   <meta name="author" content="Eric G. Wolfe">
 
   
@@ -18,16 +18,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/">
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
 
@@ -84,7 +85,7 @@
   
   <p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
 
-<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&#8217;t matter if you&#8217;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
+<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&rsquo;t matter if you&rsquo;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
 
 <!-- more -->
 
@@ -93,21 +94,21 @@
 
 <p>Furthermore, the version of <a href="http://www.gnu.org/software/parted/index.shtml">parted</a> that shipped with RHEL 5 threw an incompatible filesystem error, refusing to modify the filesystem. So, in the end, I twiddled some bits on the partition table with fdisk, and used resize2fs to extend the partition.</p>
 
-<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you&#8217;ll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
+<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you&rsquo;ll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
 
 <p>The device name in this example is <code>/dev/mapper/u02</code>, the first partition is <code>/dev/mapper/u02p1</code>:</p>
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk -l /dev/mapper/u02
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk -l /dev/mapper/u02
     Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
 
     255 heads, 63 sectors/track, 13171 cylinders
-    <span class="nv">Units</span> <span class="o">=</span> cylinders of 16065 * <span class="nv">512</span> <span class="o">=</span> 8225280 bytes
+    Units = cylinders of 16065 * 512 = 8225280 bytes
 
               Device Boot      Start         End      Blocks   Id  System
-    /dev/mapper/u02p1               1       13171   26450329   83  Linux
-</code></pre>
+    /dev/mapper/u02p1               1       13171   26450329   83  Linux</code></pre>
 </div>
 
 
@@ -115,42 +116,42 @@
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# fdisk /dev/mapper/u02
-    WARNING: DOS-compatible mode is deprecated. It<span class="s1">&#39;s strongly recommended to</span>
-<span class="s1">             switch off the mode (command &#39;</span>c<span class="s1">&#39;) and change display units to</span>
-<span class="s1">             sectors (command &#39;</span>u<span class="err">&#39;</span><span class="o">)</span>.
+<div>
+  <pre><code class='bash'>root@localhost:~# fdisk /dev/mapper/u02
+    WARNING: DOS-compatible mode is deprecated. It&#39;s strongly recommended to
+             switch off the mode (command &#39;c&#39;) and change display units to
+             sectors (command &#39;u&#39;).
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: d
+    Command (m for help): d
     Selected partition 1
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+    Command (m for help): n
     Command action
        e   extended
-       p   primary partition <span class="o">(</span>1-4<span class="o">)</span>
+       p   primary partition (1-4)
     p
-    Partition number <span class="o">(</span>1-4<span class="o">)</span>: 1
-    First cylinder <span class="o">(</span>1-26109, default 1<span class="o">)</span>:
+    Partition number (1-4): 1
+    First cylinder (1-26109, default 1):
     Using default value 1
-    Last cylinder, +cylinders or +size<span class="o">{</span>K,M,G<span class="o">}</span> <span class="o">(</span>1-26109, default 26109<span class="o">)</span>:
+    Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
     Using default value 26109
 
-    Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: w
+    Command (m for help): w
     The partition table has been altered!
 
-    Calling ioctl<span class="o">()</span> to re-read partition table.
-    Syncing disks.
-</code></pre>
+    Calling ioctl() to re-read partition table.
+    Syncing disks.</code></pre>
 </div>
 
 
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
 
-<div class="highlight"><pre><code class="bash">    root@localhost:~# resize2fs /dev/mapper/u02p1
-    resize2fs 1.39 <span class="o">(</span>29-May-2006<span class="o">)</span>
+<div>
+  <pre><code class='bash'>root@localhost:~# resize2fs /dev/mapper/u02p1
+    resize2fs 1.39 (29-May-2006)
     Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
-    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 <span class="o">(</span>4k<span class="o">)</span> blocks.
-    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
-</code></pre>
+    Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
+    The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.</code></pre>
 </div>
 
 
@@ -186,8 +187,6 @@
       
         <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/" >Tweet</a>
-  
   
   <div class="g-plusone" data-size="medium"></div>
   
@@ -216,15 +215,15 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC address change on RHEL</a>
+        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC Address Change on RHEL</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: system generated errata list and patch changelog with yum</a>
+        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: System Generated Errata List and Patch Changelog With Yum</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO Test-kitchen and Encrypted Data Bags</a>
       </li>
     
       <li class="post">
@@ -247,7 +246,7 @@
   <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -267,23 +266,11 @@
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
 <section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("atomic_penguin", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
-  
+  <h1>Twitter</h1>
+  <a class="twitter-timeline" href="https://twitter.com/atomic_penguin" data-widget-id="444543560017125376">Tweets by @atomic_penguin</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
 
 <section class="googleplus">
   <h1>
@@ -310,9 +297,7 @@
 
 <section>
   <h1>About Me</h1>
-  <img src="/images/profile.png" style="border: 0px;">
-  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
-  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+  <p>A little something about me.</p>
 </section>
 
   
@@ -340,7 +325,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -351,7 +336,7 @@
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s); js.id = id; js.async = true;
   js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
@@ -367,16 +352,6 @@
   </script>
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

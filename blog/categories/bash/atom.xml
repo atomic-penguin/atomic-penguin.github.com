@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: bash | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: Bash | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,91 +14,91 @@
 
   
   <entry>
-    <title type="html"><![CDATA[2 cent Linux tip using find and tar for a selective backup]]></title>
+    <title type="html"><![CDATA[2 Cent Linux Tip Using Find and Tar for a Selective Backup]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
     <updated>2011-07-11T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
-    <content type="html"><![CDATA[<p>So I\'m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\'s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
+    <content type="html"><![CDATA[<p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 
 <p>Using the <code>find</code> command we can solve this problem fairly easy.</p>
 
 <!-- more -->
 
 
-<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don't want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\'ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
+<p>So the basic requirements in this scenario boil down to finding all the config files under the <code>~/.cxgames</code> tree. I have an <code>~/etc</code> directory to keep a backup of important things such as settings and handy scripts. I will copy my tar file to the <code>~/etc</code> directory so I can find it easily later. However, I don&rsquo;t want every <code>*.cfg</code> file under my Steam bottle, just the ones for those specific games (Team Fortress and Left 4 Dead). When I run the following command, I\&rsquo;ll discover those games have a common top-level directory, <em>~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps</em>.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;find ~/.cxgames -name <span class="s2">&quot;*.cfg&quot;</span>
+&lt;pre&gt;&lt;code&gt;find ~/.cxgames -name &quot;*.cfg&quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
-<p>When I run the following command, however, I'll get an error due to spaces in the directory/filename structure.  Note the backslash in "Program Files" is an escaped space for the shell to properly interpret this.</p>
+<p>When I run the following command, however, I&rsquo;ll get an error due to spaces in the directory/filename structure.  Note the backslash in &ldquo;Program Files&rdquo; is an escaped space for the shell to properly interpret this.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;find .cxgames/Steam/drive_c/Program<span class="se">\ </span>Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
+&lt;pre&gt;&lt;code&gt;find .cxgames/Steam/drive_c/Program\ Files/Steam/steamapps/ | xargs tar -rf ~/etc/steam-settings.tar
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
 <p>The find command has a switch <code>-print0</code> to deal with this, and <code>xargs</code> will process this find output format with the <code>-0</code> flag.  The <code>-print0</code> and <code>-0</code> flags tell these system utilities to print or use null-terminated strings, making it easier for shell utilities to consume the spaces in the filenames.  Therefore the following command will get the files I need:</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name <span class="s2">&quot;*.cfg&quot;</span> -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
+&lt;pre&gt;&lt;code&gt;find ~/.cxgames/Steam/drive_c/Program Files/Steam/steamapps/ -name &quot;*.cfg&quot; -print0 | xargs -0 tar -rf ~/etc/steam-settings.tar
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
 <p>Restoring is as simple as running the following command from within my home directory.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;tar xvf ~/etc/steam-settings.tar
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
-<p>Perhaps some day we'll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
+<p>Perhaps some day we&rsquo;ll have a Linux steam client, and a promotional TF2 item named the <strong>Unix Pipe</strong>.</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[2 Cent Tip - Dynamic rdesktop resolution.]]></title>
+    <title type="html"><![CDATA[2 Cent Tip - Dynamic Rdesktop Resolution.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/"/>
     <updated>2010-06-28T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution</id>
-    <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I'm looking at you VMware).  Not that I have any problem with Microsoft or Windows, I'm really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
+    <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&rsquo;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&rsquo;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
 
-<p>It's a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop's X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in <code>rdesktop -g 1280x1024</code> is much more tedious than typing in <code>rdesktop</code> on the command line interface.</p>
+<p>It&rsquo;s a handy utility, but I really wish it would give me an appropriate resolution based on the current resolution of my laptop&rsquo;s X Windows session.  There is, in fact, a command line flag to alter the geometry of the remote desktop window.  However, typing in <code>rdesktop -g 1280x1024</code> is much more tedious than typing in <code>rdesktop</code> on the command line interface.</p>
 
 <!-- more -->
 
 
-<p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so...</p>
+<p>So the simple solution is to put an alias in the <code>.bashrc</code> file, like so&hellip;</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;# ~/.bashrc
-<span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g 1280x1024&#39;</span>
+rdesktop=&#39;rdesktop -g 1280x1024&#39;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
@@ -106,37 +106,37 @@
 
 <p>Another solution would be to use <code>awk</code> to find a smaller resolution from <code>xrandr</code>, then set that resolution in my <code>rdesktop</code> alias.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;# ~/.bashrc
-<span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+RDESKTOP_SIZE=`xrandr | awk &#39;{getline; getline; getline; print $1; exit;}&#39;`
 
-<span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
+alias rdesktop=&#39;rdesktop -g $RDESKTOP_SIZE&#39;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
-<p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we'll skip.  I'll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I'll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
+<p>This <code>awk</code> command will skip the first three lines, from the xrandr output.  That is two header lines, and the maximum resolution on the following line, which we&rsquo;ll skip.  I&rsquo;ll take the next highest resolution and set that in the variable <code>$RDESKTOP_SIZE</code>.  Finally, I&rsquo;ll use the variable <code>$RDESKTOP_SIZE</code> with the <code>-g</code> switch in <code>rdesktop</code> to properly set my alias.</p>
 
 <p>Let us say you have two big monitors plugged into a port replicator.  Perhaps you only want the <code>rdesktop</code> window to cover part of one screen.  The following code will keep my <code>rdesktop</code> window smaller than one of the 1920x1200 screens on a spanned 3840x1200 resolution.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;# ~/.bashrc
-<span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="sb">`</span>xrandr | awk <span class="s1">&#39;{getline; getline; getline; print $1; exit;}&#39;</span><span class="sb">`</span>
+RDESKTOP_SIZE=`xrandr | awk &#39;{getline; getline; getline; print $1; exit;}&#39;`
 
-<span class="k">if</span> <span class="o">[</span> <span class="nv">$RDESKTOP_SIZE</span> <span class="o">==</span> <span class="s2">&quot;3840x1200&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-<span class="k">    </span><span class="nv">RDESKTOP_SIZE</span><span class="o">=</span><span class="s2">&quot;1820x1100&quot;</span>
-<span class="k">fi</span>
+if [ $RDESKTOP_SIZE == &quot;3840x1200&quot; ]; then
+    RDESKTOP_SIZE=&quot;1820x1100&quot;
+fi
 
-<span class="nb">alias </span><span class="nv">rdesktop</span><span class="o">=</span><span class="s1">&#39;rdesktop -g $RDESKTOP_SIZE&#39;</span>
+alias rdesktop=&#39;rdesktop -g $RDESKTOP_SIZE&#39;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 

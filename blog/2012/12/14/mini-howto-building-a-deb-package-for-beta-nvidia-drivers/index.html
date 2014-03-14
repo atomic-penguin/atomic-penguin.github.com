@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mini-HOWTO: Building a deb package for Beta NVidia drivers - atomic-penguin's blog</title>
+  <title>Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers - atomic-penguin's blog</title>
   <meta name="author" content="Eric G. Wolfe">
 
   
@@ -20,16 +20,17 @@ users is &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/">
+  <link rel="canonical" href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="atomic-penguin's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
 
@@ -111,7 +112,7 @@ beta has led to many Linux video driver improvements from major
 GPU vendors.  As of this post, there have been several experimental
 NVidia driver releases with major bugfixes and performance improvements
 for Linux users.  The NVidia experimental driver releases have perhaps
-happened so quickly that it isn&#8217;t feasible to re-package every iteration
+happened so quickly that it isn&rsquo;t feasible to re-package every iteration
 for Ubuntu/Debian users.</p>
 
 <p>Read on if you would like to re-package the NVidia experimental releases,
@@ -123,15 +124,15 @@ officially supported repositories.</p>
 <h2>Experimental NVidia drivers as deb packages</h2>
 
 <p>The package maintainer for the nvidia-graphics-drivers has general build guidelines <a href="https://github.com/tseliot/nvidia-graphics-drivers/blob/master/debian/nvidia-current.README.Debian">here</a>.
-If you&#8217;re desperate for the new drivers via Ubuntu packaging, you can rebuild them with the 310.19, or 313.09 packages.
+If you&rsquo;re desperate for the new drivers via Ubuntu packaging, you can rebuild them with the 310.19, or 313.09 packages.
 Here is the process I followed to install the latest NVidia Beta drivers from deb packages.  The major version bump
 to 313.09 is a slightly different process.  I could not find any automated way to regenerate the names of the packaging templates
 to match the version increase.</p>
 
-<h3>Minor version bump 310.14 - 310.19</h3>
+<h3>Minor version bump 310.14 &ndash; 310.19</h3>
 
 <ol>
-<li><code>cd /usr/src</code> (you&#8217;ll need src group membership to write to /usr/src)</li>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
 <li><code>apt-get source nvidia-experimental-310</code></li>
 <li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
 <li><code>sudo apt-get install devscripts</code></li>
@@ -156,10 +157,10 @@ to match the version increase.</p>
 </ol>
 
 
-<h3>Major version bump 310.14 -> 313.09</h3>
+<h3>Major version bump 310.14 &ndash;> 313.09</h3>
 
 <ol>
-<li><code>cd /usr/src</code> (you&#8217;ll need src group membership to write to /usr/src)</li>
+<li><code>cd /usr/src</code> (you&rsquo;ll need src group membership to write to /usr/src)</li>
 <li><code>apt-get source nvidia-experimental-310</code></li>
 <li><code>sudo apt-get build-dep nvidia-experimental-310</code></li>
 <li><code>sudo apt-get install devscripts</code></li>
@@ -218,7 +219,7 @@ to match the version increase.</p>
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/debian-/'>debian,</a>, <a class='category' href='/blog/categories/gaming-/'>gaming,</a>, <a class='category' href='/blog/categories/linux-/'>linux,</a>, <a class='category' href='/blog/categories/nvidia-/'>nvidia,</a>, <a class='category' href='/blog/categories/packaging/'>packaging</a>, <a class='category' href='/blog/categories/steam-/'>steam,</a>, <a class='category' href='/blog/categories/ubuntu-/'>ubuntu,</a>
+    <a class='category' href='/blog/categories/debian/'>debian,</a>, <a class='category' href='/blog/categories/gaming/'>gaming,</a>, <a class='category' href='/blog/categories/linux/'>linux,</a>, <a class='category' href='/blog/categories/nvidia/'>nvidia,</a>, <a class='category' href='/blog/categories/packaging/'>packaging</a>, <a class='category' href='/blog/categories/steam/'>steam,</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu,</a>
   
 </span>
 
@@ -226,8 +227,6 @@ to match the version increase.</p>
     </p>
     
       <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/" data-via="atomic_penguin" data-counturl="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -264,15 +263,15 @@ to match the version increase.</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC address change on RHEL</a>
+        <a href="/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/">Mini HOWTO - VMWare MAC Address Change on RHEL</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: system generated errata list and patch changelog with yum</a>
+        <a href="/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/">TIL: System Generated Errata List and Patch Changelog With Yum</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO test-kitchen and encrypted data bags</a>
+        <a href="/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/">HOWTO Test-kitchen and Encrypted Data Bags</a>
       </li>
     
       <li class="post">
@@ -295,7 +294,7 @@ to match the version increase.</p>
   <a href="https://github.com/atomic-penguin">@atomic-penguin</a> on GitHub
   
   <script type="text/javascript">
-    $.domReady(function(){
+    $(document).ready(function(){
         if (!window.jXHR){
             var jxhr = document.createElement('script');
             jxhr.type = 'text/javascript';
@@ -315,23 +314,11 @@ to match the version increase.</p>
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
 <section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("atomic_penguin", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/atomic_penguin" class="twitter-follow-button" data-show-count="false">Follow @atomic_penguin</a>
-  
+  <h1>Twitter</h1>
+  <a class="twitter-timeline" href="https://twitter.com/atomic_penguin" data-widget-id="444543560017125376">Tweets by @atomic_penguin</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
 
 <section class="googleplus">
   <h1>
@@ -358,9 +345,7 @@ to match the version increase.</p>
 
 <section>
   <h1>About Me</h1>
-  <img src="/images/profile.png" style="border: 0px;">
-  <p>Hello, Eric G. Wolfe, here. I am a Senior Linux Administrator at <a href="http://www.marshall.edu">Marshall University.</a> You might know me as atomic-penguin from various corners of the Internet.</p>
-  <p>I have been quite enamored with computers since I was very young. I am quite lucky to get paid to work on something I really enjoy doing. In the course of my everyday job, I have been fortunate enough to contribute Open Source bugfixes to the <a href="http://www.opscode.com">Opscode Chef</a> <a href="https://github.com/opscode-cookbooks">COOK project</a>.</p>
+  <p>A little something about me.</p>
 </section>
 
   
@@ -388,7 +373,7 @@ to match the version increase.</p>
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -399,7 +384,7 @@ to match the version increase.</p>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s); js.id = id; js.async = true;
   js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
@@ -415,16 +400,6 @@ to match the version increase.</p>
   </script>
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

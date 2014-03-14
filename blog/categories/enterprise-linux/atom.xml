@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Enterprise Linux | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/enterprise-linux/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-01-09T11:23:13-05:00</updated>
+  <updated>2014-03-14T14:49:14-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -72,7 +72,7 @@ of the storage array.  According to Dell EqualLogic (2008) some
 recommended guidelines are as follows:</p>
 
 <ul>
-<li>Do...
+<li>Do&hellip;
 
 <ul>
 <li>Use Cat 6 or Cat 5e TSB95 cables.</li>
@@ -82,7 +82,7 @@ recommended guidelines are as follows:</p>
 <li>Use VLANs, if physically separate switches are not available.</li>
 </ul>
 </li>
-<li>Do <strong>NOT</strong>...
+<li>Do <strong>NOT</strong>&hellip;
 
 <ul>
 <li>Use Spanning Tree Protocol on switch ports for iSCSI connections.</li>
@@ -93,7 +93,7 @@ recommended guidelines are as follows:</p>
 
 
 <p>See <em>PS Series Array Network Performance Guidelines</em>, or relevant
-storage vendor's documentation for more information.</p>
+storage vendor&rsquo;s documentation for more information.</p>
 
 <h2>III. Manual installation</h2>
 
@@ -103,7 +103,7 @@ Enterprise Linux version 5.x.  If this is your first time installing
 and configuring Device Mapper Multipath, or Open-iSCSI software,
 then this is the recommended method of installation and configuration.<br/>
 It is possible to automate a portion of this installation and
-configuration with Red Hat's Kickstart, or configuration management
+configuration with Red Hat&rsquo;s Kickstart, or configuration management
 engines such as Puppet.  However, that is beyond the scope of this
 document.</p>
 
@@ -271,12 +271,12 @@ code, in boldface, to the <em>/etc/rc.local</em> file.</p>
 
 <h1>iSCSI Interface Settings for Equallogic</h1>
 
-<p>ISCSI_IF="eth2 eth3"
-ETHTOOL_OPTS="autoneg off rx on tx on"
+<p>ISCSI_IF=&ldquo;eth2 eth3&rdquo;
+ETHTOOL_OPTS=&ldquo;autoneg off rx on tx on&rdquo;
 ETHTOOL=<code>which ethtool</code></p>
 
 <p>for i in $ISCSI_IF; do
-  echo "$ETHTOOL -A $i $ETHTOOL_OPTS"
+  echo &ldquo;$ETHTOOL -A $i $ETHTOOL_OPTS&rdquo;
   $ETHTOOL -A $ISCSI_IF $ETHTOOL_OPTS
 done
 ```</p>
@@ -300,7 +300,7 @@ the SCSI layer to your Multipath software, which would be necessary for
 quick fail-over.  With the default configuration, two minutes
 of I/O would be queued before failing the path. If you are familiar
 with Fiber Channel path fail-over, it tends to be instantaneous.<br/>
-Most people configuring iSCSI fail-over certainly don't want
+Most people configuring iSCSI fail-over certainly don&rsquo;t want
 a failed path to be retried for two whole minutes.  Using the default
 configuration with a production database server could lead
 to massive amounts of I/O being queued instead of the expected
@@ -355,7 +355,7 @@ node.session.iscsi.FastAbort = No # default Yes; Dell / Open-iSCSI recommended**
 <h3>1. Create iSCSI interfaces</h3>
 
 <p>The iSCSI interfaces are separate pseudo-devices used by Open-iSCSI.<br/>
-From Open-iSCSI's point-of-view, these are not the same as physical
+From Open-iSCSI&rsquo;s point-of-view, these are not the same as physical
 Ethernet devices.  What you will need to do is bind
 each of your ethX devices to an iSCSI interface.  Technically speaking,
 you could call your iSCSI interfaces eth2 and eth3, and bind them to
@@ -442,7 +442,7 @@ iscsiadm -m iface -o update -I iface0 -n iface.hwaddress -v 00:aa:bb:cc:dd:11</p
 
 <p>The file <em>/etc/iscsi/initiatorname.iscsi</em> should contain
 an initiator name for your iSCSI client host.  You need to include
-this initiator name on your iSCSI array's configuration for
+this initiator name on your iSCSI array&rsquo;s configuration for
 this specific iSCSI client host.</p>
 
 <p>If you have not yet started the iSCSI daemon, run the following
@@ -457,7 +457,7 @@ service iscsid start
 <h4>3.1. Discovering targets</h4>
 
 <p>Once the iscsid service is running
-and the client's initiator name is configured on the iSCSI array,
+and the client&rsquo;s initiator name is configured on the iSCSI array,
 then you may proceed with the following command to discover available
 targets.  Assuming our iSCSI array had an IP address of 10.1.2.10,
 the following command would return the available targets.</p>
@@ -578,7 +578,7 @@ line in the <code>blacklist</code> section, thereby disabling Multipath
 for all devices in the system.  If you want to assign persistently
 bound names to iSCSI devices, be sure to set <code>user_friendly_names</code>
 to <em>yes</em>, as seen in the example on the following page.  If you do not
-use friendly names with Device Mapper, you'll end up with device
+use friendly names with Device Mapper, you&rsquo;ll end up with device
 names such as <em>/dev/mapper/__36090afffffffffffffffffffffffffff</em>.
 When using friendly names, you will need to specify an <code>alias</code>
 line in the <code>multipaths</code> section after Open-iSCSI is configured
@@ -629,10 +629,10 @@ defaults {
 
 <p>blacklist {
   wwid 360924fffffffffffffffffffffffffff
-  devnode "<sup>sd[a]$"</sup>
-  devnode "<sup>(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]*"</sup>
-  devnode "<sup>hd[a-z][[0-9]*]"</sup>
-  devnode "<sup>cciss!c[0-9]d[0-9]<em>[p[0-9]</em>]"</sup>
+  devnode &ldquo;^sd[a]$&rdquo;
+  devnode &ldquo;^(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]<em>&rdquo;
+  devnode &ldquo;^hd[a-z][[0-9]</em>]&rdquo;
+  devnode &ldquo;^cciss!c[0-9]d[0-9]<em>[p[0-9]</em>]&rdquo;
 }</p>
 
 <p>devices {
@@ -843,13 +843,13 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[2 Cent Tip - Extend (resize) a whole device partition.]]></title>
+    <title type="html"><![CDATA[2 Cent Tip - Extend (Resize) a Whole Device Partition.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/"/>
     <updated>2010-09-02T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition</id>
     <content type="html"><![CDATA[<p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
 
-<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn't matter if you're using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
+<p>For the most part, I usually fire up <a href="http://partedmagic.com">PartedMagic</a> and its a snap, even with Fiber-Channel attached enterprise storage.  Once the HBAs (Host Bus Adapters) have been zoned to Fiber-Channel switches, then the HBAs do all the heavy lifting.  In other words on Fiber-Channel, it doesn&rsquo;t matter if you&rsquo;re using PartedMagic, or <a href="http://www.knopper.net">Knoppix</a>, the server just knows where the storage is and whether it is in an attached state.  The only dependency for this working on a Live boot disk are drivers for the HBA cards.</p>
 
 <!-- more -->
 
@@ -858,26 +858,26 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
 
 <p>Furthermore, the version of <a href="http://www.gnu.org/software/parted/index.shtml">parted</a> that shipped with RHEL 5 threw an incompatible filesystem error, refusing to modify the filesystem. So, in the end, I twiddled some bits on the partition table with fdisk, and used resize2fs to extend the partition.</p>
 
-<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you'll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
+<p>Assuming you have a backup of the filesystem you are working on, you can proceed with the following steps to extend a single partition to the end of the extended volume.  If you have multiple partitions on a volume, you may want to stick to more reliable methods of resizing and extending.  If you screw up the cylinder boundaries on a device with multiple partitions, you&rsquo;ll definitely lose data.  A single partition, in this example, is a much simpler scenario.</p>
 
 <p>The device name in this example is <code>/dev/mapper/u02</code>, the first partition is <code>/dev/mapper/u02p1</code>:</p>
 
 <p>Run <code>fdisk -l /dev/mapper/u02</code> to get the starting cylinder.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;root@localhost:~# fdisk -l /dev/mapper/u02
 Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
 
 255 heads, 63 sectors/track, 13171 cylinders
-<span class="nv">Units</span> <span class="o">=</span> cylinders of 16065 * <span class="nv">512</span> <span class="o">=</span> 8225280 bytes
+Units = cylinders of 16065 * 512 = 8225280 bytes
 
           Device Boot      Start         End      Blocks   Id  System
 /dev/mapper/u02p1               1       13171   26450329   83  Linux
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
@@ -885,52 +885,52 @@ Disk /dev/mapper/u02: 100.9 GB, 108340550042 bytes
 
 <p>Next, we will run: <code>fdisk /dev/mapper/u02</code>, and then hit the keys: <code>d, n, p, 1, [enter], [enter], w</code></p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;root@localhost:~# fdisk /dev/mapper/u02
-WARNING: DOS-compatible mode is deprecated. It<span class="s1">&#39;s strongly recommended to</span>
-<span class="s1">         switch off the mode (command &#39;</span>c<span class="s1">&#39;) and change display units to</span>
-<span class="s1">         sectors (command &#39;</span>u<span class="err">&#39;</span><span class="o">)</span>.
+WARNING: DOS-compatible mode is deprecated. It&#39;s strongly recommended to
+         switch off the mode (command &#39;c&#39;) and change display units to
+         sectors (command &#39;u&#39;).
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: d
+Command (m for help): d
 Selected partition 1
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+Command (m for help): n
 Command action
    e   extended
-   p   primary partition <span class="o">(</span>1-4<span class="o">)</span>
+   p   primary partition (1-4)
 p
-Partition number <span class="o">(</span>1-4<span class="o">)</span>: 1
-First cylinder <span class="o">(</span>1-26109, default 1<span class="o">)</span>:
+Partition number (1-4): 1
+First cylinder (1-26109, default 1):
 Using default value 1
-Last cylinder, +cylinders or +size<span class="o">{</span>K,M,G<span class="o">}</span> <span class="o">(</span>1-26109, default 26109<span class="o">)</span>:
+Last cylinder, +cylinders or +size{K,M,G} (1-26109, default 26109):
 Using default value 26109
 
-Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: w
+Command (m for help): w
 The partition table has been altered!
 
-Calling ioctl<span class="o">()</span> to re-read partition table.
+Calling ioctl() to re-read partition table.
 Syncing disks.
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
 <p>Finally, run <code>resize2fs</code> on <code>/dev/mapper/u02p1</code>. If you are using ext3, you can do an on-line resize while the volume is mounted.  It is probably safest to <code>umount</code> the partition to be re-sized, however.</p>
 
-<p><div class="highlight"><pre><code class="bash">&lt;/p&gt;
+<p><div>
+  <pre><code class='bash'>&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;root@localhost:~# resize2fs /dev/mapper/u02p1
-resize2fs 1.39 <span class="o">(</span>29-May-2006<span class="o">)</span>
+resize2fs 1.39 (29-May-2006)
 Filesystem at /dev/mapper/u02p1 is mounted on /u02; on-line resizing required
-Performing an on-line resize of /dev/mapper/u02p1 to 52430127 <span class="o">(</span>4k<span class="o">)</span> blocks.
+Performing an on-line resize of /dev/mapper/u02p1 to 52430127 (4k) blocks.
 The filesystem on /dev/mapper/u02p1 is now 52430127 blocks long.
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;
-</code></pre>
+&lt;p&gt;</code></pre>
 </div>
 </p>
 
