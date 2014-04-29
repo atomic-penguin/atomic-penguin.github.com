@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-03-14T14:49:14-04:00</updated>
+  <updated>2014-04-29T13:55:39-07:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,9 +14,110 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 1: Rubocop]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
+    <updated>2014-04-28T21:36:13-07:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
+    <content type="html"><![CDATA[<p>I have spent the last three months working on a Masters thesis, and just finished up last week after Chefconf.  Trust me, you probably don&rsquo;t want to read that long-winded monstrosity which is short on technical details.  The high-level view of that project was building a continuous integration (CI) pipeline for internal Cookbook development at Marshall.</p>
+
+<p>I learned quite a few tricks during that project, and figured out a few ways to expand on those ideas from <a href="http://chefconf.opscode.com/chefconf">Chefconf 2014</a>.  The hack day event(s), hallway track, and a few of the talks were all insightful towards this end.  In this first part, I am going to tackle some low hanging fruit and demonstrate how to track Rubocop warnings on Jenkins, much like one would track Foodcritic warnings.</p>
+
+<!-- more -->
+
+
+<p>For as long as I can remember, Andrew Crump has had documentation on tracking <a href="https://acrmp.github.io/foodcritic/#ci">Foodcritic warnings</a> on Jenkins.  If you haven&rsquo;t already, you will want to check that out for doing internal cookbook development with Jenkins.  I am simply going to show you how one might achieve the same kind of Cookbook/Ruby metric with <a href="https://github.com/bbatsov/rubocop">Rubocop</a>.</p>
+
+<p>I started out using the <a href="https://github.com/eitoball/rubocop-checkstyle_formatter">rubocop-checkstyle_formatter</a> during the course of my project.  The <code>checkstyle_formatter</code> outputs a <code>checkstyle.xml</code> file which then gets parsed by the Violations plugin.  Either I was using the <code>checkstyle_formatter</code> component wrong, or parsing a checkstyle file works inconsistently compared to scanning logs for warnings.  Perhaps, the Violations plugin expects the checkstyle.xml file to always be present, when I expect that the software project should be wiped and checked out before every touchstone build.</p>
+
+<p>The Warnings plugin ships with a number of pre-defined console log Warning scans, but does not have one for Rubocop or Foodcritic.  In hindsight the Violations plugin did not work as well as the Warnings plugin did with our custom Foodcritic scan.  It was fairly easy to construct a warnings scan based on Andrew&rsquo;s demonstration, however.  As a bonus with a Warnings scan, one can force the plugin to count warnings in the logs even when a build job fails.  This would become important when one wants to track historical trending of warnings.</p>
+
+<h4>Configuring the Warnings plugin for Rubocop&rsquo;s default output</h4>
+
+<ol>
+<li><p>First off, you need Jenkins and the <a href="https://wiki.jenkins-ci.org/display/JENKINS/Warnings+Plugin">Warnings plugin</a>.  (Install plugin, check the box to restart Jenkins, get a cup of coffee).</p></li>
+<li><p>Find your <code>Jenkins</code> &ndash;> <code>Manage Jenkins</code> &ndash;> <code>Configure System</code> page from the breadcrumb menu.  On a host named Jenkins running on port 8080, that would be at <a href="http://jenkins:8080/configure.">http://jenkins:8080/configure.</a></p></li>
+<li><p>Find the section labeled <code>Compiler Warnings</code>.  Click the <code>Add</code> button in this section.</p></li>
+<li><p>Configure the <code>Compiler Warnings</code> plugin like so.</p>
+
+<ul>
+<li>Name: <code>Rubocop</code></li>
+<li>Link name: <code>https://github.com/bbatsov/rubocop</code></li>
+<li>Trend report name: <code>Ruby Lint Warnings</code></li>
+<li>Regular Expression: <code>^([^:]+):(\d+):\d+: ([^:]): ([^:]+)$</code></li>
+<li>Example Log Message: <code>attributes/default.rb:21:78: C: Use %r only for regular expressions matching more than 1 '/' character.</code></li>
+<li>Mapping script:</li>
+</ul>
+</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">import</span> <span class="nn">hudson.plugins.warnings.parser.Warning</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+</span><span class='line'><span class="n">String</span> <span class="n">lineNumber</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'><span class="n">String</span> <span class="n">category</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class='line'><span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="k">new</span> <span class="nf">Warning</span><span class="o">(</span><span class="n">fileName</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">lineNumber</span><span class="o">),</span> <span class="s">&quot;Ruby Lint Warnings&quot;</span><span class="o">,</span> <span class="n">category</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Adding the Rubocop scan to a build job.</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Rakefile</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s1">&#39;Foodcritic correctness linting task&#39;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:foodcritic</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">sh</span> <span class="s1">&#39;foodcritic -f correctness .&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s1">&#39;Rubocop linting task&#39;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:rubocop</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">sh</span> <span class="s1">&#39;rubocop&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># touchstone task</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">jenkins</span><span class="p">:</span> <span class="sx">%w(rubocop foodcritic)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>If you have not already done so, add a <code>rubocop</code> task for your project.  Perhaps one might run <code>foodcritic</code> and <code>rubocop</code> tasks as part of a static analysis touchstone build in their pipeline.  Running separate build staged build jobs shortens development feedback loops before kicking off a longer deployment and integration test.  In the example Rakefile above, I combined both <code>rubocop</code> and <code>foodcritic</code> into a single touchstone task called <code>jenkins</code>.</p></li>
+<li><p>Click <code>Add build step</code> &ndash;> <code>Invoke Rake</code>.  Set <code>Rake Version</code> to an appropriate selection for your system.  Set Tasks to <code>jenkins</code> or <code>rubocop</code> dependent on the tasks you added in your Rakefile.  If necessary, you may need to precede this build step with a Shell step to <code>bundle install</code> your Cookbook project, and check the <code>bundle exec</code> option for the Rake invocation.</p></li>
+<li><p>Click <code>Add post-build action</code> &ndash;> <code>Scan for compiler warnings</code> on the build job configuration page.  Select <code>Rubocop</code> as the <code>Parser</code>.  You can add multiple Warning Parsers for this build step (i.e. both Foodcritic and Rubocop).</p></li>
+<li><p>Click the <code>Advanced</code> button and check the option labeled <code>Run always</code> so that warnings are recorded even on failed builds.</p></li>
+<li><p>Click <code>Apply</code> on the Build Job configuration page and this should track Foodcritic and Rubocop warnings, even for failing build jobs.</p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Mini HOWTO - VMWare MAC Address Change on RHEL]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/"/>
-    <updated>2013-10-14T14:15:00-04:00</updated>
+    <updated>2013-10-14T14:15:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL</id>
     <content type="html"><![CDATA[<p>If you move a Virtual Machine to a different cluster in VMware, the MAC address may change.
 This is a fairly easy fix, if you know where to look.</p>
@@ -116,7 +217,7 @@ and change <code>eth1</code> to eth0` on the new rule when the MAC has changed.<
   <entry>
     <title type="html"><![CDATA[TIL: System Generated Errata List and Patch Changelog With Yum]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/"/>
-    <updated>2013-08-15T15:01:00-04:00</updated>
+    <updated>2013-08-15T15:01:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum</id>
     <content type="html"><![CDATA[<p>I was looking for a way to create a system generated CVE, or errata,
 list for a production change request today.  I recall this being
@@ -292,7 +393,7 @@ you just made to your system.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO Test-kitchen and Encrypted Data Bags]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
-    <updated>2013-06-07T15:58:00-04:00</updated>
+    <updated>2013-06-07T15:58:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
     <content type="html"><![CDATA[<p>I have been playing around with <a href="https://github.com/opscode/test-kitchen">test-kitchen</a>
 more recently.  One of the community members suggested I embed an encrypted data_bag
@@ -401,7 +502,7 @@ corresponds to the suite name, <code>default</code>.</p>
   <entry>
     <title type="html"><![CDATA[Multi-knife HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/"/>
-    <updated>2013-04-25T20:26:00-04:00</updated>
+    <updated>2013-04-25T20:26:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO</id>
     <content type="html"><![CDATA[<h1>Overview</h1>
 
@@ -608,7 +709,7 @@ corresponds to the suite name, <code>default</code>.</p>
   <entry>
     <title type="html"><![CDATA[Disabling VerticalSync in KDE for Steam4Linux Beta]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/"/>
-    <updated>2013-01-15T10:16:00-05:00</updated>
+    <updated>2013-01-15T10:16:00-08:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta</id>
     <content type="html"><![CDATA[<p>According to <a href="http://en.wikipedia.org/wiki/Screen_tearing#V-sync">Wikipedia</a>,
 Vertical synchronization (or VerticalSync) is</p>
@@ -694,7 +795,7 @@ within the window manager, so that the user can decide on the setting which they
   <entry>
     <title type="html"><![CDATA[Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/"/>
-    <updated>2012-12-14T12:12:00-05:00</updated>
+    <updated>2012-12-14T12:12:00-08:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers</id>
     <content type="html"><![CDATA[<p>Since the first week of this last November, the closed <a href="http://steamcommunity.com/linux">Linux Steam beta</a>
 has been underway.  I think the latest official count of Linux beta
@@ -801,7 +902,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Atomic Penguins Feel Good Chili]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/09/08/atomic-penguins-feel-good-chili/"/>
-    <updated>2012-09-08T00:00:00-04:00</updated>
+    <updated>2012-09-08T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/09/08/atomic-penguins-feel-good-chili</id>
     <content type="html"><![CDATA[<p>When I am not writing Opschef cookbooks, I do enjoy real cooking in my spare time.  I have been down and out with a bit of a cold for the last week.  With it getting colder outside and with me feeling a bit better today, I decided to make a big pot of chili.</p>
 
@@ -914,7 +1015,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
-    <updated>2012-06-12T00:00:00-04:00</updated>
+    <updated>2012-06-12T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
     <content type="html"><![CDATA[<p>I had such a blast at the inaugural Chefconf in San Francisco, CA.  This was my first time visiting the area, I had a chance to visit the <a href="https://plus.google.com/112791157300091682319/posts/2Dr6BMnBqHH">Alcatraz</a> prison.  I also drank a lot of <a href="http://www.anchorbrewing.com/beer/anchor_steam">Anchor Steam</a>, while pair programming with <a href="http://twitter.com/#!fnichol">Fletcher Nichol</a> to make the NTP cookbook a reference cookbook for testing Chef recipes.</p>
 
@@ -925,7 +1026,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/"/>
-    <updated>2012-04-04T00:00:00-04:00</updated>
+    <updated>2012-04-04T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration</id>
     <content type="html"><![CDATA[<p>A simple demonstration using KVM (Kernel-based Virtual Machine) from the command line interface.</p>
 
@@ -938,7 +1039,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 1, Chef in 2012]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012/"/>
-    <updated>2012-01-15T00:00:00-05:00</updated>
+    <updated>2012-01-15T00:00:00-08:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012</id>
     <content type="html"><![CDATA[<p>I was really excited to be part of the first community podcast for Opscode Chef, <a href="http://foodfightshow.org">Food Fight</a>.  Here is a link to the podcast <a href="http://traffic.libsyn.com/foodfight/ff_ep01_2.mp3">audio</a> and also the show <a href="http://foodfightshow.org/2012/01/episode-1-chef-in-2012.html">notes</a>.</p>
 ]]></content>
@@ -947,7 +1048,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Marshall University Case Study]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study/"/>
-    <updated>2011-09-06T00:00:00-04:00</updated>
+    <updated>2011-09-06T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study</id>
     <content type="html"><![CDATA[<p>Our System Administration team colloborated with <a href="http://www.ospcode.com/">Opscode</a> to put together a Case Study detailing our use of their System automation framework, Opscode Chef.</p>
 
@@ -958,7 +1059,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[2 Cent Linux Tip Using Find and Tar for a Selective Backup]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
-    <updated>2011-07-11T00:00:00-04:00</updated>
+    <updated>2011-07-11T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
     <content type="html"><![CDATA[<p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 
@@ -1002,7 +1103,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO Using Rsync to Move a Mountain of Data]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/"/>
-    <updated>2011-04-16T00:00:00-04:00</updated>
+    <updated>2011-04-16T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data</id>
     <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\&rsquo;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
 
@@ -1217,7 +1318,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Red Hat Enterprise Linux 5.x iSCSI and Device Mapper Multipath HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/"/>
-    <updated>2010-11-29T00:00:00-05:00</updated>
+    <updated>2010-11-29T00:00:00-08:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
@@ -2204,7 +2305,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[2 Cent Tip - Extend (Resize) a Whole Device Partition.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/"/>
-    <updated>2010-09-02T00:00:00-04:00</updated>
+    <updated>2010-09-02T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition</id>
     <content type="html"><![CDATA[<p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
 
@@ -2285,7 +2386,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[2 Cent Tip - Dynamic Rdesktop Resolution.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/"/>
-    <updated>2010-06-28T00:00:00-04:00</updated>
+    <updated>2010-06-28T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution</id>
     <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&rsquo;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&rsquo;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
 
@@ -2337,7 +2438,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I Learned to Stop Worrying, and Love PXE Booting]]></title>
     <link href="http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting/"/>
-    <updated>2009-09-26T00:00:00-04:00</updated>
+    <updated>2009-09-26T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting</id>
     <content type="html"><![CDATA[<p>These are my presentation slides for the 2009 Ohio Linuxfest.  I gave a talk on the topic of network and multi-booting with Syslinux and configuring systems with Kickstart.</p>
 
@@ -2354,7 +2455,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World]]></title>
     <link href="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/"/>
-    <updated>2008-10-11T00:00:00-04:00</updated>
+    <updated>2008-10-11T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World</id>
     <content type="html"><![CDATA[<p>These are my presentation slides for the 2008 Ohio Linuxfest.  I gave a well recieved talk on the topic of Windows, and Active Directory, Linux integration using Samba.  My <a href="https://atomic-penguin.github.com/cookbook-krb5">krb5</a> handles the krb5.conf and pam configurations outlined in the examples below.</p>
 

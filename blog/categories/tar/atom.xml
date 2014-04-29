@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tar | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/tar/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-03-14T14:49:14-04:00</updated>
+  <updated>2014-04-29T13:55:39-07:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[2 Cent Linux Tip Using Find and Tar for a Selective Backup]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
-    <updated>2011-07-11T00:00:00-04:00</updated>
+    <updated>2011-07-11T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
     <content type="html"><![CDATA[<p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 

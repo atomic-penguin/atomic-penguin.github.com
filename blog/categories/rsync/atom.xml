@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rsync | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/rsync/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-03-14T14:49:14-04:00</updated>
+  <updated>2014-04-29T13:55:39-07:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[HOWTO Using Rsync to Move a Mountain of Data]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/"/>
-    <updated>2011-04-16T00:00:00-04:00</updated>
+    <updated>2011-04-16T00:00:00-07:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data</id>
     <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\&rsquo;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
 

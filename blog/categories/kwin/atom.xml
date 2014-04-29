@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Kwin | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/kwin/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-03-14T14:49:14-04:00</updated>
+  <updated>2014-04-29T13:55:39-07:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Disabling VerticalSync in KDE for Steam4Linux Beta]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/"/>
-    <updated>2013-01-15T10:16:00-05:00</updated>
+    <updated>2013-01-15T10:16:00-08:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta</id>
     <content type="html"><![CDATA[<p>According to <a href="http://en.wikipedia.org/wiki/Screen_tearing#V-sync">Wikipedia</a>,
 Vertical synchronization (or VerticalSync) is</p>
