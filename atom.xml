@@ -4,7 +4,7 @@
   <title><![CDATA[atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,10 +14,146 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 2: Cookbook Pipelines]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2014/05/16/stupid-jenkins-tricks-part-2-cookbook-pipelines/"/>
+    <updated>2014-05-16T00:44:13-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/05/16/stupid-jenkins-tricks-part-2-cookbook-pipelines</id>
+    <content type="html"><![CDATA[<p>Sorry for the delay in updating this series about Chef and Jenkins.  Last week I was busy celebrating with family and went through the Master&rsquo;s hooding
+and commencement ceremonies.  Unfortunately, I didn&rsquo;t get a chance to revisit the blog until now.</p>
+
+<p>This week I was getting acclimated to my new job at <a href="http://www.cyclecomputing.com">Cycle Computing</a>.  I am super stoked about
+this opportunity, and all of my Cycle colleagues seem like a friendly, and smart, bunch of people.</p>
+
+<p>I wanted to get a few more thoughts from my Masters Capstone project into blog form.  I want others to be able to learn from both the technical and theoretical side of my research.
+This post is distilled continuous integration theory applied to Chef cookbooks.  Its not prescriptive, and it may not work for you.  It was extremely effective in practice
+at Marshall, however.</p>
+
+<p>Over a period of 12 weeks, there were 159 changes introduced into two cookbooks.  There was a nominal failure rate of 19.2% to 20.31% in the continuous integration environment.
+The more realistic effective failure rate was actually 16.43% to 18.37% in the continuous integration environment.  However, there was only a 0.99% to 1.92% rate of defect
+release for the in-scope software units over the course of the project.</p>
+
+<!-- more -->
+
+
+<h2>Pipelines, background information</h2>
+
+<p>If you were at the community hack day for Chefconf, then maybe you already have seen some of this.</p>
+
+<p>A continuous integration (CI) pipeline is a logical series of tests with upstream (afferent, or fan-in) and downstream (efferent, or fan-out) dependencies.
+The CI pipeline <a href="http://graphviz.org">directional graph</a> below shows the logical flow of the cookbook testing pipeline
+for an org-baseline and org-mail cookbook as roles that serve a business function to the organization.  In the sense of a
+cookbook serving the purpose of a role in role-based configuration management.  However not strictly, in the sense of Roles as
+defined in Chef vernacular, which is similar to a data structure.</p>
+
+<p>The important takeaway is that if one uses a cookbook to serve the purpose of role-based configuration then this facilitates
+softare testing, and controlling the release of that software artifact into production.  Chef Roles, or Data Bags could optionally
+be a part of that cookbook artifact utilizing Kitchen.CI with chef_zero as a provisioner.  Those units of data do not, in and of
+themselves, make interesting software test cases.  You could use something like <a href="https://github.com/sstephenson/bats">BATS</a> with
+Kitchen.CI to test the functional output of those data structures as they interact with recipe code.</p>
+
+<p><a href="http://atomic-penguin.github.com/images/build-pipeline.dot.txt"><img src="http://atomic-penguin.github.com/images/build-pipeline.svg" alt="CI pipeline logical flow" /></a></p>
+
+<p>In the pipeline directional graph, one can see that there are several build jobs aligned in order.  My last post discussed
+constructing a <a href="https://atomic-penguin.github.io/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/">touchstone build</a> for
+quick running unit tests with Chefspec, and cookbook linting with Rubocop and Foodcritic.  A touchstone build is a fast running, and fast
+failing, series of tests which are run first in a pipeline before any slower running integration tests.</p>
+
+<p>We staged our cookbook pipeline into three stages at Marshall.  Our role-specific cookbooks were staged into a fast touchstone
+build, a slower Kitchen.CI integration test build, and a Berkshelf deploy and constrain build.  My next post
+will probably document some Kitchen.CI hacks to speed up, or otherwise improve, your cookbook integration process on Jenkins.</p>
+
+<h2>Upstream and downstream dependencies</h2>
+
+<p>The Jenkins <a href="https://wiki.jenkins-ci.org/display/JENKINS/Build+Pipeline+Plugin">Build Pipeline</a> plugin will let one, have
+a simplified logical view of each continuous integration, or delivery, pipeline and all the upstream/downstream dependencies.  One can
+specify a root point of reference, and Jenkins will show a pipeline view based on build jobs that trigger one another.</p>
+
+<p>Here are some rough guidelines on building a cookbook pipeline considering upstream/downstream dependencies.</p>
+
+<h3>Upstream (afferent/fan-in) triggers</h3>
+
+<ol>
+<li>Given there is a change in source control.
+
+<ul>
+<li>At the minimum, a touchstone build job is triggered for the cookbook that changed.</li>
+</ul>
+</li>
+<li>Given a locally maintained root project (baseline), or role cookbook.
+
+<ul>
+<li>When there are locally maintained cookbook dependencies included, then they should trigger a build job on this root (baseline), or role, cookbook.</li>
+<li>When there are community maintained cookbook dependencies included, then there should be unit tests and integration tests to cover expected
+behaviours and guard against potential regression.</li>
+</ul>
+</li>
+<li>Given a community maintained cookbook dependency.
+
+<ul>
+<li>There is no build job locally, trigger is not required.</li>
+<li>Most likely not a role-specific cookbook.  However, it can still be tested for expected behaviours in your dependent roles.</li>
+</ul>
+</li>
+</ol>
+
+
+<h3>Downstream (efferent/fan-out) triggers</h3>
+
+<ol>
+<li>Given any locally maintained cookbook.
+
+<ul>
+<li>When something depends on this cookbook, then it should trigger a build job on any locally maintained cookbook dependent on it.</li>
+</ul>
+</li>
+<li>Given a locally maintained root project (baseline) cookbook.
+
+<ul>
+<li>When there are role-specific cookbooks dependent on it, then it should trigger every dependent cookbooks that fits/includes
+the specification of the baseline configuration.</li>
+</ul>
+</li>
+<li>Given there is a deployment build job.
+
+<ul>
+<li>When there is sufficient test coverage to provide confidence for release.  Then the deployment build job blocks until any upstream
+dependencies have finished building, and have been fully integrated with any pending changes in the pipeline.</li>
+<li>Each role-specific cookbook should constrain its own role-specific environment to avoid deployment constraint race conditions.</li>
+</ul>
+</li>
+</ol>
+
+
+<h2>Pictures >= Words</h2>
+
+<p>What the baseline pipeline actually looks like in Jenkins Build Pipeline plugin can be seen below.  The baseline touchstone build triggers
+the Kitchen.CI build.  The Kitchen.CI build job in-turn triggers a Berkshelf deploy, and constrain, into production environments.  Each
+role-specific cookbook needs to have its own constrained environment.  Otherwise, the DNS specific role could remove the environment constraint for
+the mail specific role, or vice versa.  If one tried to constrain the same environment with multiple roles, then the last build job to finish wins.</p>
+
+<p><a href="http://atomic-penguin.github.com/images/jenkins-baseline-pipeline.png"><img src="http://atomic-penguin.github.com/images/jenkins-baseline-pipeline.png" alt="Baseline build pipeline view" /></a></p>
+
+<p>What the upstream/downstream software dependencies actually look like to Berkshelf, or a Chef node, for an org-mail cookbook.</p>
+
+<p><a href="http://atomic-penguin.github.com/images/mu-mail-dependencies.dot.txt"><img src="http://atomic-penguin.github.com/images/mu-mail-dependencies.svg" alt="Org mail cookbook dependencies" /></a></p>
+
+<p><strong>P.S.</strong></p>
+
+<p>I am extremely grateful for Jamie Winsor, Seth Vargo, and Michael Ivey&rsquo;s work on Berkshelf; Seth Vargo&rsquo;s work on Chefspec; Andrew Crump&rsquo;s work on Foodcritic;
+Fletcher Nichol&rsquo;s work on Kitchen.CI; Sean Porter&rsquo;s work on Kitchen plugins.  If it weren&rsquo;t for the rich set of tools we have at our disposal
+for testing cookbooks, I really don&rsquo;t know how I could have approached this Capstone project.</p>
+
+<p><strong>P.P.S</strong></p>
+
+<p>There are no plans to publish the paper, as of right now, but I can provide a copy upon request to those interested.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 1: Rubocop]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
-    <updated>2014-04-28T21:36:13-07:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
+    <link href="http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
+    <updated>2014-04-29T00:36:13-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
     <content type="html"><![CDATA[<p>I have spent the last three months working on a Masters thesis, and just finished up last week after Chefconf.  Trust me, you probably don&rsquo;t want to read that long-winded monstrosity which is short on technical details.  The high-level view of that project was building a continuous integration (CI) pipeline for internal Cookbook development at Marshall.</p>
 
 <p>I learned quite a few tricks during that project, and figured out a few ways to expand on those ideas from <a href="http://chefconf.opscode.com/chefconf">Chefconf 2014</a>.  The hack day event(s), hallway track, and a few of the talks were all insightful towards this end.  In this first part, I am going to tackle some low hanging fruit and demonstrate how to track Rubocop warnings on Jenkins, much like one would track Foodcritic warnings.</p>
@@ -86,16 +222,24 @@
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Rakefile</span>
 </span><span class='line'>
+</span><span class='line'><span class="c1"># -f correctness only fails the build on syntax violations.</span>
+</span><span class='line'><span class="c1"># The warnings scan will still count and graph other violations.</span>
 </span><span class='line'><span class="n">desc</span> <span class="s1">&#39;Foodcritic correctness linting task&#39;</span>
 </span><span class='line'><span class="n">task</span> <span class="ss">:foodcritic</span> <span class="k">do</span>
 </span><span class='line'>  <span class="n">sh</span> <span class="s1">&#39;foodcritic -f correctness .&#39;</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
+</span><span class='line'><span class="c1"># --fail-level E will only fail Ruby errors.</span>
+</span><span class='line'><span class="c1"># The warnings scan will still count and graph [W]arning and [C]op violations.</span>
 </span><span class='line'><span class="n">desc</span> <span class="s1">&#39;Rubocop linting task&#39;</span>
 </span><span class='line'><span class="n">task</span> <span class="ss">:rubocop</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">sh</span> <span class="s1">&#39;rubocop&#39;</span>
+</span><span class='line'>  <span class="n">sh</span> <span class="s1">&#39;rubocop --fail-level E&#39;</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1"># touchstone task</span>
@@ -117,7 +261,7 @@
   <entry>
     <title type="html"><![CDATA[Mini HOWTO - VMWare MAC Address Change on RHEL]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL/"/>
-    <updated>2013-10-14T14:15:00-07:00</updated>
+    <updated>2013-10-14T14:15:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/10/14/Mini-HOWTO-VMWare-MAC-address-change-on-RHEL</id>
     <content type="html"><![CDATA[<p>If you move a Virtual Machine to a different cluster in VMware, the MAC address may change.
 This is a fairly easy fix, if you know where to look.</p>
@@ -217,7 +361,7 @@ and change <code>eth1</code> to eth0` on the new rule when the MAC has changed.<
   <entry>
     <title type="html"><![CDATA[TIL: System Generated Errata List and Patch Changelog With Yum]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum/"/>
-    <updated>2013-08-15T15:01:00-07:00</updated>
+    <updated>2013-08-15T15:01:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/08/15/til-system-generated-cve-and-changelog-with-yum</id>
     <content type="html"><![CDATA[<p>I was looking for a way to create a system generated CVE, or errata,
 list for a production change request today.  I recall this being
@@ -393,7 +537,7 @@ you just made to your system.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO Test-kitchen and Encrypted Data Bags]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
-    <updated>2013-06-07T15:58:00-07:00</updated>
+    <updated>2013-06-07T15:58:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
     <content type="html"><![CDATA[<p>I have been playing around with <a href="https://github.com/opscode/test-kitchen">test-kitchen</a>
 more recently.  One of the community members suggested I embed an encrypted data_bag
@@ -502,7 +646,7 @@ corresponds to the suite name, <code>default</code>.</p>
   <entry>
     <title type="html"><![CDATA[Multi-knife HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/"/>
-    <updated>2013-04-25T20:26:00-07:00</updated>
+    <updated>2013-04-25T20:26:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO</id>
     <content type="html"><![CDATA[<h1>Overview</h1>
 
@@ -709,7 +853,7 @@ corresponds to the suite name, <code>default</code>.</p>
   <entry>
     <title type="html"><![CDATA[Disabling VerticalSync in KDE for Steam4Linux Beta]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta/"/>
-    <updated>2013-01-15T10:16:00-08:00</updated>
+    <updated>2013-01-15T10:16:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/01/15/disabling-verticalsync-in-kde-for-steam4linux-beta</id>
     <content type="html"><![CDATA[<p>According to <a href="http://en.wikipedia.org/wiki/Screen_tearing#V-sync">Wikipedia</a>,
 Vertical synchronization (or VerticalSync) is</p>
@@ -795,7 +939,7 @@ within the window manager, so that the user can decide on the setting which they
   <entry>
     <title type="html"><![CDATA[Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/"/>
-    <updated>2012-12-14T12:12:00-08:00</updated>
+    <updated>2012-12-14T12:12:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers</id>
     <content type="html"><![CDATA[<p>Since the first week of this last November, the closed <a href="http://steamcommunity.com/linux">Linux Steam beta</a>
 has been underway.  I think the latest official count of Linux beta
@@ -902,7 +1046,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Atomic Penguins Feel Good Chili]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/09/08/atomic-penguins-feel-good-chili/"/>
-    <updated>2012-09-08T00:00:00-07:00</updated>
+    <updated>2012-09-08T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/09/08/atomic-penguins-feel-good-chili</id>
     <content type="html"><![CDATA[<p>When I am not writing Opschef cookbooks, I do enjoy real cooking in my spare time.  I have been down and out with a bit of a cold for the last week.  With it getting colder outside and with me feeling a bit better today, I decided to make a big pot of chili.</p>
 
@@ -1015,7 +1159,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
-    <updated>2012-06-12T00:00:00-07:00</updated>
+    <updated>2012-06-12T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
     <content type="html"><![CDATA[<p>I had such a blast at the inaugural Chefconf in San Francisco, CA.  This was my first time visiting the area, I had a chance to visit the <a href="https://plus.google.com/112791157300091682319/posts/2Dr6BMnBqHH">Alcatraz</a> prison.  I also drank a lot of <a href="http://www.anchorbrewing.com/beer/anchor_steam">Anchor Steam</a>, while pair programming with <a href="http://twitter.com/#!fnichol">Fletcher Nichol</a> to make the NTP cookbook a reference cookbook for testing Chef recipes.</p>
 
@@ -1026,7 +1170,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/"/>
-    <updated>2012-04-04T00:00:00-07:00</updated>
+    <updated>2012-04-04T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration</id>
     <content type="html"><![CDATA[<p>A simple demonstration using KVM (Kernel-based Virtual Machine) from the command line interface.</p>
 
@@ -1039,7 +1183,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 1, Chef in 2012]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012/"/>
-    <updated>2012-01-15T00:00:00-08:00</updated>
+    <updated>2012-01-15T00:00:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012</id>
     <content type="html"><![CDATA[<p>I was really excited to be part of the first community podcast for Opscode Chef, <a href="http://foodfightshow.org">Food Fight</a>.  Here is a link to the podcast <a href="http://traffic.libsyn.com/foodfight/ff_ep01_2.mp3">audio</a> and also the show <a href="http://foodfightshow.org/2012/01/episode-1-chef-in-2012.html">notes</a>.</p>
 ]]></content>
@@ -1048,7 +1192,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Marshall University Case Study]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study/"/>
-    <updated>2011-09-06T00:00:00-07:00</updated>
+    <updated>2011-09-06T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study</id>
     <content type="html"><![CDATA[<p>Our System Administration team colloborated with <a href="http://www.ospcode.com/">Opscode</a> to put together a Case Study detailing our use of their System automation framework, Opscode Chef.</p>
 
@@ -1059,7 +1203,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[2 Cent Linux Tip Using Find and Tar for a Selective Backup]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup/"/>
-    <updated>2011-07-11T00:00:00-07:00</updated>
+    <updated>2011-07-11T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/07/11/2-cent-linux-tip-using-find-and-tar-for-a-selective-backup</id>
     <content type="html"><![CDATA[<p>So I\&rsquo;m blowing away, and re-installing, my Steam Bottle on <a href="http://codeweavers.com">Codeweaver\&rsquo;s</a> Crossover games.  I was hoping to get some in-game overlay support for the Community/Friends features of Steam.  I really really want to hang on to Team Fortress/Left 4 Dead settings though.</p>
 
@@ -1103,7 +1247,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[HOWTO Using Rsync to Move a Mountain of Data]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data/"/>
-    <updated>2011-04-16T00:00:00-07:00</updated>
+    <updated>2011-04-16T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/04/16/HOWTO-Using-rsync-to-move-a-mountain-of-data</id>
     <content type="html"><![CDATA[<p>In this installment of my blog, I want to document the proper use of rsync for folks who are tasked with moving a large amount of data.  I\&rsquo;ll even show you a few things you can do from the command line interface to extend the built-in capability of rsync using a little bash-scripting trickery.</p>
 
@@ -1318,7 +1462,7 @@ to match the version increase.</p>
   <entry>
     <title type="html"><![CDATA[Red Hat Enterprise Linux 5.x iSCSI and Device Mapper Multipath HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/"/>
-    <updated>2010-11-29T00:00:00-08:00</updated>
+    <updated>2010-11-29T00:00:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
@@ -2305,7 +2449,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[2 Cent Tip - Extend (Resize) a Whole Device Partition.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition/"/>
-    <updated>2010-09-02T00:00:00-07:00</updated>
+    <updated>2010-09-02T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/09/02/2-cent-tip-extend-resize-a-whole-device-partition</id>
     <content type="html"><![CDATA[<p>Occasionally I have to resize partitions on iSCSI or Fiber-Channel attached SAN storage.  Both technologies allow you to easily extend the available storage for a host by extending LUNs, or volumes.  A common problem after extending the size of the LUN, or volume, is resizing partitions to fill out the new size.</p>
 
@@ -2386,7 +2530,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[2 Cent Tip - Dynamic Rdesktop Resolution.]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution/"/>
-    <updated>2010-06-28T00:00:00-07:00</updated>
+    <updated>2010-06-28T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/06/28/2-cent-tip-dynamic-rdesktop-resolution</id>
     <content type="html"><![CDATA[<p>So occasionally I do have to touch a Windows system, or use a Windows-only management tool (I&rsquo;m looking at you VMware).  Not that I have any problem with Microsoft or Windows, I&rsquo;m really just more comfortable in a Unix-like environment.  I do use the Open Source <code>rdesktop</code> utility to access Windows machine using version 5.0 of the Remote Desktop Protocol (RDP).</p>
 
@@ -2438,7 +2582,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I Learned to Stop Worrying, and Love PXE Booting]]></title>
     <link href="http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting/"/>
-    <updated>2009-09-26T00:00:00-07:00</updated>
+    <updated>2009-09-26T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting</id>
     <content type="html"><![CDATA[<p>These are my presentation slides for the 2009 Ohio Linuxfest.  I gave a talk on the topic of network and multi-booting with Syslinux and configuring systems with Kickstart.</p>
 
@@ -2455,7 +2599,7 @@ Triangle Park, NC: Red Hat, Inc. <a href="http://www.redhat.com/docs/en-US/Red_H
   <entry>
     <title type="html"><![CDATA[Ohio Linuxfest 2008 - Square Pegs in Round Holes, Linux in a Windows World]]></title>
     <link href="http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World/"/>
-    <updated>2008-10-11T00:00:00-07:00</updated>
+    <updated>2008-10-11T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2008/10/11/Ohio-Linuxfest-Square-Pegs-in-Round-Holes-Linux-in-a-Windows-World</id>
     <content type="html"><![CDATA[<p>These are my presentation slides for the 2008 Ohio Linuxfest.  I gave a well recieved talk on the topic of Windows, and Active Directory, Linux integration using Samba.  My <a href="https://atomic-penguin.github.com/cookbook-krb5">krb5</a> handles the krb5.conf and pam configurations outlined in the examples below.</p>
 

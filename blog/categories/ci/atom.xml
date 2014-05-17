@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CI | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/ci/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,10 +14,146 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 2: Cookbook Pipelines]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2014/05/16/stupid-jenkins-tricks-part-2-cookbook-pipelines/"/>
+    <updated>2014-05-16T00:44:13-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/05/16/stupid-jenkins-tricks-part-2-cookbook-pipelines</id>
+    <content type="html"><![CDATA[<p>Sorry for the delay in updating this series about Chef and Jenkins.  Last week I was busy celebrating with family and went through the Master&rsquo;s hooding
+and commencement ceremonies.  Unfortunately, I didn&rsquo;t get a chance to revisit the blog until now.</p>
+
+<p>This week I was getting acclimated to my new job at <a href="http://www.cyclecomputing.com">Cycle Computing</a>.  I am super stoked about
+this opportunity, and all of my Cycle colleagues seem like a friendly, and smart, bunch of people.</p>
+
+<p>I wanted to get a few more thoughts from my Masters Capstone project into blog form.  I want others to be able to learn from both the technical and theoretical side of my research.
+This post is distilled continuous integration theory applied to Chef cookbooks.  Its not prescriptive, and it may not work for you.  It was extremely effective in practice
+at Marshall, however.</p>
+
+<p>Over a period of 12 weeks, there were 159 changes introduced into two cookbooks.  There was a nominal failure rate of 19.2% to 20.31% in the continuous integration environment.
+The more realistic effective failure rate was actually 16.43% to 18.37% in the continuous integration environment.  However, there was only a 0.99% to 1.92% rate of defect
+release for the in-scope software units over the course of the project.</p>
+
+<!-- more -->
+
+
+<h2>Pipelines, background information</h2>
+
+<p>If you were at the community hack day for Chefconf, then maybe you already have seen some of this.</p>
+
+<p>A continuous integration (CI) pipeline is a logical series of tests with upstream (afferent, or fan-in) and downstream (efferent, or fan-out) dependencies.
+The CI pipeline <a href="http://graphviz.org">directional graph</a> below shows the logical flow of the cookbook testing pipeline
+for an org-baseline and org-mail cookbook as roles that serve a business function to the organization.  In the sense of a
+cookbook serving the purpose of a role in role-based configuration management.  However not strictly, in the sense of Roles as
+defined in Chef vernacular, which is similar to a data structure.</p>
+
+<p>The important takeaway is that if one uses a cookbook to serve the purpose of role-based configuration then this facilitates
+softare testing, and controlling the release of that software artifact into production.  Chef Roles, or Data Bags could optionally
+be a part of that cookbook artifact utilizing Kitchen.CI with chef_zero as a provisioner.  Those units of data do not, in and of
+themselves, make interesting software test cases.  You could use something like <a href="https://github.com/sstephenson/bats">BATS</a> with
+Kitchen.CI to test the functional output of those data structures as they interact with recipe code.</p>
+
+<p><a href="/images/build-pipeline.dot.txt"><img src="/images/build-pipeline.svg" alt="CI pipeline logical flow" /></a></p>
+
+<p>In the pipeline directional graph, one can see that there are several build jobs aligned in order.  My last post discussed
+constructing a <a href="https://atomic-penguin.github.io/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/">touchstone build</a> for
+quick running unit tests with Chefspec, and cookbook linting with Rubocop and Foodcritic.  A touchstone build is a fast running, and fast
+failing, series of tests which are run first in a pipeline before any slower running integration tests.</p>
+
+<p>We staged our cookbook pipeline into three stages at Marshall.  Our role-specific cookbooks were staged into a fast touchstone
+build, a slower Kitchen.CI integration test build, and a Berkshelf deploy and constrain build.  My next post
+will probably document some Kitchen.CI hacks to speed up, or otherwise improve, your cookbook integration process on Jenkins.</p>
+
+<h2>Upstream and downstream dependencies</h2>
+
+<p>The Jenkins <a href="https://wiki.jenkins-ci.org/display/JENKINS/Build+Pipeline+Plugin">Build Pipeline</a> plugin will let one, have
+a simplified logical view of each continuous integration, or delivery, pipeline and all the upstream/downstream dependencies.  One can
+specify a root point of reference, and Jenkins will show a pipeline view based on build jobs that trigger one another.</p>
+
+<p>Here are some rough guidelines on building a cookbook pipeline considering upstream/downstream dependencies.</p>
+
+<h3>Upstream (afferent/fan-in) triggers</h3>
+
+<ol>
+<li>Given there is a change in source control.
+
+<ul>
+<li>At the minimum, a touchstone build job is triggered for the cookbook that changed.</li>
+</ul>
+</li>
+<li>Given a locally maintained root project (baseline), or role cookbook.
+
+<ul>
+<li>When there are locally maintained cookbook dependencies included, then they should trigger a build job on this root (baseline), or role, cookbook.</li>
+<li>When there are community maintained cookbook dependencies included, then there should be unit tests and integration tests to cover expected
+behaviours and guard against potential regression.</li>
+</ul>
+</li>
+<li>Given a community maintained cookbook dependency.
+
+<ul>
+<li>There is no build job locally, trigger is not required.</li>
+<li>Most likely not a role-specific cookbook.  However, it can still be tested for expected behaviours in your dependent roles.</li>
+</ul>
+</li>
+</ol>
+
+
+<h3>Downstream (efferent/fan-out) triggers</h3>
+
+<ol>
+<li>Given any locally maintained cookbook.
+
+<ul>
+<li>When something depends on this cookbook, then it should trigger a build job on any locally maintained cookbook dependent on it.</li>
+</ul>
+</li>
+<li>Given a locally maintained root project (baseline) cookbook.
+
+<ul>
+<li>When there are role-specific cookbooks dependent on it, then it should trigger every dependent cookbooks that fits/includes
+the specification of the baseline configuration.</li>
+</ul>
+</li>
+<li>Given there is a deployment build job.
+
+<ul>
+<li>When there is sufficient test coverage to provide confidence for release.  Then the deployment build job blocks until any upstream
+dependencies have finished building, and have been fully integrated with any pending changes in the pipeline.</li>
+<li>Each role-specific cookbook should constrain its own role-specific environment to avoid deployment constraint race conditions.</li>
+</ul>
+</li>
+</ol>
+
+
+<h2>Pictures >= Words</h2>
+
+<p>What the baseline pipeline actually looks like in Jenkins Build Pipeline plugin can be seen below.  The baseline touchstone build triggers
+the Kitchen.CI build.  The Kitchen.CI build job in-turn triggers a Berkshelf deploy, and constrain, into production environments.  Each
+role-specific cookbook needs to have its own constrained environment.  Otherwise, the DNS specific role could remove the environment constraint for
+the mail specific role, or vice versa.  If one tried to constrain the same environment with multiple roles, then the last build job to finish wins.</p>
+
+<p><a href="/images/jenkins-baseline-pipeline.png"><img src="/images/jenkins-baseline-pipeline.png" alt="Baseline build pipeline view" /></a></p>
+
+<p>What the upstream/downstream software dependencies actually look like to Berkshelf, or a Chef node, for an org-mail cookbook.</p>
+
+<p><a href="/images/mu-mail-dependencies.dot.txt"><img src="/images/mu-mail-dependencies.svg" alt="Org mail cookbook dependencies" /></a></p>
+
+<p><strong>P.S.</strong></p>
+
+<p>I am extremely grateful for Jamie Winsor, Seth Vargo, and Michael Ivey&rsquo;s work on Berkshelf; Seth Vargo&rsquo;s work on Chefspec; Andrew Crump&rsquo;s work on Foodcritic;
+Fletcher Nichol&rsquo;s work on Kitchen.CI; Sean Porter&rsquo;s work on Kitchen plugins.  If it weren&rsquo;t for the rich set of tools we have at our disposal
+for testing cookbooks, I really don&rsquo;t know how I could have approached this Capstone project.</p>
+
+<p><strong>P.P.S</strong></p>
+
+<p>There are no plans to publish the paper, as of right now, but I can provide a copy upon request to those interested.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 1: Rubocop]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
-    <updated>2014-04-28T21:36:13-07:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
+    <link href="http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
+    <updated>2014-04-29T00:36:13-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
     <content type="html"><![CDATA[<p>I have spent the last three months working on a Masters thesis, and just finished up last week after Chefconf.  Trust me, you probably don&rsquo;t want to read that long-winded monstrosity which is short on technical details.  The high-level view of that project was building a continuous integration (CI) pipeline for internal Cookbook development at Marshall.</p>
 
 <p>I learned quite a few tricks during that project, and figured out a few ways to expand on those ideas from <a href="http://chefconf.opscode.com/chefconf">Chefconf 2014</a>.  The hack day event(s), hallway track, and a few of the talks were all insightful towards this end.  In this first part, I am going to tackle some low hanging fruit and demonstrate how to track Rubocop warnings on Jenkins, much like one would track Foodcritic warnings.</p>
@@ -71,14 +207,22 @@ return new Warning(fileName, Integer.parseInt(lineNumber), "Ruby Lint Warnings",
 
 <h1>Rakefile</h1>
 
+<h1>-f correctness only fails the build on syntax violations.</h1>
+
+<h1>The warnings scan will still count and graph other violations.</h1>
+
 <p>desc &lsquo;Foodcritic correctness linting task&rsquo;
 task :foodcritic do
   sh &lsquo;foodcritic -f correctness .&rsquo;
 end</p>
 
+<h1>&mdash;fail-level E will only fail Ruby errors.</h1>
+
+<h1>The warnings scan will still count and graph [W]arning and [C]op violations.</h1>
+
 <p>desc &lsquo;Rubocop linting task&rsquo;
 task :rubocop do
-  sh &lsquo;rubocop&rsquo;
+  sh &lsquo;rubocop &mdash;fail-level E&rsquo;
 end</p>
 
 <h1>touchstone task</h1>

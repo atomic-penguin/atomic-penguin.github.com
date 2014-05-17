@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rubocop | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/rubocop/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 1: Rubocop]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
-    <updated>2014-04-28T21:36:13-07:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
+    <link href="http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
+    <updated>2014-04-29T00:36:13-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
     <content type="html"><![CDATA[<p>I have spent the last three months working on a Masters thesis, and just finished up last week after Chefconf.  Trust me, you probably don&rsquo;t want to read that long-winded monstrosity which is short on technical details.  The high-level view of that project was building a continuous integration (CI) pipeline for internal Cookbook development at Marshall.</p>
 
 <p>I learned quite a few tricks during that project, and figured out a few ways to expand on those ideas from <a href="http://chefconf.opscode.com/chefconf">Chefconf 2014</a>.  The hack day event(s), hallway track, and a few of the talks were all insightful towards this end.  In this first part, I am going to tackle some low hanging fruit and demonstrate how to track Rubocop warnings on Jenkins, much like one would track Foodcritic warnings.</p>
@@ -71,14 +71,22 @@ return new Warning(fileName, Integer.parseInt(lineNumber), "Ruby Lint Warnings",
 
 <h1>Rakefile</h1>
 
+<h1>-f correctness only fails the build on syntax violations.</h1>
+
+<h1>The warnings scan will still count and graph other violations.</h1>
+
 <p>desc &lsquo;Foodcritic correctness linting task&rsquo;
 task :foodcritic do
   sh &lsquo;foodcritic -f correctness .&rsquo;
 end</p>
 
+<h1>&mdash;fail-level E will only fail Ruby errors.</h1>
+
+<h1>The warnings scan will still count and graph [W]arning and [C]op violations.</h1>
+
 <p>desc &lsquo;Rubocop linting task&rsquo;
 task :rubocop do
-  sh &lsquo;rubocop&rsquo;
+  sh &lsquo;rubocop &mdash;fail-level E&rsquo;
 end</p>
 
 <h1>touchstone task</h1>

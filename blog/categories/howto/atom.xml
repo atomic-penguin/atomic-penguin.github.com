@@ -4,7 +4,7 @@
   <title><![CDATA[Category: HOWTO, | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/howto/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Multi-knife HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/"/>
-    <updated>2013-04-25T20:26:00-07:00</updated>
+    <updated>2013-04-25T20:26:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO</id>
     <content type="html"><![CDATA[<h1>Overview</h1>
 
@@ -106,7 +106,7 @@ cookbook_email ENV['COOKBOOK_EMAIL'] || 'cookbooks@example.com'
 OPSCODE_USER=chef-server-username
 ORGNAME=chef
 COOKBOOK_COPYRIGHT=&lsquo;My Full Name&rsquo;
-COOKBOOK_EMAIL=&lsquo;<a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x64;&#x65;&#118;&#64;&#x65;&#x78;&#x61;&#109;&#112;&#108;&#x65;&#x2e;&#x6f;&#114;&#103;">&#100;&#101;&#x76;&#x40;&#101;&#x78;&#x61;&#x6d;&#x70;&#x6c;&#101;&#x2e;&#111;&#x72;&#x67;</a>&rsquo;
+COOKBOOK_EMAIL=&lsquo;<a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#x64;&#x65;&#x76;&#64;&#101;&#x78;&#x61;&#109;&#x70;&#x6c;&#x65;&#46;&#111;&#x72;&#103;">&#100;&#101;&#118;&#64;&#x65;&#120;&#97;&#109;&#112;&#108;&#x65;&#x2e;&#x6f;&#x72;&#x67;</a>&rsquo;
 AWS_ACCESS_KEY_ID=&ldquo;BlahBlahBlah&rdquo;
 AWS_SECRET_ACCESS_KEY=&ldquo;BlahBlahBlahBlah&rdquo;
 export OPSCODE_USER ORGNAME COOKBOOK_COPYRIGHT COOKBOOK_EMAIL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY</p>

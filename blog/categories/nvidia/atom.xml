@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Nvidia, | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/nvidia/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Mini-HOWTO: Building a Deb Package for Beta NVidia Drivers]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers/"/>
-    <updated>2012-12-14T12:12:00-08:00</updated>
+    <updated>2012-12-14T12:12:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/12/14/mini-howto-building-a-deb-package-for-beta-nvidia-drivers</id>
     <content type="html"><![CDATA[<p>Since the first week of this last November, the closed <a href="http://steamcommunity.com/linux">Linux Steam beta</a>
 has been underway.  I think the latest official count of Linux beta

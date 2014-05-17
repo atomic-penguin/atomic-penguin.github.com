@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[HOWTO Test-kitchen and Encrypted Data Bags]]></title>
     <link href="http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags/"/>
-    <updated>2013-06-07T15:58:00-07:00</updated>
+    <updated>2013-06-07T15:58:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2013/06/07/HOWTO-test-kitchen-and-encrypted-data-bags</id>
     <content type="html"><![CDATA[<p>I have been playing around with <a href="https://github.com/opscode/test-kitchen">test-kitchen</a>
 more recently.  One of the community members suggested I embed an encrypted data_bag
@@ -125,7 +125,7 @@ corresponds to the suite name, <code>default</code>.</p>
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
-    <updated>2012-06-12T00:00:00-07:00</updated>
+    <updated>2012-06-12T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
     <content type="html"><![CDATA[<p>I had such a blast at the inaugural Chefconf in San Francisco, CA.  This was my first time visiting the area, I had a chance to visit the <a href="https://plus.google.com/112791157300091682319/posts/2Dr6BMnBqHH">Alcatraz</a> prison.  I also drank a lot of <a href="http://www.anchorbrewing.com/beer/anchor_steam">Anchor Steam</a>, while pair programming with <a href="http://twitter.com/#!fnichol">Fletcher Nichol</a> to make the NTP cookbook a reference cookbook for testing Chef recipes.</p>
 

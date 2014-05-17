@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Case Study | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/case-study/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Marshall University Case Study]]></title>
     <link href="http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study/"/>
-    <updated>2011-09-06T00:00:00-07:00</updated>
+    <updated>2011-09-06T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2011/09/06/MU-case-study</id>
     <content type="html"><![CDATA[<p>Our System Administration team colloborated with <a href="http://www.ospcode.com/">Opscode</a> to put together a Case Study detailing our use of their System automation framework, Opscode Chef.</p>
 

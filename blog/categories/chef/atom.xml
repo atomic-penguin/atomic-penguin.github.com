@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Chef | atomic-penguin's blog]]></title>
+  <title><![CDATA[Category: Chef, | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/chef/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -14,86 +14,151 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Stupid Jenkins Tricks, Part 1: Rubocop]]></title>
-    <link href="http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/"/>
-    <updated>2014-04-28T21:36:13-07:00</updated>
-    <id>http://atomic-penguin.github.com/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop</id>
-    <content type="html"><![CDATA[<p>I have spent the last three months working on a Masters thesis, and just finished up last week after Chefconf.  Trust me, you probably don&rsquo;t want to read that long-winded monstrosity which is short on technical details.  The high-level view of that project was building a continuous integration (CI) pipeline for internal Cookbook development at Marshall.</p>
+    <title type="html"><![CDATA[Multi-knife HOWTO]]></title>
+    <link href="http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO/"/>
+    <updated>2013-04-25T20:26:00-04:00</updated>
+    <id>http://atomic-penguin.github.com/blog/2013/04/25/Multi-Knife-HOWTO</id>
+    <content type="html"><![CDATA[<h1>Overview</h1>
 
-<p>I learned quite a few tricks during that project, and figured out a few ways to expand on those ideas from <a href="http://chefconf.opscode.com/chefconf">Chefconf 2014</a>.  The hack day event(s), hallway track, and a few of the talks were all insightful towards this end.  In this first part, I am going to tackle some low hanging fruit and demonstrate how to track Rubocop warnings on Jenkins, much like one would track Foodcritic warnings.</p>
+<p>  Here is an example shared configuration for knife, the command and control utility which ships with Opscode Chef.  You can drop this off in your <code>chef-repo/.chef/</code> directory, and multiple developers can use the same knife configuration to interact with more than one Chef server, or the Opscode platform.</p>
+
+<p>  By using Bash functions and environment variables we can change the chef server, which knife is configured to use, on the fly.</p>
 
 <!-- more -->
 
 
-<p>For as long as I can remember, Andrew Crump has had documentation on tracking <a href="https://acrmp.github.io/foodcritic/#ci">Foodcritic warnings</a> on Jenkins.  If you haven&rsquo;t already, you will want to check that out for doing internal cookbook development with Jenkins.  I am simply going to show you how one might achieve the same kind of Cookbook/Ruby metric with <a href="https://github.com/bbatsov/rubocop">Rubocop</a>.</p>
+<p><strong>NOTE</strong>: knife will probably ignore your <code>~/.chef/knife.rb</code> once you begin using a shared knife configuration.</p>
 
-<p>I started out using the <a href="https://github.com/eitoball/rubocop-checkstyle_formatter">rubocop-checkstyle_formatter</a> during the course of my project.  The <code>checkstyle_formatter</code> outputs a <code>checkstyle.xml</code> file which then gets parsed by the Violations plugin.  Either I was using the <code>checkstyle_formatter</code> component wrong, or parsing a checkstyle file works inconsistently compared to scanning logs for warnings.  Perhaps, the Violations plugin expects the checkstyle.xml file to always be present, when I expect that the software project should be wiped and checked out before every touchstone build.</p>
+<h1>Preparation</h1>
 
-<p>The Warnings plugin ships with a number of pre-defined console log Warning scans, but does not have one for Rubocop or Foodcritic.  In hindsight the Violations plugin did not work as well as the Warnings plugin did with our custom Foodcritic scan.  It was fairly easy to construct a warnings scan based on Andrew&rsquo;s demonstration, however.  As a bonus with a Warnings scan, one can force the plugin to count warnings in the logs even when a build job fails.  This would become important when one wants to track historical trending of warnings.</p>
-
-<h4>Configuring the Warnings plugin for Rubocop&rsquo;s default output</h4>
+<p>  So that we can interact with <code>api.opscode.com</code>, and an internal Open Source Chef server, you will need to name your keys according to your Chef server username, Opscode username, and Opscode platform organization name.  Assuming you already have a <code>~/.chef</code> directory, we will organize it like so.</p>
 
 <ol>
-<li><p>First off, you need Jenkins and the <a href="https://wiki.jenkins-ci.org/display/JENKINS/Warnings+Plugin">Warnings plugin</a>.  (Install plugin, check the box to restart Jenkins, get a cup of coffee).</p></li>
-<li><p>Find your <code>Jenkins</code> &ndash;> <code>Manage Jenkins</code> &ndash;> <code>Configure System</code> page from the breadcrumb menu.  On a host named Jenkins running on port 8080, that would be at <a href="http://jenkins:8080/configure.">http://jenkins:8080/configure.</a></p></li>
-<li><p>Find the section labeled <code>Compiler Warnings</code>.  Click the <code>Add</code> button in this section.</p></li>
-<li><p>Configure the <code>Compiler Warnings</code> plugin like so.</p>
-
-<ul>
-<li>Name: <code>Rubocop</code></li>
-<li>Link name: <code>https://github.com/bbatsov/rubocop</code></li>
-<li>Trend report name: <code>Ruby Lint Warnings</code></li>
-<li>Regular Expression: <code>^([^:]+):(\d+):\d+: ([^:]): ([^:]+)$</code></li>
-<li>Example Log Message: <code>attributes/default.rb:21:78: C: Use %r only for regular expressions matching more than 1 '/' character.</code></li>
-<li>Mapping script:</li>
-</ul>
-</li>
+<li> Re-name your Open Source chef-server private key according to your username on the chef-server system.  For example, move your chef-server private key to <code>~/.chef/corporate-username.pem</code>.</li>
+<li> Re-name your Opscode API key according to your Opscode platform username, for example I would move my Opscode key to <code>~/.chef/atomic-penguin.pem</code> to correspond to my own username.</li>
+<li> Re-name your Organization validation key so that it corresponds to your organization&rsquo;s name on the Opscode platform.  For example, move your Opscode organization validation key to ~/.chef/companyname-validator.pem.</li>
 </ol>
 
 
-<p>```java</p>
+<h1>Environment in ~/.bashrc</h1>
 
-<pre><code>import hudson.plugins.warnings.parser.Warning
+<p>  Somewhere near the end of my <code>~/.bashrc</code>, I am going to set 4 environment variables which will later be referenced in my shared knife configuration.  I am also going to use a couple of Bash functions to switch context between multiple servers.</p>
 
-String fileName = matcher.group(1)
-String lineNumber = matcher.group(2)
-String category = matcher.group(3)
-String message = matcher.group(4)
+<h2>Environment variables</h2>
 
-return new Warning(fileName, Integer.parseInt(lineNumber), "Ruby Lint Warnings", category, message);
-</code></pre>
+<p>The variables are as follows.</p>
 
-<p>```</p>
+<ol>
+<li> <code>OPSCODE_USER</code> &ndash; Set to your primary username.  This should be either your internal chef-server username or Opscode platform username.</li>
+<li> <code>ORGNAME</code> &ndash; Should be set to &ldquo;chef&rdquo; for an internal chef-server.  Set this as your Opscode platform orgname, if using that as your primary Chef server.</li>
+<li> <code>COOKBOOK_COPYRIGHT</code> &ndash; Set to your full name.</li>
+<li> <code>COOKBOOK_EMAIL</code> &ndash; Set to your e-mail address.</li>
+</ol>
 
-<h4>Adding the Rubocop scan to a build job.</h4>
 
-<p>```ruby</p>
+<h2>Bash functions</h2>
 
-<h1>Rakefile</h1>
+<p>  I have two knife related Bash functions in my <code>~/.bashrc</code> file.  I use a function called &ldquo;ginsu&rdquo; to interact with the Opscode API.  Then I use the &ldquo;knife-reset&rdquo; function to restore default behavior to interact with our internal Chef server.  This is just an example, you could use the ginsu function as a template.  This way you could have an &ldquo;opscode-knife&rdquo; function, or maybe &ldquo;prod-knife&rdquo;, &ldquo;dev-knife&rdquo;, or &ldquo;preprod-knife&rdquo; to correspond to different servers or environments.</p>
 
-<p>desc &lsquo;Foodcritic correctness linting task&rsquo;
-task :foodcritic do
-  sh &lsquo;foodcritic -f correctness .&rsquo;
-end</p>
+<p>  The <code>knife-reset</code> function simply sets my <code>OPSCODE_USER</code> variable equal to my internal Open Source chef-server username, and <code>ORGNAME</code> equal to &ldquo;chef&rdquo;.  The <code>knife-reset</code> function then exports the variables so my knife configuration gets reset back to my primary Chef server.</p>
 
-<p>desc &lsquo;Rubocop linting task&rsquo;
-task :rubocop do
-  sh &lsquo;rubocop&rsquo;
-end</p>
+<p>  The <code>ginsu</code> function sets the <code>OPSCODE_USER</code> variable equal to my Opscode platform username, and <code>ORGNAME</code> equal to my Opscode organization name.  The <code>ginsu</code> function then exports the variables and passes any parameters to the knife command.  This way I can do a <code>ginsu cookbook site share yumrepo "Package Management"</code> to upload my yumrepo cookbook to the Opscode Community Cookbook site.</p>
 
-<h1>touchstone task</h1>
+<h1>Knife configuration</h1>
 
-<p>task jenkins: %w(rubocop foodcritic)
+<p>  This is the actual knife configuration file, which we can drop off in the <code>chef-repo/.chef</code> directory.  I will explain the important parts, so you can modify this to fit your own needs easily.  Note, once you drop this off in your <code>chef-repo</code>, your <code>~/.chef/knife.rb</code> will no longer work.</p>
+
+<p>Set a local Ruby variable <code>user</code> equal to the <code>OPSCODE_USER</code> or the environment variable <code>USER</code>.</p>
+
+<p><code>bash
+user = ENV['OPSCODE_USER'] || ENV['USER']
+</code></p>
+
+<p>Switching back and forth between different keys and user names occurs by changing, and exporting, the <code>OPSCODE_USER</code> and <code>ORGNAME</code> Bash environment variables.</p>
+
+<p><code>bash
+client_key               "#{ENV['HOME']}/.chef/#{user}.pem"
+validation_client_name   "#{ENV['ORGNAME']}-validator"
+validation_key           "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
+</code></p>
+
+<p>I used an if/then/else block in my shared knife.rb to switch the URL of my Chef server based on the <code>ORGNAME</code>.  You could use a <code>CHEF_SERVER</code> environment variable in your <code>~/.bashrc</code> if that would work better for you.  Obviously you&rsquo;ll want to change the hardcoded <code>corporate</code> string to match your Opscode platform orgname, and also edit the <code>chef_server_url</code> to point another Chef server.</p>
+
+<p><code>ruby
+if ENV['ORGNAME'] == 'corporate'
+  chef_server_url "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+elsif ENV['ORGNAME'] == 'chef'
+  chef_server_url 'http://chef.example.com:4000'
+end
+</code></p>
+
+<p>If you commit all your Community Cookbooks under corporate copyright rather than individual developer names, then you might want to hardcode the company name and a generic development team e-mail address.  This way, your developers don&rsquo;t have to set <code>COOKBOOK_COPYRIGHT</code> or <code>COOKBOOK_EMAIL</code>.  The command <code>knife cookbook create &lt;cookbook name&gt;</code> will fill in the company name as the cookbook maintainer, and copyright owner in that case.</p>
+
+<p><code>ruby
+cookbook_license         'apachev2'
+cookbook_copyright ENV['COOKBOOK_COPYRIGHT'] || 'Corporate, Inc.'
+cookbook_email ENV['COOKBOOK_EMAIL'] || 'cookbooks@example.com'
+</code></p>
+
+<h1>Reference ~/.bashrc</h1>
+
+<p>```bash
+OPSCODE_USER=chef-server-username
+ORGNAME=chef
+COOKBOOK_COPYRIGHT=&lsquo;My Full Name&rsquo;
+COOKBOOK_EMAIL=&lsquo;<a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#100;&#x65;&#x76;&#64;&#101;&#x78;&#97;&#x6d;&#112;&#108;&#101;&#x2e;&#111;&#114;&#103;">&#100;&#x65;&#x76;&#64;&#101;&#120;&#97;&#109;&#112;&#108;&#x65;&#46;&#x6f;&#x72;&#x67;</a>&rsquo;
+AWS_ACCESS_KEY_ID=&ldquo;BlahBlahBlah&rdquo;
+AWS_SECRET_ACCESS_KEY=&ldquo;BlahBlahBlahBlah&rdquo;
+export OPSCODE_USER ORGNAME COOKBOOK_COPYRIGHT COOKBOOK_EMAIL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY</p>
+
+<p>function knife-reset {
+  OPSCODE_USER=chef-server-username
+  ORGNAME=chef
+  export OPSCODE_USER ORGNAME
+}</p>
+
+<p>function ginsu {
+  OPSCODE_USER=community-username
+  ORGNAME=community-organization
+  export OPSCODE_USER ORGNAME
+  knife &ldquo;$@&rdquo;
+}
 ```</p>
 
-<ol>
-<li><p>If you have not already done so, add a <code>rubocop</code> task for your project.  Perhaps one might run <code>foodcritic</code> and <code>rubocop</code> tasks as part of a static analysis touchstone build in their pipeline.  Running separate build staged build jobs shortens development feedback loops before kicking off a longer deployment and integration test.  In the example Rakefile above, I combined both <code>rubocop</code> and <code>foodcritic</code> into a single touchstone task called <code>jenkins</code>.</p></li>
-<li><p>Click <code>Add build step</code> &ndash;> <code>Invoke Rake</code>.  Set <code>Rake Version</code> to an appropriate selection for your system.  Set Tasks to <code>jenkins</code> or <code>rubocop</code> dependent on the tasks you added in your Rakefile.  If necessary, you may need to precede this build step with a Shell step to <code>bundle install</code> your Cookbook project, and check the <code>bundle exec</code> option for the Rake invocation.</p></li>
-<li><p>Click <code>Add post-build action</code> &ndash;> <code>Scan for compiler warnings</code> on the build job configuration page.  Select <code>Rubocop</code> as the <code>Parser</code>.  You can add multiple Warning Parsers for this build step (i.e. both Foodcritic and Rubocop).</p></li>
-<li><p>Click the <code>Advanced</code> button and check the option labeled <code>Run always</code> so that warnings are recorded even on failed builds.</p></li>
-<li><p>Click <code>Apply</code> on the Build Job configuration page and this should track Foodcritic and Rubocop warnings, even for failing build jobs.</p></li>
-</ol>
+<h1>Reference chef-repo/.chef/knife.rb</h1>
 
+<p><code>ruby
+current_dir = File.dirname(__FILE__)
+user = ENV['OPSCODE_USER'] || ENV['USER']
+log_level                :info
+log_location             STDOUT
+node_name                user
+client_key               "#{ENV['HOME']}/.chef/#{user}.pem"
+validation_client_name   "#{ENV['ORGNAME']}-validator"
+validation_key           "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
+if ENV['ORGNAME'] == 'marshall'
+chef_server_url "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+elsif ENV['ORGNAME'] == 'chef'
+chef_server_url 'http://chef.example.org:4000'
+end
+cache_type               'BasicFile'
+cache_options( :path =&gt; "#{ENV['HOME']}/.chef/checksums" )
+cookbook_path            ["#{current_dir}/../cookbooks", "#{current_dir}/../site-cookbooks"]
+role_path ["#{current_dir}/../roles"]
+cookbook_license         'apachev2'
+cookbook_copyright ENV['COOKBOOK_COPYRIGHT'] || 'Corporate, Inc.'
+cookbook_email ENV['COOKBOOK_EMAIL'] || 'corporate@example.com'
+knife[:aws_access_key_id] = ENV['AWS_ACCESS_KEY_ID']
+knife[:aws_secret_access_key] =  ENV['AWS_SECRET_ACCESS_KEY']
+knife[:identity_file] = "#{ENV['HOME']}/.ssh/id_rsa"
+knife[:aws_ssh_key_id] = ENV['OPSCODE_USER'] || ENV['USER']
+knife[:availability_zone] = "us-east-1a"
+knife[:region] = "us-east-1"
+</code></p>
+
+<h1>Credits</h1>
+
+<p>This was partly adapted from Stephen Nelson-Smith&rsquo;s (@LordCope) book Test-Driven Infrastructure with Chef (<a href="http://shop.oreilly.com/product/0636920020042.do">http://shop.oreilly.com/product/0636920020042.do</a>).</p>
 ]]></content>
   </entry>
   

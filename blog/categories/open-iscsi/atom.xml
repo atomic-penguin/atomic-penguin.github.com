@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Open-iSCSI | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/open-iscsi/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Red Hat Enterprise Linux 5.x iSCSI and Device Mapper Multipath HOWTO]]></title>
     <link href="http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO/"/>
-    <updated>2010-11-29T00:00:00-08:00</updated>
+    <updated>2010-11-29T00:00:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2010/11/29/Red-Hat-Enterprise-Linux-5.x-iSCSI-and-device-mapper-multipath-HOWTO</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 

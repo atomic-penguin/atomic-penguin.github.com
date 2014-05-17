@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PXE | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/pxe/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Ohio Linuxfest 2009 - How I Learned to Stop Worrying, and Love PXE Booting]]></title>
     <link href="http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting/"/>
-    <updated>2009-09-26T00:00:00-07:00</updated>
+    <updated>2009-09-26T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2009/09/26/Ohio-Linuxfest-How-I-learned-to-stop-worrying-and-love-PXE-booting</id>
     <content type="html"><![CDATA[<p>These are my presentation slides for the 2009 Ohio Linuxfest.  I gave a talk on the topic of network and multi-booting with Syslinux and configuring systems with Kickstart.</p>
 

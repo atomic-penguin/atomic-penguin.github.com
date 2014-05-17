@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Virtualization | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/virtualization/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[HOWTO (Video) Simple KVM Virtualization, a Command Line Demonstration]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration/"/>
-    <updated>2012-04-04T00:00:00-07:00</updated>
+    <updated>2012-04-04T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/04/04/HOWTO-simple-kvm-virtualization-a-command-line-demonstration</id>
     <content type="html"><![CDATA[<p>A simple demonstration using KVM (Kernel-based Virtual Machine) from the command line interface.</p>
 

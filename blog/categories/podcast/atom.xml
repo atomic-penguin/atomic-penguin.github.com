@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Podcast | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/podcast/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-04-29T13:55:39-07:00</updated>
+  <updated>2014-05-17T02:11:55-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 17, Testing With Eric G. Wolfe & Fletcher Nichol]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher/"/>
-    <updated>2012-06-12T00:00:00-07:00</updated>
+    <updated>2012-06-12T00:00:00-04:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/06/12/Foodfight-17-Testing-with-Eric-and-Fletcher</id>
     <content type="html"><![CDATA[<p>I had such a blast at the inaugural Chefconf in San Francisco, CA.  This was my first time visiting the area, I had a chance to visit the <a href="https://plus.google.com/112791157300091682319/posts/2Dr6BMnBqHH">Alcatraz</a> prison.  I also drank a lot of <a href="http://www.anchorbrewing.com/beer/anchor_steam">Anchor Steam</a>, while pair programming with <a href="http://twitter.com/#!fnichol">Fletcher Nichol</a> to make the NTP cookbook a reference cookbook for testing Chef recipes.</p>
 
@@ -27,7 +27,7 @@
   <entry>
     <title type="html"><![CDATA[Foodfight Podcast - Episode 1, Chef in 2012]]></title>
     <link href="http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012/"/>
-    <updated>2012-01-15T00:00:00-08:00</updated>
+    <updated>2012-01-15T00:00:00-05:00</updated>
     <id>http://atomic-penguin.github.com/blog/2012/01/15/Foodfight-1-Chef-in-2012</id>
     <content type="html"><![CDATA[<p>I was really excited to be part of the first community podcast for Opscode Chef, <a href="http://foodfightshow.org">Food Fight</a>.  Here is a link to the podcast <a href="http://traffic.libsyn.com/foodfight/ff_ep01_2.mp3">audio</a> and also the show <a href="http://foodfightshow.org/2012/01/episode-1-chef-in-2012.html">notes</a>.</p>
 ]]></content>
