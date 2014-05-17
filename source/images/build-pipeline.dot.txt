@@ -1,0 +1,35 @@
+digraph structs {
+
+node [shape=record]
+
+baseline [color=lightblue label="mu-baseline:\nQuick unit tests/linting)|{<pass> pass|STOP}"];
+baseline_kitchen [label="mu-baseline-kitchen\nKitchen CI run on Docker,\nand BATS integration tests.|{<pass> pass|STOP}"];
+baseline_deploy [ label="mu-baseline-deploy\nUpload to Chef, pin component by\nversion in production environment.|{<pass> pass|STOP}"];
+
+mumail [color=lightblue label="mu-mail:\nQuick unit tests/linting.|{<pass> pass|STOP}"];
+mumail_kitchen [label="mu-mail-kitchen:\nKitchen CI run on Docker,\nand BATS integration tests.|{<pass> pass|STOP}"];
+mumail_deploy [label="mu-mail-deploy:\nUpload to Chef, pin component by version\nin production environment.|{<pass> pass|STOP}"];
+
+CHANGE [color=red];
+
+dependencies [color=lightgrey label="upstream dependencies"];
+
+deployed [label="CHANGE DEPLOYED" color=green ];
+
+CHANGE -> {dependencies baseline mumail}
+
+dependencies -> {baseline mumail}
+
+baseline:pass -> baseline_kitchen
+
+baseline_kitchen:pass -> baseline_deploy
+
+baseline_deploy:pass -> {mumail deployed}
+
+mumail:pass -> mumail_kitchen
+
+mumail_kitchen:pass -> mumail_deploy
+
+mumail_deploy:pass -> deployed
+
+}
