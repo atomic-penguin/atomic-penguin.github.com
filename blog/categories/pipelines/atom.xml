@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Pipelines | atomic-penguin's blog]]></title>
   <link href="http://atomic-penguin.github.com/blog/categories/pipelines/atom.xml" rel="self"/>
   <link href="http://atomic-penguin.github.com/"/>
-  <updated>2014-05-17T02:24:37-04:00</updated>
+  <updated>2014-05-17T02:26:05-04:00</updated>
   <id>http://atomic-penguin.github.com/</id>
   <author>
     <name><![CDATA[Eric G. Wolfe]]></name>
@@ -54,7 +54,7 @@ Kitchen.CI to test the functional output of those data structures as they intera
 <p><a href="/images/build-pipeline.dot.txt"><img src="/images/build-pipeline.svg" alt="CI pipeline logical flow" /></a></p>
 
 <p>In the pipeline directional graph, one can see that there are several build jobs aligned in order.  My last post discussed
-constructing a <a href="https://atomic-penguin.github.io/blog/2014/04/28/stupid-jenkins-and-chef-tricks-part-1-rubocop/">touchstone build</a> for
+constructing a <a href="https://atomic-penguin.github.io/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/">touchstone build</a> for
 quick running unit tests with Chefspec, and cookbook linting with Rubocop and Foodcritic.  A touchstone build is a fast running, and fast
 failing, series of tests which are run first in a pipeline before any slower running integration tests.</p>
 
