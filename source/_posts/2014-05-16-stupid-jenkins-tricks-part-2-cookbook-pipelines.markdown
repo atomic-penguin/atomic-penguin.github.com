@@ -102,4 +102,9 @@ for testing cookbooks, I really don't know how I could have approached this Caps
 
 **P.P.S**
 
-There are no plans to publish the paper, as of right now, but I can provide a copy upon request to those interested.
+I find an academic style of writing very awkward and almost painful.  I have read it so many times, I am sick of it, however.
+
+If you must read it, here is the Capstone paper, and Defense presentation.
+
+* [Capstone paper](https://drive.google.com/file/d/0B5FVR8Dbge0eVmtmMFpqR0tvdGc)
+* [Defense presentation](https://drive.google.com/file/d/0B5FVR8Dbge0eNXJaUmE4b2x0Z00)
